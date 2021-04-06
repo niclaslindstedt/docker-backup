@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  sample-app-1:
+    image: bash
+    restart: always
+    command: bash -c "while true; do echo \"$$(date)\" > /data/$$(date +\"%s\"); sleep 10; done"
+    volumes:
+      - sample-app-data:/data # this shows how you can use a Docker volume
+
+  sample-app-2:
+    image: bash
+    restart: always
+    command: bash -c "while true; do echo \"$$(date)\" > /data/$$(date +\"%s\"); sleep 13; done"
+    volumes:
+      - ./data:/data # this shows how you can use a local folder
+
+  backup:
+    build: .
+    restart: always
+    environment:
+      - CRON_BACKUP=* * * * * # create backups every minute
+      - CRON_LTS=*/10 * * * * # copy to long-term storage every 10 minutes
+      - CRON_PURGE=0 3 * * * # purge at 3:00 every day
+      - CREATE_CHECKSUMS=true
+      - VERIFY_CHECKSUMS=true
+      - PROJECT_NAME=docker-backup # should be set to the folder name (used for matching containers)
+      - STOP_CONTAINERS=sample-app-1,sample-app-2
+    volumes:
+      - ./lib:/usr/local/lib/docker-backup
+      - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
+      - ./data:/volumes/sample-app-2 # will be backed up to /backup
+      - ./backups:/backup # backups will be stored here until purged
+      - ./lts:/lts # backups will be stored here (and never purged)
+      - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
+      - /etc/localtime:/etc/localtime:ro # to get accurate time for backups
+
+volumes:
+  sample-app-data:
