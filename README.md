@@ -2,6 +2,8 @@
 
 Backs up your Docker volumes and/or data folders and stores them both short-term and long-term. Purge old backups after X days or when free space gets tight.
 
+**CAUTION: Do not use this for production environments. It has not been thorougly tested yet.**
+
 ## Features
 
 * Cron for precise backup schedules.
