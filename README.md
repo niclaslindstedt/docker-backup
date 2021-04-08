@@ -32,6 +32,7 @@ Variable | Default | Description
 `MINIMUM_FREE_SPACE` | `30` | Set to how many gigabytes of storage you want to keep free.
 `CREATE_CHECKSUMS` | `true` | Set to 'false' to disable creation of checksums (sfv).
 `VERIFY_CHECKSUMS` | `true` | Set to 'false' to disable checksum (sfv) verification before restoring a backup and after copying a backup to long-term storage.
+`DOCKER_STOP_TIMEOUT` | `30` | The amount of seconds to wait for the containers to stop before killing them.
 `PROJECT_NAME` | | The name of the project folder (used for naming containers with docker-compose).
 `STOP_CONTAINERS` | | The names of the containers that should be stopped before backing up & restoring. Comma-separated list.
 

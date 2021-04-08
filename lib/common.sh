@@ -104,7 +104,7 @@ stop_containers() {
     for container_name in "${containers[@]}"; do
       read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
       [ -n "${container_ids[*]}" ] && {
-        docker stop ${container_ids[*]} || return 1
+        docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
       }
     done
   }
