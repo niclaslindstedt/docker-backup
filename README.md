@@ -13,9 +13,28 @@ Backs up your Docker volumes and/or data folders and stores them both short-term
 
 ## Instructions
 
-1. Mount all volumes you want backed up in `/volumes` (host folders work, too)
+1. Mount all volumes you want backed up in `/volumes`
 2. Mount the short-term backup location in `/backup`
 3. Mount the long-term storage location in `/lts`
+
+### Backing up local folders
+
+You can use this project to create backups of local folders (i.e. not Docker volumes) as well. Just mount in everything you want to backup in the /volumes folder.
+
+```
+version: '3.7'
+services:
+  backup:
+    image: niclaslindstedt/docker-backup:latest
+    restart: always
+    environment:
+      - ENABLE_LTS=false # turn off long-term storage
+      - ENABLE_PURGE=false # turn off purging of backups
+    volumes:
+      - /home/johndoe/Documents:/volumes/documents
+      - /mnt/data/backups:/backup
+      - /etc/localtime:/etc/localtime:ro
+```
 
 ### Using S3 as long-term storage
 
