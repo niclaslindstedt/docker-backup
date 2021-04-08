@@ -2,3 +2,4 @@
 backups
 lts
 data
+.env

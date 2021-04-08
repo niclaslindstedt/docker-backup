@@ -13,9 +13,13 @@ Backs up your Docker volumes and/or data folders and stores them both short-term
 
 ## Instructions
 
-1. Mount all volumes you want backed up in `/volumes`
+1. Mount all volumes you want backed up in `/volumes` (host folders work, too)
 2. Mount the short-term backup location in `/backup`
 3. Mount the long-term storage location in `/lts`
+
+### Using S3 as long-term storage
+
+See the `docker-compose.s3.yml` file on how to use an S3 bucket as long-term storage.
 
 ## Environment variables
 

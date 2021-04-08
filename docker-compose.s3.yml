@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  s3:
+    image: elementar/s3-volume
+    command: /data s3://${S3_BUCKET_NAME}
+    environment:
+      - BACKUP_INTERVAL=${S3_BACKUP_INTERVAL} # in minutes
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - s3-data:/data
+
+  backup:
+    volumes:
+      - s3-data:/lts
+
+volumes:
+  s3-data:
+    driver: local
+
+  services:
