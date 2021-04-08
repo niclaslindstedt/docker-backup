@@ -11,7 +11,7 @@ main() {
   go "$BACKUP_PATH"
 
   for file_to_purge in *; do
-    [ -f "$file_to_purge" ] && purge "$file_to_purge"
+    [ -f "$file_to_purge" ] && purge "$file_to_purge" "$KEEP_BACKUPS_FOR_DAYS"
   done
 
   back
@@ -23,8 +23,8 @@ purge() {
   current_unixtime=$(date +"%s")
   file_unixtime=$(get_filetime "$1")
   file_age=$(((current_unixtime - file_unixtime) / 86400))
-  [ "$file_age" -gt "$KEEP_BACKUPS_FOR_DAYS" ] && {
-    log "$1 is $file_age days old (limit is $KEEP_BACKUPS_FOR_DAYS days). Removing."
+  [ "$file_age" -gt "$2" ] && {
+    log "$1 is $file_age days old (limit is $2 days). Removing."
     rm -f "${1:?}"
   }
 }

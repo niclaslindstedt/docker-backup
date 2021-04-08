@@ -1,27 +1,46 @@
 # Docker Backup
 
-Use this in your compose file to backup your volumes.
+Backs up your Docker volumes and/or data folders and stores them both short-term and long-term. Purge old backups after X days or when free space gets tight.
+
+## Features
+
+* Cron for precise backup schedules.
+* Backup any folder or Docker volume on your host machine.
+* Easily restore a backup.
+* Stop your other Docker containers during backup/restoration to prevent invalid states.
+
+## Instructions
 
 1. Mount all volumes you want backed up in `/volumes`
-2. Mount the backup location in `/backup`
-3. Mount the long-term storage in `/lts`
+2. Mount the short-term backup location in `/backup`
+3. Mount the long-term storage location in `/lts`
 
-The backup location is the temporary place for backups, intended for
-storing _all_ backups for a certain period of time. When the backups
-start getting old, they will be copied to the long-term storage, and
-the backup location will be purged of old files.
+## Environment variables
+
+Variable | Default | Description
+--- | --- | ---
+`ENABLE_LTS` | `true` | Set to 'false' to disable long-term storage.
+`ENABLE_PURGE` | `true` | Set to 'false' to disable purging of old backups.
+`CRON_BACKUP` | `0 5 * * *` | Cron schedule for creating backups of all volumes.
+`CRON_LTS` | `0 9 * * *` | Cron schedule for copying backups to the long-term storage folder.
+`CRON_PURGE` | `0 3 * * *` | Cron schedule for purging backups in the short-term backup folder.
+`KEEP_BACKUPS_FOR_DAYS` | `30` | Set to how many days you want to keep backups in the short-term backup folder.
+`MINIMUM_FREE_SPACE` | `30` | Set to how many gigabytes of storage you want to keep free.
+`CREATE_CHECKSUMS` | `true` | Set to 'false' to disable creation of checksums (sfv).
+`VERIFY_CHECKSUMS` | `true` | Set to 'false' to disable checksum (sfv) verification before restoring a backup and after copying a backup to long-term storage.
+`PROJECT_NAME` | | The name of the project folder (used for naming containers with docker-compose).
+`STOP_CONTAINERS` | | The names of the containers that should be stopped before backing up & restoring. Comma-separated list.
 
 ## Commands
 
-You can use `docker exec` to run the following scripts inside the container:
+You can use `docker-compose exec backup <command>` to run the following commands inside the container:
 
-Script | Description
+Command | Description
 --- | ---
-`backup` | Backs up everything in the volume location to the backup location.
-`store` | Copies backups to the long-term storage location.
+`backup` | Backup all volumes.
+`backup <volume>` | Backup a specific volume.
+`store` | Copies the latest backups to the long-term storage location.
 `purge` | Purges old backups from the backup location.
-`restore` | Restores the newest backup of the provided volume name.
-
-The restore script takes an argument that should equal the volume name (folder name) of the volume you want to restore. E.g. if you have mounted a volume at `/volumes/anexample` you should type `docker-compose exec backup restore anexample` to restore it.
-
-The store script will copy the *latest* backup of each volume to the long-term storage.
+`restore` | Restores all volumes to their latest backups.
+`restore <volume>` | Restores the latest backup of the provided volume name.
+`restore <backup filename>` | Restores a specific backup to its associated volume.
