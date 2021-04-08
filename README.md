@@ -25,6 +25,10 @@ Variable | Default | Description
 `CRON_LTS` | `0 9 * * *` | Cron schedule for copying backups to the long-term storage folder.
 `CRON_PURGE` | `0 3 * * *` | Cron schedule for purging backups in the short-term backup folder.
 `KEEP_BACKUPS_FOR_DAYS` | `30` | Set to how many days you want to keep backups in the short-term backup folder.
+`KEEP_LTS_FOR_MONTHS` | `6` | Set to how long you want to keep long-term storage backups.
+`KEEP_DAILY_AFTER_HOURS` | `24` | The breakpoint (in hours) for when hourly backups turn into daily.
+`KEEP_WEEKLY_AFTER_DAYS` | `14` | The breakpoint (in days) for when daily backups turn into weekly.
+`KEEP_MONTHLY_AFTER_WEEKS` | `4` | The breakpoint (in weeks) for when weekly backups turn into monthly.
 `MINIMUM_FREE_SPACE` | `30` | Set to how many gigabytes of storage you want to keep free.
 `CREATE_CHECKSUMS` | `true` | Set to 'false' to disable creation of checksums (sfv).
 `VERIFY_CHECKSUMS` | `true` | Set to 'false' to disable checksum (sfv) verification before restoring a backup and after copying a backup to long-term storage.

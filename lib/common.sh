@@ -1,5 +1,10 @@
 #!/bin/bash
 
+ONE_HOUR=10
+ONE_DAY=$((ONE_HOUR * 24))
+ONE_WEEK=$((ONE_DAY * 7))
+ONE_MONTH=$((ONE_WEEK * 4))
+
 log() {
   echo "[$COMPONENT] $*" | tee -a "$LOG_PATH"
 }
@@ -17,7 +22,7 @@ is_not_empty() {
 }
 
 get_volume_name() {
-  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmm.tar.gz"
+  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.tar.gz"
   echo "$1" | sed -E "s/.+?backup\-(.+?)\-.+?$/\1/g"
 }
 
@@ -43,30 +48,33 @@ get_file_size_str() {
 
 get_backup_count() {
   go "$BACKUP_PATH"
-  files=(backup-"$1"-*)
-  echo ${#files[*]} | wc -l
+    files=(backup-"$1"-*)
+    echo ${#files[*]} | wc -l
   back
 }
 
 get_latest_backup() {
-  go "$BACKUP_PATH"
-  find . -iname "backup-$1-*.tar.gz" -printf '%f\n' | sort -r -n | head -n 1
-  back
+  find . -iname "*backup-*-??????????????.tar.gz" -printf '%f\n' | sort -r -n | head -n 1
 }
 
 get_oldest_backup() {
-  go "$BACKUP_PATH"
-  find . -iname "backup-$1-*" -printf '%f\n' | sort -n | head -n 1
-  back
+  find . -iname "*backup-*-??????????????.tar.gz" -printf '%f\n' | sort -n | head -n 1
+}
+
+get_reversed_backups() {
+  find . -iname "*backup-*-??????????????.tar.gz" -printf '%f\n' | sort -n -r
 }
 
 get_filetime() {
-  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmm.tar.gz"
+  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.tar.gz"
   file_date=$(echo "$1" | grep -Eo '[[:digit:]]{12}')
   file_year=$(echo "$file_date" | cut -c1-4)
   file_month=$(echo "$file_date" | cut -c5-6)
   file_day=$(echo "$file_date" | cut -c7-8)
-  date --date "$file_year-$file_month-$file_day" +"%s"
+  file_hour=$(echo "$file_date" | cut -c9-10)
+  file_minute=$(echo "$file_date" | cut -c11-12)
+  file_second=$(echo "$file_date" | cut -c13-14)
+  date --date "$file_year-$file_month-$file_day $file_hour:$file_minute:$file_second" +"%s"
 }
 
 create_checksum() {
@@ -115,6 +123,14 @@ start_containers() {
     done
   }
   return 0
+}
+
+datetime() {
+  date +"%Y%m%d%H%M%S"
+}
+
+unixtime() {
+  date +"%s"
 }
 
 go() {

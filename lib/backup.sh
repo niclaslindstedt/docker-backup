@@ -24,14 +24,14 @@ main() {
 
 backup_all() {
   go "$VOLUME_PATH"
-  for path_to_backup in *; do
-    [ -d "$path_to_backup" ] && backup_volume "$path_to_backup"
-  done
+    for path_to_backup in *; do
+      [ -d "$path_to_backup" ] && backup_volume "$path_to_backup"
+    done
   back
 }
 
 backup_volume() {
-  backup_filename="backup-$1-$(date +"%Y%m%d%H%M").tar.gz"
+  backup_filename="backup-$1-$(datetime).tar.gz"
   backup_path="$BACKUP_PATH/$backup_filename"
   volume_name="$(get_volume_name "$backup_filename")"
 
@@ -46,9 +46,11 @@ backup_volume() {
     backup_count="$(get_backup_count "$volume_name")"
     [ "$backup_count" -gt 1 ] && {
       # Remove oldest backup if we're running out of space
-      backup_to_remove="$(get_oldest_backup "$volume_name")"
-      log "Removing oldest $volume_name backup before continuing ($((backup_count - 1)) left)"
-      rm -f "${backup_to_remove:?}"
+      go "$BACKUP_PATH"
+        backup_to_remove="$(get_oldest_backup "$volume_name")"
+        log "Removing oldest $volume_name backup before continuing ($((backup_count - 1)) left)"
+        rm -f "${backup_to_remove:?}"
+      back
     }
 
     # If we still have too little storage left, exit

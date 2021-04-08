@@ -8,25 +8,87 @@ COMPONENT="PURGE"
 main() {
   log "Starting purge process"
 
-  go "$BACKUP_PATH"
-
-  for file_to_purge in *; do
-    [ -f "$file_to_purge" ] && purge "$file_to_purge" "$KEEP_BACKUPS_FOR_DAYS"
-  done
-
-  back
+  #purge_backups
+  purge_lts
 
   log "Finished purge process"
 }
 
-purge() {
-  current_unixtime=$(date +"%s")
-  file_unixtime=$(get_filetime "$1")
-  file_age=$(((current_unixtime - file_unixtime) / 86400))
-  [ "$file_age" -gt "$2" ] && {
-    log "$1 is $file_age days old (limit is $2 days). Removing."
-    rm -f "${1:?}"
-  }
+purge_backups() {
+  log "Purging backups"
+  go "$BACKUP_PATH"
+    for filename in $(get_reversed_backups); do
+      [ ! -f "$filename" ] && continue
+      file_unixtime="$(get_filetime "$filename")"
+      days_old="$((($(unixtime) - $file_unixtime) / ONE_DAY))"
+      [ "$days_old" -gt "$KEEP_BACKUPS_FOR_DAYS" ] && {
+        log "$filename is $days_old days old (limit is $KEEP_BACKUPS_FOR_DAYS days). Removing."
+        rm -f $filename $filename.sfv
+      }
+    done
+  back
+}
+
+purge_lts() {
+  log "Purging long-term storage"
+  go "$LTS_PATH"
+    purge_lts_daily
+    purge_lts_weekly
+    purge_lts_monthly
+  back
+}
+
+purge_lts_daily() {
+  log "Purging backups that are between $KEEP_DAILY_AFTER_HOURS hours and $KEEP_WEEKLY_AFTER_DAYS days -- keeping 1 per day"
+
+  start_time="$(($(unixtime) - KEEP_DAILY_AFTER_HOURS * ONE_HOUR))"
+  stop_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
+  purge_lts_loop "$start_time" "$stop_time" "$ONE_DAY" "days"
+}
+
+purge_lts_weekly() {
+  log "Purging backups that are between $KEEP_WEEKLY_AFTER_DAYS days and $KEEP_MONTHLY_AFTER_WEEKS weeks -- keeping 1 per week"
+
+  start_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
+  stop_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
+  purge_lts_loop "$start_time" "$stop_time" "$ONE_WEEK" "weeks"
+}
+
+purge_lts_monthly() {
+  log "Purging backups that are between $KEEP_MONTHLY_AFTER_WEEKS weeks and $KEEP_LTS_FOR_MONTHS months -- keeping 1 per month"
+
+  start_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
+  purge_lts_loop "$start_time" 0 "$ONE_MONTH" "months"
+}
+
+purge_lts_loop() {
+  start_time="$1"
+  stop_time="$2"
+  decrements="$3"
+  unit="$4"
+
+  removal_time="$(($(unixtime) - KEEP_LTS_FOR_MONTHS * ONE_MONTH))"
+  decrement_num=1
+  for volume_name in *; do
+    log "Entering $volume_name"
+    go $volume_name
+      for filename in $(get_reversed_backups); do
+        compare_time="$(($(unixtime) - decrements * decrement_num))"
+        [ ! -f "$filename" ] && continue
+        file_unixtime="$(get_filetime "$filename")"
+        [ "$file_unixtime" -gt "$start_time" ] && continue
+        [ "$file_unixtime" -lt "$stop_time" ] && break
+        [ "$file_unixtime" -gt "$compare_time" ] || \
+        [ "$file_unixtime" -lt "$removal_time" ] && {
+          log "Removing $filename"
+          rm -f $filename $filename.sfv
+          continue
+        }
+        log "Keeping $filename ($decrement_num)"
+        ((decrement_num++))
+      done
+    back
+  done
 }
 
 source "$APP_PATH/common.sh"

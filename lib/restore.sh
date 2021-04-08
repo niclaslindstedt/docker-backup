@@ -11,14 +11,12 @@ main() {
   stop_containers
 
   go "$BACKUP_PATH"
-
-  if [[ -n "$1" ]]; then
-    restore_volume "$1"
-  else
-    log "Restoring all volumes"
-    restore_all
-  fi
-
+    if [[ -n "$1" ]]; then
+      restore_volume "$1"
+    else
+      log "Restoring all volumes"
+      restore_all
+    fi
   back
 
   start_containers
@@ -56,10 +54,10 @@ restore_volume() {
     read -r backup_existing_volume
     [ "$backup_existing_volume" != "n" ] && {
       log "Backing up $volume_name before restoring"
-      prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(date +"%Y%m%d%H%M").tar.gz"
+      prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(datetime).tar.gz"
       go "$target_volume"
-      tar czf "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
-      create_checksum "$prerestore_backup_filename"
+        tar czf "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
+        create_checksum "$prerestore_backup_filename"
       back
     }
   }

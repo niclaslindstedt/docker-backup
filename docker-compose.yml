@@ -22,6 +22,7 @@ services:
       - CRON_BACKUP=* * * * * # create backups every minute
       - CRON_LTS=*/10 * * * * # copy to long-term storage every 10 minutes
       - CRON_PURGE=0 3 * * * # purge at 3:00 every day
+      - KEEP_BACKUPS_FOR_DAYS=7
       - CREATE_CHECKSUMS=true
       - VERIFY_CHECKSUMS=true
       - PROJECT_NAME=docker-backup # should be set to the folder name (used for matching containers)
