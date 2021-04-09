@@ -54,9 +54,9 @@ restore_volume() {
     read -r backup_existing_volume
     [ "$backup_existing_volume" != "n" ] && {
       log "Backing up $volume_name before restoring"
-      prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(datetime).tar.gz"
+      prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(datetime).$ARCHIVE_TYPE"
       go "$target_volume"
-        tar czf "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
+        pack "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
         create_checksum "$prerestore_backup_filename"
       back
     }
@@ -73,7 +73,7 @@ restore_volume() {
   # Restore backup
   volume_name=$(get_volume_name "$latest_backup")
   log "Restoring $volume_name backup to $target_volume"
-  tar xzf "$latest_backup" --directory "$target_volume" || error "Could not restore $latest_backup backup"
+  unpack "$latest_backup" "$target_volume" || error "Could not restore $latest_backup backup"
 }
 
 source "$APP_PATH/common.sh"

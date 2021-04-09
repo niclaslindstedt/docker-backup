@@ -1,12 +1,18 @@
 FROM ubuntu:18.04
 
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install -y curl \
+  && curl -sSL https://get.docker.com/ | sh
+RUN apt-get install -y \
     cifs-utils \
     cksfv \
     cron \
     curl \
-  && curl -sSL https://get.docker.com/ | sh
+    p7zip \
+    rar \
+    unrar \
+    zip \
+  && rm -rf /var/lib/apt/lists/*
 ENV APP_PATH=/usr/local/lib/docker-backup
 COPY lib/* $APP_PATH/
 RUN ln -s $APP_PATH/backup.sh /usr/local/bin/backup \
@@ -23,6 +29,9 @@ ENV LOG_PATH=/var/log/output.log \
   CRON_BACKUP="0 5 * * *" \
   CRON_LTS="0 9 * * *" \
   CRON_PRUNE="0 3 * * *" \
+  VERBOSE=false \
+  DEBUG=false \
+  ARCHIVE_TYPE="tar.gz" \
   KEEP_BACKUPS_FOR_DAYS=30 \
   KEEP_LTS_FOR_MONTHS=6 \
   KEEP_DAILY_AFTER_HOURS=24 \

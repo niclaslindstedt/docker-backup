@@ -49,6 +49,9 @@ Variable | Default | Description
 `CRON_BACKUP` | `0 5 * * *` | Cron schedule for creating backups of all volumes.
 `CRON_LTS` | `0 9 * * *` | Cron schedule for copying backups to the long-term storage folder.
 `CRON_PRUNE` | `0 3 * * *` | Cron schedule for pruning backups.
+`VERBOSE` | `false` | Set to 'true' to enable extra verbose logging.
+`DEBUG` | `false` | Set to 'true' to enable debug logging.
+`ARCHIVE_TYPE` | `tar.gz` | Use this archive type for storage, one of: `tar.gz` `zip` `rar` `7z`
 `KEEP_BACKUPS_FOR_DAYS` | `30` | Set to how many days you want to keep backups in the short-term backup folder.
 `KEEP_LTS_FOR_MONTHS` | `6` | Set to how long you want to keep long-term storage backups.
 `KEEP_DAILY_AFTER_HOURS` | `24` | The breakpoint (in hours) for when hourly backups turn into daily.

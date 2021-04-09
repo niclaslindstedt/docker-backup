@@ -31,7 +31,7 @@ backup_all() {
 }
 
 backup_volume() {
-  backup_filename="backup-$1-$(datetime).tar.gz"
+  backup_filename="backup-$1-$(datetime).$ARCHIVE_TYPE"
   backup_path="$BACKUP_PATH/$backup_filename"
   volume_name="$(get_volume_name "$backup_filename")"
 
@@ -62,7 +62,7 @@ backup_volume() {
 
   # Create a tarball gzip at the backup location
   log "Backing up $volume_name ($folder_size_str) to $backup_path ($free_space GB left)"
-  tar czf "$backup_path" "$1" || error "Could not backup $backup_filename"
+  pack "$backup_path" "$1" || error "Could not backup $backup_filename"
 
   create_checksum "$backup_path" || "Could not create checksum for $backup_filename"
 }

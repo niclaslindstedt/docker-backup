@@ -20,9 +20,9 @@ main() {
 store() {
   volume_name=$(get_volume_name "$1")
   target_path="$LTS_PATH/$volume_name"
-  target_filename="$target_path/$backup_filename"
+  target_filename="$target_path/$1"
   [ ! -f "$target_filename" ] && {
-    copy_backup "$backup_filename" "$target_path"
+    copy_backup "$1" "$target_path"
     verify_checksum "$target_filename" || error "Checksum verification failed on $target_filename"
   }
 }
@@ -32,7 +32,7 @@ copy_backup() {
     mkdir -p "$2"
     free_space=$(get_free_space "$2")
     file_size_str=$(get_file_size_str "$1")
-    log "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
+    logv "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
     cp -n "$1" "$2" || error "Could not copy $1 to long-term storage location"
     [ -f "$1.sfv" ] && cp -n "$1.sfv" "$2"
   }

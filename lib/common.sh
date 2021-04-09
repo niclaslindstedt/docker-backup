@@ -9,8 +9,17 @@ log() {
   echo "[$COMPONENT] $*" | tee -a "$LOG_PATH"
 }
 
+logv() {
+  [ "$VERBOSE" = "true" ] && log $*
+}
+
+logd() {
+  [ "$DEBUG" = "true" ] && log $*
+}
+
 error() {
   [ -n "$1" ] && log "ERROR: $*"
+  start_containers
   log "Exiting script"
   exit 1
 }
@@ -22,7 +31,7 @@ is_not_empty() {
 }
 
 get_volume_name() {
-  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.tar.gz"
+  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.EXT"
   echo "$1" | sed -E "s/.+?backup\-(.+?)\-.+?$/\1/g"
 }
 
@@ -54,20 +63,20 @@ get_backup_count() {
 }
 
 get_latest_backup() {
-  find . -iname "*backup-*-??????????????.tar.gz" -printf '%f\n' | sort -r -n | head -n 1
+  find . -iname "*backup-*-??????????????.$ARCHIVE_TYPE" -printf '%f\n' | sort -r -n | head -n 1
 }
 
 get_oldest_backup() {
-  find . -iname "*backup-*-??????????????.tar.gz" -printf '%f\n' | sort -n | head -n 1
+  find . -iname "*backup-*-??????????????.$ARCHIVE_TYPE" -printf '%f\n' | sort -n | head -n 1
 }
 
 get_reversed_backups() {
-  find . -iname "*backup-*-??????????????.tar.gz" -printf '%f\n' | sort -n -r
+  find . -iname "*backup-*-??????????????.$ARCHIVE_TYPE" -printf '%f\n' | sort -n -r
 }
 
 get_filetime() {
-  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.tar.gz"
-  file_date=$(echo "$1" | grep -Eo '[[:digit:]]{12}')
+  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.EXT"
+  file_date=$(echo "$1" | grep -Eo '[[:digit:]]{14}')
   file_year=$(echo "$file_date" | cut -c1-4)
   file_month=$(echo "$file_date" | cut -c5-6)
   file_day=$(echo "$file_date" | cut -c7-8)
@@ -99,7 +108,7 @@ verify_checksum() {
 
 stop_containers() {
   [ -n "$STOP_CONTAINERS" ] && {
-    log "Stopping containers"
+    log "Stopping containers (waiting for $DOCKER_STOP_TIMEOUT seconds before killing)"
     IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
     for container_name in "${containers[@]}"; do
       read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
@@ -123,6 +132,34 @@ start_containers() {
     done
   }
   return 0
+}
+
+pack() {
+  go "$2"
+    if [ "$ARCHIVE_TYPE" = "tar.gz" ]; then
+      tar czf "$1" . || return 1
+    elif [ "$ARCHIVE_TYPE" = "7z" ]; then
+      7zr a -r "$1" . >/dev/null || return 1
+    elif [ "$ARCHIVE_TYPE" = "zip" ]; then
+      zip -r "$1" . >/dev/null || return 1
+    elif [ "$ARCHIVE_TYPE" = "rar" ]; then
+      rar a -r "$1" . >/dev/null || return 1
+    fi
+  back
+}
+
+unpack() {
+  go "$2"
+    if [ "$ARCHIVE_TYPE" = "tar.gz" ]; then
+      tar xzf "$1" || return 1
+    elif [ "$ARCHIVE_TYPE" = "7z" ]; then
+      7zr x "$1" >/dev/null || return 1
+    elif [ "$ARCHIVE_TYPE" = "zip" ]; then
+      unzip "$1" >/dev/null || return 1
+    elif [ "$ARCHIVE_TYPE" = "rar" ]; then
+      unrar x -r "$1" >/dev/null || return 1
+    fi
+  back
 }
 
 datetime() {

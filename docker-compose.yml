@@ -19,14 +19,17 @@ services:
     build: .
     restart: always
     environment:
-      - CRON_BACKUP=* * * * * # create backups every minute
-      - CRON_LTS=*/10 * * * * # copy to long-term storage every 10 minutes
+      - CRON_BACKUP=*/10 * * * * # create backups every minute
+      - CRON_LTS=*/30 * * * * # copy to long-term storage every 10 minutes
       - CRON_PRUNE=0 3 * * * # prune at 3:00 every day
       - KEEP_BACKUPS_FOR_DAYS=7
       - CREATE_CHECKSUMS=true
       - VERIFY_CHECKSUMS=true
       - PROJECT_NAME=docker-backup # should be set to the folder name (used for matching containers)
       - STOP_CONTAINERS=sample-app-1,sample-app-2
+      - ARCHIVE_TYPE=rar
+      - VERBOSE=true
+      - DOCKER_STOP_TIMEOUT=5
     volumes:
       - ./lib:/usr/local/lib/docker-backup
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
