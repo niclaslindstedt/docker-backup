@@ -3,18 +3,18 @@
 # This script will remove backups that are older
 # than x days from the backup location.
 
-COMPONENT="PURGE"
+COMPONENT="PRUNE"
 
 main() {
-  log "Starting purge process"
+  log "Starting prune process"
 
-  #purge_backups
-  purge_lts
+  #prune_backups
+  prune_lts
 
-  log "Finished purge process"
+  log "Finished prune process"
 }
 
-purge_backups() {
+prune_backups() {
   log "Purging backups"
   go "$BACKUP_PATH"
     for filename in $(get_reversed_backups); do
@@ -29,39 +29,39 @@ purge_backups() {
   back
 }
 
-purge_lts() {
+prune_lts() {
   log "Purging long-term storage"
   go "$LTS_PATH"
-    purge_lts_daily
-    purge_lts_weekly
-    purge_lts_monthly
+    prune_lts_daily
+    prune_lts_weekly
+    prune_lts_monthly
   back
 }
 
-purge_lts_daily() {
+prune_lts_daily() {
   log "Purging backups that are between $KEEP_DAILY_AFTER_HOURS hours and $KEEP_WEEKLY_AFTER_DAYS days -- keeping 1 per day"
 
   start_time="$(($(unixtime) - KEEP_DAILY_AFTER_HOURS * ONE_HOUR))"
   stop_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
-  purge_lts_loop "$start_time" "$stop_time" "$ONE_DAY" "days"
+  prune_lts_loop "$start_time" "$stop_time" "$ONE_DAY" "days"
 }
 
-purge_lts_weekly() {
+prune_lts_weekly() {
   log "Purging backups that are between $KEEP_WEEKLY_AFTER_DAYS days and $KEEP_MONTHLY_AFTER_WEEKS weeks -- keeping 1 per week"
 
   start_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
   stop_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
-  purge_lts_loop "$start_time" "$stop_time" "$ONE_WEEK" "weeks"
+  prune_lts_loop "$start_time" "$stop_time" "$ONE_WEEK" "weeks"
 }
 
-purge_lts_monthly() {
+prune_lts_monthly() {
   log "Purging backups that are between $KEEP_MONTHLY_AFTER_WEEKS weeks and $KEEP_LTS_FOR_MONTHS months -- keeping 1 per month"
 
   start_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
-  purge_lts_loop "$start_time" 0 "$ONE_MONTH" "months"
+  prune_lts_loop "$start_time" 0 "$ONE_MONTH" "months"
 }
 
-purge_lts_loop() {
+prune_lts_loop() {
   start_time="$1"
   stop_time="$2"
   decrements="$3"

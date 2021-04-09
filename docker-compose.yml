@@ -21,7 +21,7 @@ services:
     environment:
       - CRON_BACKUP=* * * * * # create backups every minute
       - CRON_LTS=*/10 * * * * # copy to long-term storage every 10 minutes
-      - CRON_PURGE=0 3 * * * # purge at 3:00 every day
+      - CRON_PRUNE=0 3 * * * # prune at 3:00 every day
       - KEEP_BACKUPS_FOR_DAYS=7
       - CREATE_CHECKSUMS=true
       - VERIFY_CHECKSUMS=true
@@ -31,8 +31,8 @@ services:
       - ./lib:/usr/local/lib/docker-backup
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
       - ./data:/volumes/sample-app-2 # will be backed up to /backup
-      - ./backups:/backup # backups will be stored here until purged
-      - ./lts:/lts # backups will be stored here (and never purged)
+      - ./backups:/backup # backups will be stored here until pruned
+      - ./lts:/lts # backups will be stored here (and never pruned)
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
       - /etc/localtime:/etc/localtime:ro # to get accurate time for backups
 

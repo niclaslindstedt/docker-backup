@@ -1,6 +1,6 @@
 # Docker Backup
 
-Backs up your Docker volumes and/or data folders and stores them both short-term and long-term. Purge old backups after X days or when free space gets tight.
+Backs up your Docker volumes and/or data folders and stores them both short-term and long-term. Prune old backups after X days or when free space gets tight.
 
 **CAUTION: Do not use this for production environments. It has not been thorougly tested yet.**
 
@@ -29,7 +29,7 @@ services:
     restart: always
     environment:
       - ENABLE_LTS=false # turn off long-term storage
-      - ENABLE_PURGE=false # turn off purging of backups
+      - ENABLE_PRUNE=false # turn off purging of backups
     volumes:
       - /home/johndoe/Documents:/volumes/documents
       - /mnt/data/backups:/backup
@@ -45,10 +45,10 @@ See the `docker-compose.s3.yml` file on how to use an S3 bucket as long-term sto
 Variable | Default | Description
 --- | --- | ---
 `ENABLE_LTS` | `true` | Set to 'false' to disable long-term storage.
-`ENABLE_PURGE` | `true` | Set to 'false' to disable purging of old backups.
+`ENABLE_PRUNE` | `true` | Set to 'false' to disable purging of old backups.
 `CRON_BACKUP` | `0 5 * * *` | Cron schedule for creating backups of all volumes.
 `CRON_LTS` | `0 9 * * *` | Cron schedule for copying backups to the long-term storage folder.
-`CRON_PURGE` | `0 3 * * *` | Cron schedule for purging backups in the short-term backup folder.
+`CRON_PRUNE` | `0 3 * * *` | Cron schedule for pruning backups.
 `KEEP_BACKUPS_FOR_DAYS` | `30` | Set to how many days you want to keep backups in the short-term backup folder.
 `KEEP_LTS_FOR_MONTHS` | `6` | Set to how long you want to keep long-term storage backups.
 `KEEP_DAILY_AFTER_HOURS` | `24` | The breakpoint (in hours) for when hourly backups turn into daily.
@@ -70,7 +70,7 @@ Command | Description
 `backup` | Backup all volumes.
 `backup <volume>` | Backup a specific volume.
 `store` | Copies the latest backups to the long-term storage location.
-`purge` | Purges old backups from the backup location.
+`prune` | Prunes old backups from the backup location.
 `restore` | Restores all volumes to their latest backups.
 `restore <volume>` | Restores the latest backup of the provided volume name.
 `restore <backup filename>` | Restores a specific backup to its associated volume.

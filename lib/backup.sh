@@ -56,7 +56,7 @@ backup_volume() {
     # If we still have too little storage left, exit
     free_space="$(get_free_space "$BACKUP_PATH")"
     [ "$((free_space - folder_size))" -lt "$MINIMUM_FREE_SPACE" ] && {
-      error "Not enough free space (have $free_space GB, need $((MINIMUM_FREE_SPACE + folder_size)) GB). Adjust purge settings or free space requirements."
+      error "Not enough free space (have $free_space GB, need $((MINIMUM_FREE_SPACE + folder_size)) GB). Adjust prune settings or free space requirements."
     }
   }
 

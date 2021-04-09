@@ -5,7 +5,7 @@
   env
   echo "$CRON_BACKUP   root   backup"
   [ "$ENABLE_LTS" = "true" ] && echo "$CRON_LTS   root   store"
-  [ "$ENABLE_PURGE" = "true" ] && echo "$CRON_PURGE   root   purge"
+  [ "$ENABLE_PRUNE" = "true" ] && echo "$CRON_PRUNE   root   prune"
   echo
 } > /etc/cron.d/docker-backup
 
@@ -17,11 +17,11 @@ echo "LOG_PATH => $LOG_PATH"
 echo "VOLUME_PATH => $VOLUME_PATH"
 echo "BACKUP_PATH => $BACKUP_PATH"
 echo "ENABLE_LTS => $ENABLE_LTS"
-echo "ENABLE_PURGE => $ENABLE_PURGE"
+echo "ENABLE_PRUNE => $ENABLE_PRUNE"
 echo "LTS_PATH => $LTS_PATH"
 echo "CRON_BACKUP => $CRON_BACKUP"
 echo "CRON_LTS => $CRON_LTS"
-echo "CRON_PURGE => $CRON_PURGE"
+echo "CRON_PRUNE => $CRON_PRUNE"
 echo "KEEP_BACKUPS_FOR_DAYS => $KEEP_BACKUPS_FOR_DAYS days"
 echo "KEEP_LTS_FOR_MONTHS => $KEEP_LTS_FOR_MONTHS months"
 echo "KEEP_DAILY_AFTER_HOURS => $KEEP_DAILY_AFTER_HOURS hours"
