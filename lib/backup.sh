@@ -60,10 +60,8 @@ backup_volume() {
     }
   }
 
-  # Create a tarball gzip at the backup location
   log "Backing up $volume_name ($folder_size_str) to $backup_path ($free_space GB left)"
   pack "$backup_path" "$1" || error "Could not backup $backup_filename"
-
   create_checksum "$backup_path" || "Could not create checksum for $backup_filename"
 }
 

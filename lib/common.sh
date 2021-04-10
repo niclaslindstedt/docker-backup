@@ -9,6 +9,10 @@ log() {
   echo "[$COMPONENT] $*" | tee -a "$LOG_PATH"
 }
 
+loga() {
+  printf "[$COMPONENT] $*" | tee -a "$LOG_PATH"
+}
+
 logv() {
   [ "$VERBOSE" = "true" ] && log $*
 }

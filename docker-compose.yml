@@ -27,7 +27,7 @@ services:
       - VERIFY_CHECKSUMS=true
       - PROJECT_NAME=docker-backup # should be set to the folder name (used for matching containers)
       - STOP_CONTAINERS=sample-app-1,sample-app-2
-      - ARCHIVE_TYPE=rar
+      - ARCHIVE_TYPE=7z
       - VERBOSE=true
       - DOCKER_STOP_TIMEOUT=5
     volumes:
