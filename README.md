@@ -1,5 +1,8 @@
 # Docker Backup
 
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/niclaslindstedt/docker-backup.svg)](https://hub.docker.com/r/niclaslindstedt/docker-backup/builds/)
+[![Docker Automated build](https://img.shields.io/docker/cloud/automated/niclaslindstedt/docker-backup.svg)](https://hub.docker.com/r/niclaslindstedt/docker-backup/)
+
 Backs up your Docker volumes and/or data folders and stores them both short-term and long-term. Prune old backups after X days or when free space gets tight.
 
 **CAUTION: Do not use this for production environments. It has not been thorougly tested yet.**
