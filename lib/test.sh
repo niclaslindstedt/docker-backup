@@ -2,6 +2,7 @@
 
 COMPONENT="TEST"
 TEST_VOLUME=$VOLUME_PATH/test
+TEST_SUCCESS="true"
 
 main() {
   test_backup_remove_restore
@@ -98,6 +99,7 @@ assert_success() {
 }
 
 assert_fail() {
+  TEST_SUCCESS="false"
   error "${RED}Assertion failed.${EC} $*"
 }
 
@@ -119,3 +121,7 @@ reset_tests() {
 source "$APP_PATH/common.sh"
 
 main "$1"
+
+[ "$TEST_SUCCESS" != "true" ] && exit 1
+
+exit 0
