@@ -87,15 +87,21 @@ get_backup_count() {
 }
 
 get_latest_backup() {
-  find . -iname "*backup-*-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -r -n | head -n 1
+  go "$BACKUP_PATH"
+    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -r -n | head -n 1
+  back
 }
 
 get_oldest_backup() {
-  find . -iname "*backup-*-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n | head -n 1
+  go "$BACKUP_PATH"
+    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n | head -n 1
+  back
 }
 
 get_reversed_backups() {
-  find . -iname "*backup-*-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n -r
+  go "$BACKUP_PATH"
+    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n -r
+  back
 }
 
 get_filetime() {

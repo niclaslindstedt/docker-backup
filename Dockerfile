@@ -12,20 +12,28 @@ RUN apt-get install -y \
     unrar \
     zip \
   && rm -rf /var/lib/apt/lists/*
-ENV APP_PATH=/usr/local/lib/docker-backup
-COPY lib/* $APP_PATH/
-RUN ln -s $APP_PATH/backup.sh /usr/local/bin/backup \
-  && ln -s $APP_PATH/restore.sh /usr/local/bin/restore \
-  && ln -s $APP_PATH/store.sh /usr/local/bin/store \
-  && ln -s $APP_PATH/prune.sh /usr/local/bin/prune \
-  && ln -s $APP_PATH/test.sh /usr/local/bin/test \
-  && chmod a+rx $APP_PATH/*.sh
-
-ENV LOG_PATH=/var/log/output.log \
+ARG RUN_AS_USER=docker-backup
+RUN adduser --disabled-password --gecos "" ${RUN_AS_USER} \
+  && adduser ${RUN_AS_USER} docker
+ENV APP_PATH=/home/${RUN_AS_USER} \
+  LOG_PATH=/var/log/output.log \
   VOLUME_PATH=/volumes \
   BACKUP_PATH=/backup \
-  LTS_PATH=/lts \
-  ENABLE_LTS=true \
+  LTS_PATH=/lts
+ENV PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin
+COPY lib/* ${APP_PATH}/
+RUN mkdir -p /home/${RUN_AS_USER}/.local/bin ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} \
+  && ln -s $APP_PATH/backup.sh /home/${RUN_AS_USER}/.local/bin/backup \
+  && ln -s $APP_PATH/restore.sh /home/${RUN_AS_USER}/.local/bin/restore \
+  && ln -s $APP_PATH/store.sh /home/${RUN_AS_USER}/.local/bin/store \
+  && ln -s $APP_PATH/prune.sh /home/${RUN_AS_USER}/.local/bin/prune \
+  && ln -s $APP_PATH/test.sh /home/${RUN_AS_USER}/.local/bin/test \
+  && chmod +x ${APP_PATH}/*.sh \
+  && touch ${LOG_PATH} \
+  && chown -Rv ${RUN_AS_USER}:${RUN_AS_USER} ${APP_PATH} ${LOG_PATH} ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH}
+USER ${RUN_AS_USER}
+
+ENV ENABLE_LTS=true \
   ENABLE_PRUNE=true \
   CRON_BACKUP="0 5 * * *" \
   CRON_LTS="0 9 * * *" \
@@ -48,4 +56,4 @@ ENV LOG_PATH=/var/log/output.log \
   PROJECT_NAME= \
   STOP_CONTAINERS=
 
-CMD ["sh", "-c", "$APP_PATH/entrypoint.sh"]
+CMD ["sh", "-c", "${APP_PATH}/entrypoint.sh"]

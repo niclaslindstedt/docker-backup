@@ -114,7 +114,8 @@ prepare() {
 
 reset_tests() {
   log "Cleaning up."
-  rm -rf $BACKUP_PATH $LTS_PATH $TEST_VOLUME
+  rm -rf $BACKUP_PATH/* $LTS_PATH/* $TEST_VOLUME/*
+  echo > $LOG_PATH
   prepare
 }
 

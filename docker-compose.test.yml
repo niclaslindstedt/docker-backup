@@ -4,7 +4,6 @@ services:
   sut:
     build: .
     command: /usr/local/lib/docker-backup/test.sh
-    user: root
     environment:
       - CRON_BACKUP=0 0 0 0 0
       - ENABLE_LTS=false
