@@ -4,7 +4,6 @@ RUN apt-get update \
   && apt-get install -y curl \
   && curl -sSL https://get.docker.com/ | sh
 RUN apt-get install -y \
-    cifs-utils \
     cksfv \
     cron \
     curl \
