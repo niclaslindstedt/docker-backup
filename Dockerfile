@@ -19,7 +19,7 @@ RUN ln -s $APP_PATH/backup.sh /usr/local/bin/backup \
   && ln -s $APP_PATH/store.sh /usr/local/bin/store \
   && ln -s $APP_PATH/prune.sh /usr/local/bin/prune \
   && ln -s $APP_PATH/test.sh /usr/local/bin/test \
-  && chmod +x $APP_PATH/*.sh
+  && chmod a+rx $APP_PATH/*.sh
 
 ENV LOG_PATH=/var/log/output.log \
   VOLUME_PATH=/volumes \
