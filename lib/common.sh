@@ -9,6 +9,22 @@ GREEN="\e[32m"
 YELLOW="\e[33m"
 EC="\e[0m"
 
+backup() {
+  $APP_PATH/backup.sh $*
+}
+
+prune() {
+  $APP_PATH/prune.sh $*
+}
+
+restore() {
+  $APP_PATH/restore.sh $*
+}
+
+store() {
+  $APP_PATH/store.sh $*
+}
+
 log() {
   echo -e "[$COMPONENT] $*" | tee -a "$LOG_PATH"
 }
