@@ -18,7 +18,8 @@ COPY lib/* $APP_PATH/
 RUN ln -s $APP_PATH/backup.sh /usr/local/bin/backup \
   && ln -s $APP_PATH/restore.sh /usr/local/bin/restore \
   && ln -s $APP_PATH/store.sh /usr/local/bin/store \
-  && ln -s $APP_PATH/prune.sh /usr/local/bin/prune
+  && ln -s $APP_PATH/prune.sh /usr/local/bin/prune \
+  && ln -s $APP_PATH/test.sh /usr/local/bin/test
 
 ENV LOG_PATH=/var/log/output.log \
   VOLUME_PATH=/volumes \
@@ -31,7 +32,10 @@ ENV LOG_PATH=/var/log/output.log \
   CRON_PRUNE="0 3 * * *" \
   VERBOSE=false \
   DEBUG=false \
-  ARCHIVE_TYPE="tar.gz" \
+  ASSUME_YES=false \
+  ARCHIVE_TYPE="tgz" \
+  ENCRYPT_ARCHIVES=false \
+  ENCRYPTION_PASSWORD= \
   KEEP_BACKUPS_FOR_DAYS=30 \
   KEEP_LTS_FOR_MONTHS=6 \
   KEEP_DAILY_AFTER_HOURS=24 \
@@ -44,4 +48,4 @@ ENV LOG_PATH=/var/log/output.log \
   PROJECT_NAME= \
   STOP_CONTAINERS=
 
-ENTRYPOINT ["sh", "-c", "$APP_PATH/entrypoint.sh"]
+CMD ["sh", "-c", "$APP_PATH/entrypoint.sh"]

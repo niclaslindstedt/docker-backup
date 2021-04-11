@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  backup-test:
+    build: .
+    command: sh -c /usr/local/lib/docker-backup/test.sh
+    environment:
+      - CRON_BACKUP=0 0 0 0 0
+      - ENABLE_LTS=false
+      - ENABLE_PRUNE=false
+      - ASSUME_YES=true
+      - VERBOSE=true
+      - DEBUG=false
+    volumes:
+      - ./lib:/usr/local/lib/docker-backup
+      - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers

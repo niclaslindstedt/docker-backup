@@ -26,7 +26,7 @@ main() {
 
 restore_all() {
   for volume_to_restore in "$VOLUME_PATH"/*; do
-    volume=$(basename "$(eval echo "$volume_to_restore")")
+    local volume=$(basename "$(eval echo "$volume_to_restore")")
     restore_volume "$volume"
   done
 }
@@ -36,44 +36,45 @@ restore_volume() {
     error "Volume or backup '$1' not found (is it mounted?)"
   }
 
+  local backup_name
+  local volume_name
   if [[ -f "$BACKUP_PATH/$1" ]]; then
-    latest_backup="$BACKUP_PATH/$1"
+    backup_name="$BACKUP_PATH/$1"
     volume_name="$(get_volume_name "$1")"
+  elif [[ -f "$1" ]]; then
+    backup_name="$1"
+    volume_name="$(get_volume_name "$(basename "$1")")"
   else
-    latest_backup="$(get_latest_backup "$1")"
+    backup_name="$(get_latest_backup "$1")"
     volume_name="$1"
-    [ ! -f "$latest_backup" ] && error "No backups for volume: $volume_name"
+    [ ! -f "$backup_name" ] && error "No backups for volume: $volume_name"
   fi
 
-  target_volume="$VOLUME_PATH/$volume_name"
+  logv "Found backup '$backup_name' which belongs to volume '$volume_name'"
+
+  local target_volume="$VOLUME_PATH/$volume_name"
   [ ! -d "$target_volume" ] && error "No such volume: $volume_name"
 
   # Backup existing volume contents if it's not empty
   is_not_empty "$target_volume" && {
-    loga "The volume $volume_name is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
-    read -r backup_existing_volume
+    local backup_existing_volume="y"
+    [ "$ASSUME_YES" != "true" ] && {
+      loga "The volume $volume_name is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
+      read -r backup_existing_volume
+    }
     [ "$backup_existing_volume" != "n" ] && {
       prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(datetime).$ARCHIVE_TYPE"
       log "Backing up $volume_name to $prerestore_backup_filename"
       go "$target_volume"
         pack "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
-        create_checksum "$prerestore_backup_filename"
       back
     }
   }
 
-  verify_checksum "$latest_backup" || error "Checksum verification failed on $latest_backup"
-
-  # Remove contents of volume before restoring backup
-  [ "$(ls -A "$target_volume")" ] && {
-    log "Removing current volume contents"
-    rm -r "${target_volume:?}"/* || error "Could not remove volume contents"
-  }
-
   # Restore backup
-  volume_name=$(get_volume_name "$latest_backup")
+  volume_name=$(get_volume_name "$backup_name")
   log "Restoring $volume_name backup to $target_volume"
-  unpack "$latest_backup" "$target_volume" || error "Could not restore $latest_backup backup"
+  unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name backup"
 }
 
 source "$APP_PATH/common.sh"

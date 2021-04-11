@@ -4,9 +4,13 @@ ONE_HOUR=10
 ONE_DAY=$((ONE_HOUR * 24))
 ONE_WEEK=$((ONE_DAY * 7))
 ONE_MONTH=$((ONE_WEEK * 4))
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+EC="\e[0m"
 
 log() {
-  echo "[$COMPONENT] $*" | tee -a "$LOG_PATH"
+  echo -e "[$COMPONENT] $*" | tee -a "$LOG_PATH"
 }
 
 loga() {
@@ -61,58 +65,54 @@ get_file_size_str() {
 
 get_backup_count() {
   go "$BACKUP_PATH"
-    files=(backup-"$1"-*)
+    local files=(backup-"$1"-*)
     echo ${#files[*]} | wc -l
   back
 }
 
 get_latest_backup() {
-  find . -iname "*backup-*-??????????????.$ARCHIVE_TYPE" -printf '%f\n' | sort -r -n | head -n 1
+  find . -iname "*backup-*-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -r -n | head -n 1
 }
 
 get_oldest_backup() {
-  find . -iname "*backup-*-??????????????.$ARCHIVE_TYPE" -printf '%f\n' | sort -n | head -n 1
+  find . -iname "*backup-*-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n | head -n 1
 }
 
 get_reversed_backups() {
-  find . -iname "*backup-*-??????????????.$ARCHIVE_TYPE" -printf '%f\n' | sort -n -r
+  find . -iname "*backup-*-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n -r
 }
 
 get_filetime() {
   # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.EXT"
-  file_date=$(echo "$1" | grep -Eo '[[:digit:]]{14}')
-  file_year=$(echo "$file_date" | cut -c1-4)
-  file_month=$(echo "$file_date" | cut -c5-6)
-  file_day=$(echo "$file_date" | cut -c7-8)
-  file_hour=$(echo "$file_date" | cut -c9-10)
-  file_minute=$(echo "$file_date" | cut -c11-12)
-  file_second=$(echo "$file_date" | cut -c13-14)
+  local file_date=$(echo "$1" | grep -Eo '[[:digit:]]{14}')
+  local file_year=$(echo "$file_date" | cut -c1-4)
+  local file_month=$(echo "$file_date" | cut -c5-6)
+  local file_day=$(echo "$file_date" | cut -c7-8)
+  local file_hour=$(echo "$file_date" | cut -c9-10)
+  local file_minute=$(echo "$file_date" | cut -c11-12)
+  local file_second=$(echo "$file_date" | cut -c13-14)
   date --date "$file_year-$file_month-$file_day $file_hour:$file_minute:$file_second" +"%s"
 }
 
 create_checksum() {
+  local filename="$1"
   [ "$CREATE_CHECKSUMS" = "true" ] && {
-    log "Creating checksum for $1"
-    cksfv -q -b "$1" > "$1.sfv" || return 1
+    logv "Creating checksum at $filename.sfv"
+    cksfv -q -b "$filename" > "$filename.sfv" || error "Could not create checksum for $filename"
   }
-  return 0
 }
 
 verify_checksum() {
-  [ "$VERIFY_CHECKSUMS" = "true" ] && {
-    if [[ -f "$1.sfv" ]]; then
-      log "Verifying checksum for $1"
-      cksfv -q -g "$1.sfv" || return 1
-    else
-      log "No checksum file found for $1. Skipping checksum verification."
-    fi
+  local filename="$1.sfv"
+  [ "$VERIFY_CHECKSUMS" = "true" ] && [ -f "$filename" ] && {
+    logv "Verifying checksum $filename"
+    cksfv -q -g "$filename" || error "Could not verify checksum for $1"
   }
-  return 0
 }
 
 stop_containers() {
   [ -n "$STOP_CONTAINERS" ] && {
-    log "Stopping containers (waiting for $DOCKER_STOP_TIMEOUT seconds before killing)"
+    log "Stopping containers: $STOP_CONTAINERS (timeout: $DOCKER_STOP_TIMEOUT seconds)"
     IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
     for container_name in "${containers[@]}"; do
       read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
@@ -126,7 +126,7 @@ stop_containers() {
 
 start_containers() {
   [ -n "$STOP_CONTAINERS" ] && {
-    log "Starting containers"
+    log "Starting containers: $STOP_CONTAINERS"
     IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
     for container_name in "${containers[@]}"; do
       read -r -a container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
@@ -140,30 +140,74 @@ start_containers() {
 
 pack() {
   go "$2"
-    if [ "$ARCHIVE_TYPE" = "tar.gz" ]; then
-      tar czf "$1" . || return 1
-    elif [ "$ARCHIVE_TYPE" = "7z" ]; then
-      7zr a -r "$1" . >/dev/null || return 1
-    elif [ "$ARCHIVE_TYPE" = "zip" ]; then
-      zip -r "$1" . >/dev/null || return 1
-    elif [ "$ARCHIVE_TYPE" = "rar" ]; then
-      rar a -r "$1" . >/dev/null || return 1
+    log "Creating archive at $1"
+    if [[ "$ARCHIVE_TYPE" = "tgz" ]]; then
+      tar czfv "$1" . 1>"$OUTPUT" || return 1
+    elif [[ "$ARCHIVE_TYPE" = "7z" ]]; then
+      7zr a -r "$1" . 1>"$OUTPUT" || return 1
+    elif [[ "$ARCHIVE_TYPE" = "zip" ]]; then
+      zip -r "$1" . 1>"$OUTPUT" || return 1
+    elif [[ "$ARCHIVE_TYPE" = "rar" ]]; then
+      rar a -r "$1" . 1>"$OUTPUT" || return 1
+    else
+      error "Unknown archive type '$ARCHIVE_TYPE'"
     fi
+    create_checksum "$1"
+    [ "$ENCRYPT_ARCHIVES" = "true" ] && encrypt "$1" "$1.enc"
   back
 }
 
 unpack() {
   go "$2"
-    if [ "$ARCHIVE_TYPE" = "tar.gz" ]; then
-      tar xzf "$1" || return 1
-    elif [ "$ARCHIVE_TYPE" = "7z" ]; then
-      7zr x "$1" >/dev/null || return 1
-    elif [ "$ARCHIVE_TYPE" = "zip" ]; then
-      unzip "$1" >/dev/null || return 1
-    elif [ "$ARCHIVE_TYPE" = "rar" ]; then
-      unrar x -r "$1" >/dev/null || return 1
+    local filename="${1%*.enc}"
+    is_encrypted "$1" && decrypt "$1" "$filename"
+    verify_checksum "$filename"
+
+    log "Removing contents of $2"
+    rm -rfv "${2:?}/*" 1>"$OUTPUT"
+
+    log "Unpacking archive at $2"
+    local fileext="${filename##*.}"
+    if [[ "$fileext" = "tgz" ]]; then
+      tar xzfv "$filename" 1>"$OUTPUT" || return 1
+    elif [[ "$fileext" = "7z" ]]; then
+      7zr x "$filename" 1>"$OUTPUT" || return 1
+    elif [[ "$fileext" = "zip" ]]; then
+      unzip "$filename" 1>"$OUTPUT" || return 1
+    elif [[ "$fileext" = "rar" ]]; then
+      unrar x -r "$filename" 1>"$OUTPUT" || return 1
+    else
+      error "Unknown file extension '$fileext'"
     fi
   back
+}
+
+is_encrypted() {
+  local filename="$1"
+  [ "${filename##*.}" = "enc" ] && {
+    logv "Container is encrypted: $filename"
+    return 0
+  }
+  return 1
+}
+
+encrypt() {
+  log "Encrypting archive to $2"
+  openssl enc -e -v -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt \
+    -k "$ENCRYPTION_PASSWORD" -in "$1" -out "$2" 2>"$OUTPUT" || error "Could not encrypt $1"
+
+  create_checksum "$2"
+
+  log "Removing unencrypted archive $1"
+  rm -f "$1"
+}
+
+decrypt() {
+  verify_checksum "$1"
+
+  log "Decrypting archive $1"
+  openssl enc -d -v -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt \
+    -k "$ENCRYPTION_PASSWORD" -in "$1" -out "$2" 2>/"$OUTPUT" || error "Could not decrypt $1"
 }
 
 datetime() {
@@ -175,9 +219,19 @@ unixtime() {
 }
 
 go() {
-  pushd "$1" >/dev/null || error "Could not change directory to $1"
+  pushd "$1" 1>"$OUTPUT" || error "Could not change directory to $1"
 }
 
 back() {
-  popd >/dev/null || error "Could not go back to previous path"
+  popd 1>"$OUTPUT" || error "Could not go back to previous path"
 }
+
+get_output() {
+  if [[ "$DEBUG" = "true" ]]; then
+    echo "/dev/stdout"
+  else
+    echo "/dev/null"
+  fi
+}
+
+OUTPUT="$(get_output)"

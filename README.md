@@ -51,7 +51,10 @@ Variable | Default | Description
 `CRON_PRUNE` | `0 3 * * *` | Cron schedule for pruning backups.
 `VERBOSE` | `false` | Set to 'true' to enable extra verbose logging.
 `DEBUG` | `false` | Set to 'true' to enable debug logging.
-`ARCHIVE_TYPE` | `tar.gz` | Use this archive type for storage, one of: `tar.gz` `zip` `rar` `7z`
+`ASSUME_YES` | `false` | Set to 'true' to always assume yes when asking for confirmation.
+`ARCHIVE_TYPE` | `tgz` | Use this archive type for storage, one of: `tgz` `zip` `rar` `7z`
+`ENCRYPT_ARCHIVES` | `false` | Encrypt archives using AES-256 CBC.
+`ENCRYPTION_PASSWORD` | | Set a password to encrypt (and decrypt) files with.
 `KEEP_BACKUPS_FOR_DAYS` | `30` | Set to how many days you want to keep backups in the short-term backup folder.
 `KEEP_LTS_FOR_MONTHS` | `6` | Set to how long you want to keep long-term storage backups.
 `KEEP_DAILY_AFTER_HOURS` | `24` | The breakpoint (in hours) for when hourly backups turn into daily.
