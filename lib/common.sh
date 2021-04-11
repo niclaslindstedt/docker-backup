@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ONE_HOUR=10
+ONE_HOUR=3600
 ONE_DAY=$((ONE_HOUR * 24))
 ONE_WEEK=$((ONE_DAY * 7))
 ONE_MONTH=$((ONE_WEEK * 4))
