@@ -11,6 +11,7 @@ services:
       - ASSUME_YES=true
       - VERBOSE=true
       - DEBUG=false
+      - RUN_TEST=${RUN_TEST}
     volumes:
       - ./lib:/usr/local/lib/docker-backup
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers

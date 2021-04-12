@@ -19,6 +19,23 @@ assert_file_ends_with() {
   fi
 }
 
+assert_file_starts_with() {
+  [ ! -f "$1" ] || assert_fail "Expected file to start with '$2'. It does not exist: $1"
+  if [[ "$1" =~ ^"$2" ]]; then
+    assert_success "File starts with '$2': $1"
+  else
+    assert_fail "Expected file to start with '$2'. It does not: $1"
+  fi
+}
+
+assert_equals() {
+  if [[ "$1" = "$2" ]]; then
+    assert_success "Values are equal. Expected: $2 -- Actual: $1"
+  else
+    assert_fail "Values are not equal. Expected: $2 -- Actual: $1"
+  fi
+}
+
 assert_success() {
   log "${GREEN}Assertion successful!${EC} $*"
 }

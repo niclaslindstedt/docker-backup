@@ -7,22 +7,23 @@ ONE_MONTH=$((ONE_WEEK * 4))
 RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
+BLUE="\e[34m"
 EC="\e[0m"
 
 backup() {
-  $APP_PATH/backup.sh $*
+  "$APP_PATH/backup.sh" $*
 }
 
 prune() {
-  $APP_PATH/prune.sh $*
+  "$APP_PATH/prune.sh" $*
 }
 
 restore() {
-  $APP_PATH/restore.sh $*
+  "$APP_PATH/restore.sh" $*
 }
 
 store() {
-  $APP_PATH/store.sh $*
+  "$APP_PATH/store.sh" $*
 }
 
 log() {
@@ -30,15 +31,15 @@ log() {
 }
 
 loga() {
-  printf "[$COMPONENT] $*" | tee -a "$LOG_PATH"
+  echo -n "[$COMPONENT] $*" | tee -a "$LOG_PATH"
 }
 
 logv() {
-  [ "$VERBOSE" = "true" ] && log $*
+  [ "$VERBOSE" = "true" ] && log "$*"
 }
 
 logd() {
-  [ "$DEBUG" = "true" ] && log $*
+  [ "$DEBUG" = "true" ] && log "$*"
 }
 
 error() {
@@ -52,6 +53,14 @@ is_not_empty() {
   [ ! -d "$1" ] && return 1
   [ "$(find "$1" | wc -l)" -gt 1 ] && return 0
   return 1
+}
+
+get_function_names() {
+  declare -F | sed -r 's/^declare \-f //g'
+}
+
+get_test_functions() {
+  get_function_names | grep -E ^testspec_
 }
 
 get_volume_name() {
@@ -80,10 +89,7 @@ get_file_size_str() {
 }
 
 get_backup_count() {
-  go "$BACKUP_PATH"
-    local files=(backup-"$1"-*)
-    echo ${#files[*]} | wc -l
-  back
+  get_backups | wc -l
 }
 
 get_latest_backup() {
@@ -98,10 +104,14 @@ get_oldest_backup() {
   back
 }
 
-get_reversed_backups() {
+get_backups() {
   go "$BACKUP_PATH"
-    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n -r
+    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n'
   back
+}
+
+get_reversed_backups() {
+  get_backups "$1" | sort -n -r
 }
 
 get_filetime() {

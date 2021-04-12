@@ -21,14 +21,14 @@ ENV APP_PATH=/home/${RUN_AS_USER} \
   BACKUP_PATH=/backup \
   LTS_PATH=/lts
 ENV PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin
-COPY lib/* ${APP_PATH}/
+COPY lib ${APP_PATH}
 RUN mkdir -p /home/${RUN_AS_USER}/.local/bin ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} \
   && ln -s ${APP_PATH}/backup.sh /home/${RUN_AS_USER}/.local/bin/backup \
   && ln -s ${APP_PATH}/restore.sh /home/${RUN_AS_USER}/.local/bin/restore \
   && ln -s ${APP_PATH}/store.sh /home/${RUN_AS_USER}/.local/bin/store \
   && ln -s ${APP_PATH}/prune.sh /home/${RUN_AS_USER}/.local/bin/prune \
   && ln -s ${APP_PATH}/test.sh /home/${RUN_AS_USER}/.local/bin/test \
-  && chmod +x ${APP_PATH}/*.sh \
+  && chmod -R +x ${APP_PATH} \
   && touch ${LOG_PATH} \
   && chown -Rv ${RUN_AS_USER}:${RUN_AS_USER} ${APP_PATH} ${LOG_PATH} ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH}
 USER ${RUN_AS_USER}
