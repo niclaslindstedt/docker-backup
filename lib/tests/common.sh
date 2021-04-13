@@ -1,5 +1,9 @@
 #!/bin/bash
 
+noop() {
+  /bin/touch /dev/null
+}
+
 set_result() {
   /bin/echo "$1" > /tmp/test_result
 }

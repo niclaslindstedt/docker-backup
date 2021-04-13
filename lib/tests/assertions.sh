@@ -31,6 +31,15 @@ assert_file_starts_with() {
 }
 
 # param 1: full string, param 2: substring
+assert_string_starts_with() {
+  if [[ "$1" =~ ^$2 ]]; then
+    assert_success "String starts with '$2': $1"
+  else
+    assert_fail "Expected string to start with '$2'. It does not: $1"
+  fi
+}
+
+# param 1: full string, param 2: substring
 assert_string_ends_with() {
   if [[ "$1" =~ $2$ ]]; then
     assert_success "String ends with '$2': $1"
@@ -46,6 +55,14 @@ assert_string_contains() {
   else
     assert_fail "Expected string to contain '$2'. It does not: $1"
   fi
+}
+
+assert_false() {
+  assert_equals "false" "$1"
+}
+
+assert_true() {
+  assert_equals "true" "$1"
 }
 
 # param 1: expected string, param 2: actual string

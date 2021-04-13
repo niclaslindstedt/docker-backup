@@ -5,9 +5,7 @@ testspec_log_calls_echo() {
 
   # Arrange
   test_message="xx log xx"
-  echo() {
-    set_result "$*"
-  }
+  echo() { set_result "$*"; }
 
   # Act
   log "$test_message"
@@ -21,9 +19,7 @@ testspec_loga_calls_echo() {
 
   # Arrange
   test_message="xx loga xx"
-  echo() {
-    set_result "$*"
-  }
+  echo() { set_result "$*"; }
 
   # Act
   loga "$test_message"
@@ -38,9 +34,7 @@ testspec_logv_calls_echo_if_verbose() {
   # Arrange
   VERBOSE=true
   test_message="xx logv xx"
-  echo() {
-    set_result "$*"
-  }
+  echo() { set_result "$*"; }
 
   # Act
   logv "$test_message"
@@ -55,9 +49,7 @@ testspec_logv_does_not_call_echo_if_not_verbose() {
   # Arrange
   VERBOSE=false
   set_result "null"
-  echo() {
-    set_result "$*"
-  }
+  echo() { set_result "$*"; }
 
   # Act
   logv "test"
@@ -72,9 +64,7 @@ testspec_logd_calls_echo_if_debug() {
   # Arrange
   DEBUG=true
   test_message="xx logd xx"
-  echo() {
-    set_result "$*"
-  }
+  echo() { set_result "$*"; }
 
   # Act
   logd "$test_message"
@@ -89,15 +79,93 @@ testspec_logd_does_not_call_echo_if_not_debug() {
   # Arrange
   DEBUG=false
   set_result "null"
-  echo() {
-    set_result "$*"
-  }
+  echo() { set_result "$*"; }
 
   # Act
   logd "test"
 
   # Assert
   assert_equals "null" "$(get_result)"
+}
+
+testspec_error_starts_containers_if_stop_containers_is_set() {
+  test_begin "Error starts Docker containers if STOP_CONTAINERS is set"
+
+  # Arrange
+  STOP_CONTAINERS="container1, container2"
+  set_result "false"
+  start_containers() { set_result "true"; }
+  exit() { noop; }
+
+  # Act
+  error "Something went wrong"
+
+  # Assert
+  assert_true "$(get_result)"
+}
+
+testspec_error_does_not_start_containers_if_stop_containers_is_null() {
+  test_begin "Error does not start containers if STOP_CONTAINERS is null"
+
+  # Arrange
+  STOP_CONTAINERS=""
+  set_result "false"
+  start_containers() { set_result "true"; }
+  exit() { noop; }
+
+  # Act
+  error "Something went wrong"
+
+  # Assert
+  assert_false "$(get_result)"
+}
+
+testspec_error_logs_error_if_parameter_is_used() {
+  test_begin "Error logs ERROR: if parameter is used"
+
+  # Arrange
+  set_result "false"
+  log() {
+    [[ "$1" =~ ^ERROR: ]] && set_result "true"
+  }
+  exit() { noop; }
+
+  # Act
+  error "Something went wrong"
+
+  # Assert
+  assert_true "$(get_result)"
+}
+
+testspec_error_does_not_log_error_with_no_parameters() {
+  test_begin "Error does not log ERROR: with no parameters"
+
+  # Arrange
+  set_result "false"
+  log() {
+    [[ "$1" =~ ^ERROR: ]] && set_result "true"
+  }
+  exit() { noop; }
+
+  # Act
+  error
+
+  # Assert
+  assert_false "$(get_result)"
+}
+
+testspec_error_exits_with_exit_code_1() {
+  test_begin "Error exits with exit code 1"
+
+  # Arrange
+  set_result "false"
+  exit() { [ "$1" = "1" ] && set_result "true"; }
+
+  # Act
+  error "Something went wrong"
+
+  # Assert
+  assert_true "$(get_result)"
 }
 
 testspec_backup_two_volumes_creates_two_backups() {

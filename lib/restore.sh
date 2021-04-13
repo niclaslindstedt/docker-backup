@@ -8,7 +8,7 @@ COMPONENT="RESTORE"
 main() {
   log "Starting restore process"
 
-  stop_containers
+  [ -n "$STOP_CONTAINERS" ] && stop_containers
 
   go "$BACKUP_PATH"
     if [[ -n "$1" ]]; then
@@ -19,7 +19,7 @@ main() {
     fi
   back
 
-  start_containers
+  [ -n "$STOP_CONTAINERS" ] && start_containers
 
   log "Finished restore process"
 }

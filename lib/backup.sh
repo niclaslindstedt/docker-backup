@@ -8,7 +8,7 @@ COMPONENT="BACKUP"
 main() {
   log "Starting backup process"
 
-  stop_containers
+  [ -n "$STOP_CONTAINERS" ] && stop_containers
 
   if [[ -z "$1" ]]; then
     backup_all
@@ -17,7 +17,7 @@ main() {
     backup_volume "$1"
   fi
 
-  start_containers
+  [ -n "$STOP_CONTAINERS" ] && start_containers
 
   log "Finished backup process"
 }

@@ -28,7 +28,7 @@ logd() {
 
 error() {
   [ -n "$1" ] && log "ERROR: $*"
-  start_containers
+  [ -n "$STOP_CONTAINERS" ] && start_containers
   log "Exiting script"
   exit 1
 }
@@ -127,30 +127,26 @@ verify_checksum() {
 }
 
 stop_containers() {
-  [ -n "$STOP_CONTAINERS" ] && {
-    log "Stopping containers: $STOP_CONTAINERS (timeout: $DOCKER_STOP_TIMEOUT seconds)"
-    IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
-    for container_name in "${containers[@]}"; do
-      read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
-      [ -n "${container_ids[*]}" ] && {
-        docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
-      }
-    done
-  }
+  log "Stopping containers: $STOP_CONTAINERS (timeout: $DOCKER_STOP_TIMEOUT seconds)"
+  IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
+  for container_name in "${containers[@]}"; do
+    read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
+    [ -n "${container_ids[*]}" ] && {
+      docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
+    }
+  done
   return 0
 }
 
 start_containers() {
-  [ -n "$STOP_CONTAINERS" ] && {
-    log "Starting containers: $STOP_CONTAINERS"
-    IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
-    for container_name in "${containers[@]}"; do
-      read -r -a container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
-      [ -n "${container_ids[*]}" ] && {
-        docker start ${container_ids[*]} || return 1
-      }
-    done
-  }
+  log "Starting containers: $STOP_CONTAINERS"
+  IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
+  for container_name in "${containers[@]}"; do
+    read -r -a container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
+    [ -n "${container_ids[*]}" ] && {
+      docker start ${container_ids[*]} || return 1
+    }
+  done
   return 0
 }
 
