@@ -29,10 +29,10 @@ assert_file_starts_with() {
 }
 
 assert_equals() {
-  if [[ "$1" = "$2" ]]; then
-    assert_success "Values are equal. Expected: $2 -- Actual: $1"
+  if [[ "$2" = "$1" ]]; then
+    assert_success "Values are equal. Expected: $1 -- Actual: $2"
   else
-    assert_fail "Values are not equal. Expected: $2 -- Actual: $1"
+    assert_fail "Values are not equal. Expected: $1 -- Actual: $2"
   fi
 }
 

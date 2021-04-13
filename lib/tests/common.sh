@@ -1,5 +1,13 @@
 #!/bin/bash
 
+set_result() {
+  /bin/echo "$1" > /tmp/test_result
+}
+
+get_result() {
+  /bin/cat /tmp/test_result
+}
+
 test_begin() {
   reset_tests
   log "${YELLOW}*** TEST: $* ***${EC}"
@@ -7,7 +15,7 @@ test_begin() {
 
 reset_tests() {
   log "Cleaning up."
-  rm -rf "${BACKUP_PATH:?}"/* "${LTS_PATH:?}"/* "${VOLUME_PATH:?}"/*
+  rm -rf "${BACKUP_PATH:?}"/* "${LTS_PATH:?}"/* "${VOLUME_PATH:?}"/* /tmp/test_result
   echo > "$LOG_PATH"
   prepare test
 }

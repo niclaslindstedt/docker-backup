@@ -1,5 +1,21 @@
 #!/bin/bash
 
+testspec_log_calls_echo() {
+  test_begin "Log calls echo"
+
+  # Arrange
+  echo() {
+    set_result 1
+    /bin/echo $*
+  }
+
+  # Act
+  log "This is a test message"
+
+  # Assert
+  assert_equals "1" "$(get_result)"
+}
+
 testspec_backup_two_volumes_creates_two_backups() {
   test_begin "Backup two volumes and get two backups"
 
@@ -9,7 +25,7 @@ testspec_backup_two_volumes_creates_two_backups() {
 
   # Assert
   local backup_count="$(get_backup_count)"
-  assert_equals "$backup_count" "2"
+  assert_equals "2" "$backup_count"
 }
 
 testspec_backup_volume_with_correct_name() {
