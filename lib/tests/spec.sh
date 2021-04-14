@@ -1,7 +1,9 @@
 #!/bin/bash
 
-testspec_log_calls_echo() {
-  test_begin "Log calls echo"
+# common/log
+
+testspec__log__calls_echo() {
+  test_begin "log calls echo"
 
   # Arrange
   test_message="xx log xx"
@@ -14,8 +16,11 @@ testspec_log_calls_echo() {
   assert_string_ends_with "$(get_result)" "$test_message"
 }
 
-testspec_loga_calls_echo() {
-  test_begin "Loga calls echo"
+
+# common/loga
+
+testspec__loga__calls_echo() {
+  test_begin "loga calls echo"
 
   # Arrange
   test_message="xx loga xx"
@@ -28,8 +33,11 @@ testspec_loga_calls_echo() {
   assert_string_ends_with "$(get_result)" "$test_message"
 }
 
-testspec_logv_calls_echo_if_verbose() {
-  test_begin "Logv calls echo if VERBOSE is true"
+
+# common/logv
+
+testspec__logv__calls_echo_if_verbose() {
+  test_begin "logv calls echo if VERBOSE is true"
 
   # Arrange
   VERBOSE=true
@@ -43,8 +51,8 @@ testspec_logv_calls_echo_if_verbose() {
   assert_string_ends_with "$(get_result)" "$test_message"
 }
 
-testspec_logv_does_not_call_echo_if_not_verbose() {
-  test_begin "Logv does not call echo if VERBOSE is false"
+testspec__logv__does_not_call_echo_if_not_verbose() {
+  test_begin "logv does not call echo if VERBOSE is false"
 
   # Arrange
   VERBOSE=false
@@ -58,8 +66,11 @@ testspec_logv_does_not_call_echo_if_not_verbose() {
   assert_equals "null" "$(get_result)"
 }
 
-testspec_logd_calls_echo_if_debug() {
-  test_begin "Logd calls echo if DEBUG is true"
+
+# common/logd
+
+testspec__logd__calls_echo_if_debug() {
+  test_begin "logd calls echo if DEBUG is true"
 
   # Arrange
   DEBUG=true
@@ -73,8 +84,8 @@ testspec_logd_calls_echo_if_debug() {
   assert_string_ends_with "$(get_result)" "$test_message"
 }
 
-testspec_logd_does_not_call_echo_if_not_debug() {
-  test_begin "Logd does not call echo if DEBUG is false"
+testspec__logd__does_not_call_echo_if_not_debug() {
+  test_begin "logd does not call echo if DEBUG is false"
 
   # Arrange
   DEBUG=false
@@ -88,8 +99,11 @@ testspec_logd_does_not_call_echo_if_not_debug() {
   assert_equals "null" "$(get_result)"
 }
 
-testspec_error_starts_containers_if_stop_containers_is_set() {
-  test_begin "Error starts Docker containers if STOP_CONTAINERS is set"
+
+# common/error
+
+testspec__error__starts_containers_if_stop_containers_is_set() {
+  test_begin "error starts Docker containers if STOP_CONTAINERS is set"
 
   # Arrange
   STOP_CONTAINERS="container1, container2"
@@ -104,8 +118,8 @@ testspec_error_starts_containers_if_stop_containers_is_set() {
   assert_true "$(get_result)"
 }
 
-testspec_error_does_not_start_containers_if_stop_containers_is_null() {
-  test_begin "Error does not start containers if STOP_CONTAINERS is null"
+testspec__error__does_not_start_containers_if_stop_containers_is_null() {
+  test_begin "error does not start containers if STOP_CONTAINERS is null"
 
   # Arrange
   STOP_CONTAINERS=""
@@ -120,8 +134,8 @@ testspec_error_does_not_start_containers_if_stop_containers_is_null() {
   assert_false "$(get_result)"
 }
 
-testspec_error_logs_error_if_parameter_is_used() {
-  test_begin "Error logs ERROR: if parameter is used"
+testspec__error__logs_error_if_parameter_is_used() {
+  test_begin "error logs ERROR: if parameter is used"
 
   # Arrange
   set_result "false"
@@ -137,8 +151,8 @@ testspec_error_logs_error_if_parameter_is_used() {
   assert_true "$(get_result)"
 }
 
-testspec_error_does_not_log_error_with_no_parameters() {
-  test_begin "Error does not log ERROR: with no parameters"
+testspec__error__does_not_log_error_with_no_parameters() {
+  test_begin "error does not log ERROR: with no parameters"
 
   # Arrange
   set_result "false"
@@ -154,8 +168,8 @@ testspec_error_does_not_log_error_with_no_parameters() {
   assert_false "$(get_result)"
 }
 
-testspec_error_exits_with_exit_code_1() {
-  test_begin "Error exits with exit code 1"
+testspec__error__exits_with_exit_code_1() {
+  test_begin "error exits with exit code 1"
 
   # Arrange
   set_result "false"
@@ -168,7 +182,42 @@ testspec_error_exits_with_exit_code_1() {
   assert_true "$(get_result)"
 }
 
-testspec_backup_two_volumes_creates_two_backups() {
+
+# common/is_not_empty
+
+testspec__is_not_empty__returns_false_if_empty() {
+  test_begin "is_not_empty returns false if directory is empty"
+
+  # Arrange
+  mkdir -p "$TEST_PATH/empty_folder"
+  result=false
+
+  # Act
+  is_not_empty "$TEST_PATH/empty_folder" && result=true
+
+  # Assert
+  assert_false "$result"
+}
+
+testspec__is_not_empty__returns_true_if_not_empty() {
+  test_begin "is_not_empty returns true if directory is not empty"
+
+  # Arrange
+  mkdir -p "$TEST_PATH/non_empty_folder"
+  /bin/echo "Test" > "$TEST_PATH/non_empty_folder/test_file"
+  result=false
+
+  # Act
+  is_not_empty "$TEST_PATH/non_empty_folder" && result=true
+
+  # Assert
+  assert_true "$result"
+}
+
+
+# Integration tests
+
+testspec__backup_two_volumes_creates_two_backups() {
   test_begin "Backup two volumes and get two backups"
 
   # Act
@@ -180,7 +229,7 @@ testspec_backup_two_volumes_creates_two_backups() {
   assert_equals "2" "$backup_count"
 }
 
-testspec_backup_volume_with_correct_name() {
+testspec__backup_volume_with_correct_name() {
   test_begin "Backup a volume with the correct backup filename"
 
   # Act
@@ -191,7 +240,7 @@ testspec_backup_volume_with_correct_name() {
   assert_file_starts_with "$backup_name" "backup-test-"
 }
 
-testspec_backup_remove_restore() {
+testspec__backup_remove_restore() {
   test_begin "Backup, remove and then restore file"
 
   # Arrange
@@ -208,7 +257,7 @@ testspec_backup_remove_restore() {
   assert_file_exists "$file_to_restore"
 }
 
-testspec_backup_remove_restore_encrypted() {
+testspec__backup_remove_restore_encrypted() {
   test_begin "Backup, remove and then restore file (with encryption)"
 
   # Arrange
@@ -229,7 +278,7 @@ testspec_backup_remove_restore_encrypted() {
   assert_file_exists "$file_to_restore"
 }
 
-testspec_restore_encrypted_with_bad_password() {
+testspec__restore_encrypted_with_bad_password() {
   test_begin "Restore encrypted backup with bad password"
 
   # Arrange
