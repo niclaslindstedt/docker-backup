@@ -24,7 +24,7 @@ main() {
 trigger_tests() {
   if is_set "$RUN_TEST"; then
     total_tests=1
-    /bin/echo -e "Single test mode"
+    /bin/echo -e "${YELLOW}*** SINGLE TEST MODE ***${EC}\n"
     run_test "$RUN_TEST"
   else
     total_tests=$(get_test_functions | wc -l)

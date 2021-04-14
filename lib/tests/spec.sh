@@ -217,7 +217,7 @@ testspec__is_not_empty__returns_true_if_not_empty() {
 }
 
 
-# common/get_volume_name
+# common/is_archive
 
 testspec__is_archive__returns_true_for_backup_tgz() {
   test_begin "is_archive returns true for backup ending with .tgz"
@@ -295,6 +295,53 @@ testspec__is_archive__returns_false_if_date_is_too_short() {
 
   # Assert
   assert_false "$result"
+}
+
+# common/get_volume_name
+
+testspec__get_volume_name__returns_only_volume_name_from_archive_filename() {
+  test_begin "get_volume_name returns only volume name from archive filename"
+
+  # Arrange
+  result="not_correct"
+
+  # Act
+  result="$(get_volume_name "backup-sample-app-5-20210410174014.7z")"
+
+  # Assert
+  assert_equals "sample-app-5" "$result"
+}
+
+testspec__get_volume_name__returns_volume_name_with_underscore() {
+  test_begin "get_volume_name returns volume name with underscores"
+
+  # Arrange
+  result="not_correct"
+
+  # Act
+  result="$(get_volume_name "backup-sample_app_2-20210410174014.7z")"
+
+  # Assert
+  assert_equals "sample_app_2" "$result"
+}
+
+# common/get_free_space
+
+testspec__get_free_space__returns_free_space_in_gigabytes_from_df() {
+  test_begin "get_free_space returns free space in gigabytes from df"
+
+  # Arrange
+  df() {
+    # test output from "df -BG -P /volumes"
+    echo "Filesystem                                            1073741824-blocks  Used Available Capacity Mounted on"
+    echo "/dev/sda1                                                          458G  225G      210G      52% /volumes"
+  }
+
+  # Act
+  result="$(get_free_space /volumes)"
+
+  # Assert
+  assert_equals "210" "$result"
 }
 
 
