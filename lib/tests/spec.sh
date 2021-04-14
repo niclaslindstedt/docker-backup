@@ -217,64 +217,82 @@ testspec__is_not_empty__returns_true_if_not_empty() {
 
 # common/get_volume_name
 
-testspec__get_volume_name__returns_correct_volume_name_from_tgz() {
-  test_begin "get_volume_name returns correct volume name from file ending with .tgz"
+testspec__is_archive__returns_true_for_backup_tgz() {
+  test_begin "is_archive returns true for backup ending with .tgz"
+
+  # Arrange
+  result=false
 
   # Act
-  result=$(get_volume_name "backup-sample-app-1-20210410174014.tgz")
+  is_archive "backup-sample-app-1-20210410174014.tgz" && result=true
 
   # Assert
-  assert_equals "sample-app-1" "$result"
+  assert_true "$result"
 }
 
-testspec__get_volume_name__returns_correct_volume_name_from_zip() {
-  test_begin "get_volume_name returns correct volume name from file ending with .zip"
+testspec__is_archive__returns_true_for_backup_zip() {
+  test_begin "is_archive returns true for backup ending with .zip"
+
+  # Arrange
+  result=false
 
   # Act
-  result=$(get_volume_name "backup-sample-app-2-20210410174014.zip")
+  is_archive "backup-sample-app-2-20210410174014.zip" && result=true
 
   # Assert
-  assert_equals "sample-app-2" "$result"
+  assert_true "$result"
 }
 
-testspec__get_volume_name__returns_correct_volume_name_from_rar() {
-  test_begin "get_volume_name returns correct volume name from file ending with .rar"
+testspec__is_archive__returns_true_for_backup_rar() {
+  test_begin "is_archive returns true for backup ending with .rar"
+
+  # Arrange
+  result=false
 
   # Act
-  result=$(get_volume_name "backup-sample-app-3-20210410174014.rar")
+  is_archive "backup-sample-app-3-20210410174014.rar" && result=true
 
   # Assert
-  assert_equals "sample-app-3" "$result"
+  assert_true "$result"
 }
 
-testspec__get_volume_name__returns_correct_volume_name_from_7z() {
-  test_begin "get_volume_name returns correct volume name from file ending with .7z"
+testspec__is_archive__returns_true_for_backup_7z() {
+  test_begin "is_archive returns true for backup ending with .7z"
+
+  # Arrange
+  result=false
 
   # Act
-  result=$(get_volume_name "backup-sample-app-4-20210410174014.7z")
+  is_archive "backup-sample-app-4-20210410174014.7z" && result=true
 
   # Assert
-  assert_equals "sample-app-4" "$result"
+  assert_true "$result"
 }
 
-testspec__get_volume_name__returns_null_if_file_does_not_start_with_backup() {
-  test_begin "get_volume_name returns null if file does not start with backup"
+testspec__is_archive__returns_false_if_file_does_not_start_with_backup() {
+  test_begin "is_archive returns false if file does not start with backup"
+
+  # Arrange
+  result=false
 
   # Act
-  result=$(get_volume_name "bakcup-sample-app-5-20210410174014.sfv")
+  is_archive "bakcup-sample-app-5-20210410174014.7z" && result=true
 
   # Assert
-  assert_null "$result"
+  assert_false "$result"
 }
 
-testspec__get_volume_name__returns_null_if_date_is_too_short() {
-  test_begin "get_volume_name returns null if date is too short"
+testspec__is_archive__returns_false_if_date_is_too_short() {
+  test_begin "is_archive returns false if date is too short"
+
+  # Arrange
+  result=false
 
   # Act
-  result=$(get_volume_name "backup-sample-app-5-202104101740.sfv")
+  is_archive "backup-sample-app-5-202104101740.7z" && result=true
 
   # Assert
-  assert_null "$result"
+  assert_false "$result"
 }
 
 
