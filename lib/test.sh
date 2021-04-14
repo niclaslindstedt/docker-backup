@@ -20,11 +20,15 @@ main() {
     done
   fi
   /bin/echo -e "${GREEN}SUCCESSFUL TESTS: $test_successes${EC}"
-  /bin/echo -e "${RED}FAILED TESTS: $test_failures${EC}"
-  /bin/echo -e "${YELLOW}LIST OF FAILED TESTS:${EC}"
-  for test in "${failed_tests[@]}"; do
-    /bin/echo -e "${YELLOW}$test${EC}"
-  done
+  if [ "${#test_failures[@]}" -gt 0 ]; then
+    /bin/echo -e "${GRAY}FAILED TESTS: $test_failures${EC}"
+  else
+    /bin/echo -e "${RED}FAILED TESTS: $test_failures${EC}"
+    /bin/echo -e "${YELLOW}LIST OF FAILED TESTS:${EC}"
+    for test in "${failed_tests[@]}"; do
+      /bin/echo -e "${YELLOW}$test${EC}"
+    done
+  fi
 }
 
 run_test() {
