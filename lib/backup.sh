@@ -3,6 +3,8 @@
 # This script will create tarball gzips of all
 # mounted volumes in the volume location.
 
+# shellcheck disable=SC1090,SC2034
+
 COMPONENT="BACKUP"
 
 main() {

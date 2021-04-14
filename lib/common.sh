@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2034
+
 ONE_HOUR=3600
 ONE_DAY=$((ONE_HOUR * 24))
 ONE_WEEK=$((ONE_DAY * 7))

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090,SC2034
+
 COMPONENT="TESTRUNNER"
 TEST_PATH="/tmp/0f0dddf7"
 

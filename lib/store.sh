@@ -3,6 +3,8 @@
 # This script will copy files from the backup
 # location to the long-term storage location.
 
+# shellcheck disable=SC1090,SC2034
+
 COMPONENT="LTS"
 
 main() {

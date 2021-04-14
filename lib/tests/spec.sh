@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2034
+
 # common/log
 
 testspec__log__calls_echo() {

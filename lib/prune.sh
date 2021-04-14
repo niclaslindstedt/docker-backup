@@ -4,6 +4,8 @@
 # the backup location and prune backups in the long-term storage
 # to keep disks from overflowing.
 
+# shellcheck disable=SC2034
+
 COMPONENT="PRUNE"
 
 main() {

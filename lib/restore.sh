@@ -3,6 +3,8 @@
 # This script will restore a backup
 # into its corresponding volume.
 
+# shellcheck disable=SC1090,SC2034
+
 COMPONENT="RESTORE"
 
 main() {
