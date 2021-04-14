@@ -281,6 +281,8 @@ testspec__get_volume_name__returns_null_if_date_is_too_short() {
 # Integration tests
 
 testspec__backup_two_volumes_creates_two_backups() {
+  local backup_count
+
   test_begin "Backup two volumes and get two backups"
 
   # Act
@@ -288,26 +290,30 @@ testspec__backup_two_volumes_creates_two_backups() {
   backup
 
   # Assert
-  local backup_count="$(get_backup_count)"
+  backup_count="$(get_backup_count)"
   assert_equals "2" "$backup_count"
 }
 
 testspec__backup_volume_with_correct_name() {
+  local backup_count
+
   test_begin "Backup a volume with the correct backup filename"
 
   # Act
   backup
 
   # Assert
-  local backup_name="$(get_latest_backup test)"
+  backup_name="$(get_latest_backup test)"
   assert_file_starts_with "$backup_name" "backup-test-"
 }
 
 testspec__backup_remove_restore() {
+  local file_to_restore
+
   test_begin "Backup, remove and then restore file"
 
   # Arrange
-  local file_to_restore="$VOLUME_PATH/test/test_file_2"
+  file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   backup
   rm -f "$file_to_restore"
@@ -321,15 +327,17 @@ testspec__backup_remove_restore() {
 }
 
 testspec__backup_remove_restore_encrypted() {
+  local file_to_restore latest_backup
+
   test_begin "Backup, remove and then restore file (with encryption)"
 
   # Arrange
   ENCRYPT_ARCHIVES=true
   ENCRYPTION_PASSWORD=abc123
-  local file_to_restore="$VOLUME_PATH/test/test_file_2"
+  file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   backup
-  local latest_backup="$(get_latest_backup test)"
+  latest_backup="$(get_latest_backup test)"
   rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
   assert_file_ends_with "$latest_backup" ".enc"
@@ -342,15 +350,17 @@ testspec__backup_remove_restore_encrypted() {
 }
 
 testspec__restore_encrypted_with_bad_password() {
+  local file_to_restore latest_backup
+
   test_begin "Restore encrypted backup with bad password"
 
   # Arrange
   ENCRYPT_ARCHIVES=true
   ENCRYPTION_PASSWORD=abc123
-  local file_to_restore="$VOLUME_PATH/test/test_file_2"
+  file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   backup
-  local latest_backup="$(get_latest_backup test)"
+  latest_backup="$(get_latest_backup test)"
   rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
   assert_file_ends_with "$latest_backup" ".enc"

@@ -27,20 +27,22 @@ logd() {
 }
 
 error() {
-  [ -n "$1" ] && log "ERROR: $*"
-  [ -n "$STOP_CONTAINERS" ] && start_containers
+  is_set "$1" && log "ERROR: $*"
+  is_set "$STOP_CONTAINERS" && start_containers
   log "Exiting script"
   exit 1
 }
 
 is_not_empty() {
-  [ ! -d "$1" ] && return 1
+  is_not_directory "$1" && return 1
   [ "$(find "$1" | wc -l)" -gt 1 ] && return 0
   return 1
 }
 
 is_archive() {
-  local filename=$(basename "$1")
+  local filename
+
+  filename=$(basename "$1")
   [[ "$filename" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z|sfv)(\.sfv|\.enc)?$ ]] && return 0
   return 1
 }
@@ -97,19 +99,22 @@ get_reversed_backups() {
 }
 
 get_filetime() {
-  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.EXT"
-  local file_date=$(echo "$1" | grep -Eo '[[:digit:]]{14}')
-  local file_year=$(echo "$file_date" | cut -c1-4)
-  local file_month=$(echo "$file_date" | cut -c5-6)
-  local file_day=$(echo "$file_date" | cut -c7-8)
-  local file_hour=$(echo "$file_date" | cut -c9-10)
-  local file_minute=$(echo "$file_date" | cut -c11-12)
-  local file_second=$(echo "$file_date" | cut -c13-14)
+  local file_date file_year file_month file_day file_hour file_minute file_second
+
+  file_date=$(echo "$1" | grep -Eo '[[:digit:]]{14}')
+  file_year=$(echo "$file_date" | cut -c1-4)
+  file_month=$(echo "$file_date" | cut -c5-6)
+  file_day=$(echo "$file_date" | cut -c7-8)
+  file_hour=$(echo "$file_date" | cut -c9-10)
+  file_minute=$(echo "$file_date" | cut -c11-12)
+  file_second=$(echo "$file_date" | cut -c13-14)
   date --date "$file_year-$file_month-$file_day $file_hour:$file_minute:$file_second" +"%s"
 }
 
 create_checksum() {
-  local filename="$1"
+  local filename
+
+  filename="$1"
   [ "$CREATE_CHECKSUMS" = "true" ] && {
     logv "Creating checksum at $filename.sfv"
     cksfv -q -b "$filename" > "$filename.sfv" || error "Could not create checksum for $filename"
@@ -117,11 +122,15 @@ create_checksum() {
 }
 
 verify_checksum() {
-  local filename="$1.sfv"
-  [ "$VERIFY_CHECKSUMS" = "true" ] && [ -f "$filename" ] && {
+  local filename
+
+  filename="$1.sfv"
+  [ "$VERIFY_CHECKSUMS" = "true" ] && {
+    is_not_file "$filename" && return 1
     logv "Verifying checksum $filename"
     cksfv -q -g "$filename" || error "Could not verify checksum for $1"
   }
+  return 0
 }
 
 stop_containers() {
@@ -129,7 +138,7 @@ stop_containers() {
   IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
   for container_name in "${containers[@]}"; do
     read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
-    [ -n "${container_ids[*]}" ] && {
+    is_set "${container_ids[*]}" && {
       docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
     }
   done
@@ -141,7 +150,7 @@ start_containers() {
   IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
   for container_name in "${containers[@]}"; do
     read -r -a container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
-    [ -n "${container_ids[*]}" ] && {
+    is_set "${container_ids[*]}" && {
       docker start ${container_ids[*]} || return 1
     }
   done
@@ -168,8 +177,10 @@ pack() {
 }
 
 unpack() {
+  local filename fileext
+
   go "$2"
-    local filename="${1%*.enc}"
+    filename="${1%*.enc}"
     is_encrypted "$1" && decrypt "$1" "$filename"
     verify_checksum "$filename"
 
@@ -177,7 +188,7 @@ unpack() {
     rm -rfv "${2:?}/*" 1>"$OUTPUT"
 
     log "Unpacking archive at $2"
-    local fileext="${filename##*.}"
+    fileext="${filename##*.}"
     if [[ "$fileext" = "tgz" ]]; then
       tar xzfv "$filename" 1>"$OUTPUT" || return 1
     elif [[ "$fileext" = "7z" ]]; then
@@ -193,7 +204,9 @@ unpack() {
 }
 
 is_encrypted() {
-  local filename="$1"
+  local filename
+
+  filename="$1"
   [ "${filename##*.}" = "enc" ] && {
     logv "Container is encrypted: $filename"
     return 0
@@ -242,6 +255,36 @@ get_output() {
   else
     echo "/dev/null"
   fi
+}
+
+is_file() {
+  [ -f "$1" ] && return 0
+  return 1
+}
+
+is_not_file() {
+  [ ! -f "$1" ] && return 0
+  return 1
+}
+
+is_directory() {
+  [ -d "$1" ] && return 0
+  return 1
+}
+
+is_not_directory() {
+  [ ! -d "$1" ] && return 0
+  return 1
+}
+
+is_set() {
+  [ -n "$1" ] && return 0
+  return 1
+}
+
+is_not_set() {
+  [ -z "$1" ] && return 0
+  return 1
 }
 
 OUTPUT="$(get_output)"

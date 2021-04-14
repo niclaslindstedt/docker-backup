@@ -8,10 +8,10 @@ COMPONENT="RESTORE"
 main() {
   log "Starting restore process"
 
-  [ -n "$STOP_CONTAINERS" ] && stop_containers
+  is_set "$STOP_CONTAINERS" && stop_containers
 
   go "$BACKUP_PATH"
-    if [[ -n "$1" ]]; then
+    if is_set "$1"; then
       restore_volume "$1"
     else
       log "Restoring all volumes"
@@ -19,29 +19,30 @@ main() {
     fi
   back
 
-  [ -n "$STOP_CONTAINERS" ] && start_containers
+  is_set "$STOP_CONTAINERS" && start_containers
 
   log "Finished restore process"
 }
 
 restore_all() {
+  local volume
   for volume_to_restore in "$VOLUME_PATH"/*; do
-    local volume=$(basename "$(eval echo "$volume_to_restore")")
+    volume=$(basename "$(eval echo "$volume_to_restore")")
     restore_volume "$volume"
   done
 }
 
 restore_volume() {
+  local backup_name volume_name target_volume backup_existing_volume
+
   [ ! -d "$VOLUME_PATH/$1" ] && [ ! -f "$BACKUP_PATH/$1" ] && {
     error "Volume or backup '$1' not found (is it mounted?)"
   }
 
-  local backup_name
-  local volume_name
-  if [[ -f "$BACKUP_PATH/$1" ]]; then
+  if is_file "$BACKUP_PATH/$1"; then
     backup_name="$BACKUP_PATH/$1"
     volume_name="$(get_volume_name "$1")"
-  elif [[ -f "$1" ]]; then
+  elif is_file "$1"; then
     backup_name="$1"
     volume_name="$(get_volume_name "$(basename "$1")")"
   else
@@ -52,12 +53,12 @@ restore_volume() {
 
   logv "Found backup '$backup_name' which belongs to volume '$volume_name'"
 
-  local target_volume="$VOLUME_PATH/$volume_name"
+  target_volume="$VOLUME_PATH/$volume_name"
   [ ! -d "$target_volume" ] && error "No such volume: $volume_name"
 
   # Backup existing volume contents if it's not empty
   is_not_empty "$target_volume" && {
-    local backup_existing_volume="y"
+    backup_existing_volume="y"
     [ "$ASSUME_YES" != "true" ] && {
       loga "The volume $volume_name is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
       read -r backup_existing_volume

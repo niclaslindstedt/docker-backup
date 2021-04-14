@@ -7,8 +7,8 @@ failed_tests=()
 
 main() {
   test_num=1
-  [ -n "$1" ] && RUN_TEST="$1"
-  if [[ -n "$RUN_TEST" ]]; then
+  is_set "$1" && RUN_TEST="$1"
+  if is_set "$RUN_TEST"; then
     total_tests=1
     /bin/echo -e "Single test mode"
     run_test "$RUN_TEST"

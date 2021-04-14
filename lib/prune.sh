@@ -16,11 +16,13 @@ main() {
 }
 
 purge_backups() {
+  local file_unixtime
+
   log "Purging short-term backups that are older than $KEEP_BACKUPS_FOR_DAYS days"
   go "$BACKUP_PATH"
     for filename in $(get_reversed_backups); do
       [ ! -f "$filename" ] && continue
-      local file_unixtime="$(get_filetime "$filename")"
+      file_unixtime="$(get_filetime "$filename")"
       [ "$(($(unixtime) - file_unixtime))" -gt "$((KEEP_BACKUPS_FOR_DAYS * ))" ] && {
         logv "Purging $filename"
         #rm -f $filename $filename.sfv
@@ -39,51 +41,58 @@ prune_lts() {
 }
 
 prune_lts_daily() {
+  local start_time stop_time
+
   log "Pruning backups that are between $KEEP_DAILY_AFTER_HOURS hours and $KEEP_WEEKLY_AFTER_DAYS days -- keeping 1 per day"
 
-  local start_time="$(($(unixtime) - KEEP_DAILY_AFTER_HOURS * ONE_HOUR))"
-  local stop_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
+  start_time="$(($(unixtime) - KEEP_DAILY_AFTER_HOURS * ONE_HOUR))"
+  stop_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
   prune_lts_loop "$start_time" "$stop_time" "$ONE_DAY" "days"
 }
 
 prune_lts_weekly() {
+  local start_time stop_time
+
   log "Pruning backups that are between $KEEP_WEEKLY_AFTER_DAYS days and $KEEP_MONTHLY_AFTER_WEEKS weeks -- keeping 1 per week"
 
-  local start_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
-  local stop_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
+  start_time="$(($(unixtime) - KEEP_WEEKLY_AFTER_DAYS * ONE_DAY))"
+  stop_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
   prune_lts_loop "$start_time" "$stop_time" "$ONE_WEEK" "weeks"
 }
 
 prune_lts_monthly() {
+  local start_time
+
   log "Pruning backups that are between $KEEP_MONTHLY_AFTER_WEEKS weeks and $KEEP_LTS_FOR_MONTHS months -- keeping 1 per month"
 
-  local start_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
+  start_time="$(($(unixtime) - KEEP_MONTHLY_AFTER_WEEKS * ONE_WEEK))"
   prune_lts_loop "$start_time" 0 "$ONE_MONTH" "months"
 }
 
 prune_lts_loop() {
+  local start_time stop_time decrements unit removal_time compare_time file_unixtime
 
-  local start_time="$1"
-  local stop_time="$2"
-  local decrements="$3"
-  local unit="$4"
+  start_time="$1"
+  stop_time="$2"
+  decrements="$3"
+  unit="$4"
 
   # If a file is older than this, it should no longer be kept around
-  local removal_time="$(($(unixtime) - KEEP_LTS_FOR_MONTHS * ONE_MONTH))"
+  removal_time="$(($(unixtime) - KEEP_LTS_FOR_MONTHS * ONE_MONTH))"
 
   # Loop through all volumes in the lts storage
   for volume_name in *; do
 
     log "Entering $volume_name"
     go $volume_name
-    local compare_time="$(unixtime)"
+    compare_time="$(unixtime)"
 
       # Get a list of all backups, newest first, and loop through them
       for filename in $(get_reversed_backups); do
 
         # Go to next file if this is not a file
         [ ! -f "$filename" ] && continue
-        local file_unixtime="$(get_filetime "$filename")"
+        file_unixtime="$(get_filetime "$filename")"
 
         # Go to next file if the file is newer than start_time
         [ "$file_unixtime" -gt "$start_time" ] && continue
@@ -96,7 +105,7 @@ prune_lts_loop() {
         [ "$((compare_time - file_unixtime))" -lt "$decrements" ] || \
         [ "$file_unixtime" -lt "$removal_time" ] && {
           logv "Pruning $filename"
-          rm -f $filename $filename.sfv
+          rm -f "$filename" "$filename.sfv"
           continue
         }
 
