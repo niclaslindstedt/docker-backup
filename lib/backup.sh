@@ -40,8 +40,8 @@ backup_volume() {
   volume_name="$(get_volume_name "$backup_filename")"
 
   # Make sure we have enough free space before backing up
-  free_space="$(get_free_space "$BACKUP_PATH")"
-  folder_size="$(get_folder_size "$VOLUME_PATH/$1")"
+  free_space="$(get_free_space_gb "$BACKUP_PATH")"
+  folder_size="$(get_folder_size_gb "$VOLUME_PATH/$1")"
   folder_size_str="$(get_folder_size_str "$VOLUME_PATH/$1")"
   [ "$((free_space - folder_size))" -lt "$MINIMUM_FREE_SPACE" ] && {
     log "Running out of space ($free_space GB left). Backup size is $folder_size_str."
@@ -58,7 +58,7 @@ backup_volume() {
     }
 
     # If we still have too little storage left, exit
-    free_space="$(get_free_space "$BACKUP_PATH")"
+    free_space="$(get_free_space_gb "$BACKUP_PATH")"
     [ "$((free_space - folder_size))" -lt "$MINIMUM_FREE_SPACE" ] && {
       error "Not enough free space (have $free_space GB, need $((MINIMUM_FREE_SPACE + folder_size)) GB). Adjust prune settings or free space requirements."
     }

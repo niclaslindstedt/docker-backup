@@ -19,6 +19,10 @@ main() {
 
   trigger_tests
   print_summary
+
+  [ "$test_failures" != "0" ] && exit 1
+
+  exit 0
 }
 
 trigger_tests() {
@@ -48,14 +52,14 @@ run_test() {
 
 print_summary() {
   /bin/echo -e "${GREEN}SUCCESSFUL TESTS: $test_successes${EC}"
-  if [ "${#test_failures[@]}" -gt 0 ]; then
-    /bin/echo -e "${GRAY}FAILED TESTS: $test_failures${EC}"
-  else
+  if [ "$test_failures" -gt 0 ]; then
     /bin/echo -e "${RED}FAILED TESTS: $test_failures${EC}"
     /bin/echo -e "${YELLOW}LIST OF FAILED TESTS:${EC}"
     for test in "${failed_tests[@]}"; do
       /bin/echo -e "${YELLOW}$test${EC}"
     done
+  else
+    /bin/echo -e "${GRAY}FAILED TESTS: $test_failures${EC}"
   fi
 }
 
@@ -65,7 +69,3 @@ source "$APP_PATH/tests/common.sh"
 source "$APP_PATH/tests/spec.sh"
 
 main "$*"
-
-[ "$test_failures" != "0" ] && exit 1
-
-exit 0

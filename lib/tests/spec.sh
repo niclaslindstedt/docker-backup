@@ -327,21 +327,192 @@ testspec__get_volume_name__returns_volume_name_with_underscore() {
 
 # common/get_free_space
 
-testspec__get_free_space__returns_free_space_in_gigabytes_from_df() {
-  test_begin "get_free_space returns free space in gigabytes from df"
+testspec__get_free_space__returns_free_space_in_kb_from_df() {
+  test_begin "get_free_space returns free space in kilobytes from df"
 
   # Arrange
   df() {
-    # test output from "df -BG -P /volumes"
-    echo "Filesystem                                            1073741824-blocks  Used Available Capacity Mounted on"
-    echo "/dev/sda1                                                          458G  225G      210G      52% /volumes"
+    /bin/echo "Filesystem    1024-blocks      Used Available Capacity Mounted on"
+    /bin/echo "/dev/sda1       237584168 157483896  67961984      70% /volumes"
   }
 
   # Act
   result="$(get_free_space /volumes)"
 
   # Assert
-  assert_equals "210" "$result"
+  assert_equals "67961984" "$result"
+}
+
+testspec__get_free_space__returns_0_if_not_a_directory() {
+  test_begin "get_free_space returns 0 if not a directory"
+
+  # Arrange
+  df() {
+    /bin/echo "Filesystem    1024-blocks      Used Available Capacity Mounted on"
+    /bin/echo "/dev/sda1       237584168 157483896  67961984      70% /not_a_directory"
+  }
+
+  # Act
+  result="$(get_free_space /not_a_directory)"
+
+  # Assert
+  assert_equals "0" "$result"
+}
+
+
+# common/get_free_space_gb
+
+testspec__get_free_space_gb__returns_free_space_in_gb() {
+  test_begin "get_free_space_gb returns free space in gb"
+
+  # Arrange
+  df() {
+    /bin/echo "Filesystem    1024-blocks      Used Available Capacity Mounted on"
+    /bin/echo "/dev/sda1       237584168 157483896  67961984      70% /volumes"
+  }
+
+  # Act
+  result="$(get_free_space_gb /volumes)"
+
+  # Assert
+  assert_equals "64" "$result"
+}
+
+
+# common/get_folder_size
+
+testspec__get_folder_size__returns_folder_size_in_kb_from_du() {
+  test_begin "get_folder_size returns folder size in kilobytes from du"
+
+  # Arrange
+  du() {
+    /bin/echo "22530640	/volumes/test"
+  }
+
+  # Act
+  result="$(get_folder_size /volumes/test)"
+
+  # Assert
+  assert_equals "22530640" "$result"
+}
+
+testspec__get_folder_size__returns_0_if_not_a_directory() {
+  test_begin "get_folder_size returns 0 if not a directory"
+
+  # Arrange
+  du() {
+    /bin/echo "22530640	/not_a_directory"
+  }
+
+  # Act
+  result="$(get_folder_size /not_a_directory)"
+
+  # Assert
+  assert_equals "0" "$result"
+}
+
+
+# common/get_folder_size_mb
+
+testspec__get_folder_size_mb__returns_folder_size_in_mb() {
+  test_begin "get_folder_size_mb returns folder size in mb"
+
+  # Arrange
+  du() {
+    /bin/echo "22530640	/volumes/test"
+  }
+
+  # Act
+  result="$(get_folder_size_mb /volumes/test)"
+
+  # Assert
+  assert_equals "22002" "$result"
+}
+
+
+# common/get_folder_size_gb
+
+testspec__get_folder_size_gb__returns_folder_size_in_gb() {
+  test_begin "get_folder_size_gb returns folder size in gb"
+
+  # Arrange
+  du() {
+    /bin/echo "22530640	/volumes/test"
+  }
+
+  # Act
+  result="$(get_folder_size_gb /volumes/test)"
+
+  # Assert
+  assert_equals "21" "$result"
+}
+
+
+# common/get_folder_size_str
+
+testspec__get_folder_size_str__returns_folder_size_in_mb_with_unit() {
+  test_begin "get_folder_size_str returns folder size in mb with unit"
+
+  # Arrange
+  du() {
+    /bin/echo "22530640	/volumes/test"
+  }
+
+  # Act
+  result="$(get_folder_size_str /volumes/test)"
+
+  # Assert
+  assert_equals "22002 MB" "$result"
+}
+
+
+# common/get_file_size
+
+testspec__get_file_size__returns_file_size_in_bytes() {
+  test_begin "get_file_size returns file size in bytes"
+
+  # Arrange
+  stat() {
+    /bin/echo "1113999"
+  }
+
+  # Act
+  result="$(get_file_size /bin/bash)"
+
+  # Assert
+  assert_equals "1113999" "$result"
+}
+
+testspec__get_file_size__returns_0_if_file_does_not_exist() {
+  test_begin "get_file_size returns file size in bytes"
+
+  # Arrange
+  stat() {
+    /bin/echo "1113999"
+  }
+
+  # Act
+  result="$(get_file_size /bin/nonexistent_file)"
+
+  # Assert
+  assert_equals "0" "$result"
+}
+
+# common/get_file_size_mb
+
+testspec__get_file_size_mb__returns_file_size_in_mb() {
+  test_begin "get_file_size_mb returns file size in mb"
+
+  # Arrange
+  stat() {
+    /bin/echo "6200000"
+  }
+
+  # Act
+  result="$(get_file_size_mb /bin/bash)"
+
+  # Assert
+  assert_equals "5" "$result"
 }
 
 
