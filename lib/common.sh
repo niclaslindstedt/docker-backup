@@ -39,16 +39,14 @@ is_not_empty() {
   return 1
 }
 
-get_function_names() {
-  declare -F | sed -r 's/^declare \-f //g'
-}
-
-get_test_functions() {
-  get_function_names | grep -E ^testspec_
+is_archive() {
+  local filename=$(basename "$1")
+  [[ "$filename" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z|sfv)(\.sfv|\.enc)?$ ]] && return 0
+  return 1
 }
 
 get_volume_name() {
-  # the backup files have the format "backup-VOLUMENAME-YYYYMMDDHHmmss.EXT"
+  is_archive "$1" || return 1
   echo "$1" | sed -E "s/.+?backup\-(.+?)\-.+?$/\1/g"
 }
 

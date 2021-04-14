@@ -215,6 +215,69 @@ testspec__is_not_empty__returns_true_if_not_empty() {
 }
 
 
+# common/get_volume_name
+
+testspec__get_volume_name__returns_correct_volume_name_from_tgz() {
+  test_begin "get_volume_name returns correct volume name from file ending with .tgz"
+
+  # Act
+  result=$(get_volume_name "backup-sample-app-1-20210410174014.tgz")
+
+  # Assert
+  assert_equals "sample-app-1" "$result"
+}
+
+testspec__get_volume_name__returns_correct_volume_name_from_zip() {
+  test_begin "get_volume_name returns correct volume name from file ending with .zip"
+
+  # Act
+  result=$(get_volume_name "backup-sample-app-2-20210410174014.zip")
+
+  # Assert
+  assert_equals "sample-app-2" "$result"
+}
+
+testspec__get_volume_name__returns_correct_volume_name_from_rar() {
+  test_begin "get_volume_name returns correct volume name from file ending with .rar"
+
+  # Act
+  result=$(get_volume_name "backup-sample-app-3-20210410174014.rar")
+
+  # Assert
+  assert_equals "sample-app-3" "$result"
+}
+
+testspec__get_volume_name__returns_correct_volume_name_from_7z() {
+  test_begin "get_volume_name returns correct volume name from file ending with .7z"
+
+  # Act
+  result=$(get_volume_name "backup-sample-app-4-20210410174014.7z")
+
+  # Assert
+  assert_equals "sample-app-4" "$result"
+}
+
+testspec__get_volume_name__returns_null_if_file_does_not_start_with_backup() {
+  test_begin "get_volume_name returns null if file does not start with backup"
+
+  # Act
+  result=$(get_volume_name "bakcup-sample-app-5-20210410174014.sfv")
+
+  # Assert
+  assert_null "$result"
+}
+
+testspec__get_volume_name__returns_null_if_date_is_too_short() {
+  test_begin "get_volume_name returns null if date is too short"
+
+  # Act
+  result=$(get_volume_name "backup-sample-app-5-202104101740.sfv")
+
+  # Assert
+  assert_null "$result"
+}
+
+
 # Integration tests
 
 testspec__backup_two_volumes_creates_two_backups() {

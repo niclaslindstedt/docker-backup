@@ -4,6 +4,10 @@ noop() {
   /bin/touch /dev/null
 }
 
+get_test_functions() {
+  declare -F | sed -r 's/^declare \-f //g' | grep -E ^testspec_
+}
+
 set_result() {
   /bin/echo "$1" > "$TEST_PATH/test_result"
 }

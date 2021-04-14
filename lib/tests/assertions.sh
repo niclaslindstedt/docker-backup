@@ -57,6 +57,10 @@ assert_string_contains() {
   fi
 }
 
+assert_null() {
+  assert_equals "" "$1"
+}
+
 assert_false() {
   assert_equals "false" "$1"
 }
