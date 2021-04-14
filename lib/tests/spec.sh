@@ -297,6 +297,7 @@ testspec__is_archive__returns_false_if_date_is_too_short() {
   assert_false "$result"
 }
 
+
 # common/get_volume_name
 
 testspec__get_volume_name__returns_only_volume_name_from_archive_filename() {
@@ -324,6 +325,7 @@ testspec__get_volume_name__returns_volume_name_with_underscore() {
   # Assert
   assert_equals "sample_app_2" "$result"
 }
+
 
 # common/get_free_space
 
@@ -498,6 +500,7 @@ testspec__get_file_size__returns_0_if_file_does_not_exist() {
   assert_equals "0" "$result"
 }
 
+
 # common/get_file_size_mb
 
 testspec__get_file_size_mb__returns_file_size_in_mb() {
@@ -513,6 +516,137 @@ testspec__get_file_size_mb__returns_file_size_in_mb() {
 
   # Assert
   assert_equals "5" "$result"
+}
+
+
+# common/get_backups
+
+testspec__get_backups__lists_backups_in_backup_folder() {
+  test_begin "get_backups lists backups in /backup"
+
+  # Arrange
+  touch /backup/backup-test-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155702.tgz
+  touch /backup/backup-test-backup-20210101155703.tgz
+
+  # Act
+  result="$(get_backups | wc -l)"
+
+  # Assert
+  assert_equals "3" "$result"
+}
+
+testspec__get_backups__does_not_list_sfv_files() {
+  test_begin "get_backups lists backups in /backup"
+
+  # Arrange
+  touch /backup/backup-test-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155702.sfv
+  touch /backup/backup-test-backup-20210101155703.tgz
+  touch /backup/backup-test-backup-20210101155704.tgz
+  touch /backup/backup-test-backup-20210101155705.tgz
+
+  # Act
+  result="$(get_backups | wc -l)"
+
+  # Assert
+  assert_equals "4" "$result"
+}
+
+testspec__get_backups__only_lists_given_argument() {
+  test_begin "get_backups lists backups matching given argument in /backup"
+
+  # Arrange
+  touch /backup/backup-aaa-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155702.sfv
+  touch /backup/backup-test-backup-20210101155702.tgz
+  touch /backup/backup-bbb-backup-20210101155703.tgz
+  touch /backup/backup-test-backup-20210101155704.tgz
+  touch /backup/backup-ccc-backup-20210101155705.tgz
+
+  # Act
+  result="$(get_backups "test-backup" | wc -l)"
+
+  # Assert
+  assert_equals "2" "$result"
+}
+
+
+# common/get_backup_count
+
+testspec__get_backup_count__outputs_backup_count_in_backup_folder() {
+  test_begin "get_backup_count outputs backup count in /backup"
+
+  # Arrange
+  touch /backup/backup-test-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155702.tgz
+  touch /backup/backup-test-backup-20210101155703.tgz
+  touch /backup/backup-test-backup-20210101155704.tgz
+
+  # Act
+  result="$(get_backup_count)"
+
+  # Assert
+  assert_equals "4" "$result"
+}
+
+
+# common/get_latest_backup
+
+testspec__get_latest_backup__outputs_the_latest_backup_in_backup_folder() {
+  test_begin "get_latest_backup outputs the latest backup in /backup"
+
+  # Arrange
+  touch /backup/backup-test-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155702.tgz
+  touch /backup/backup-test-backup-20210101155704.tgz
+  touch /backup/backup-test-backup-20210101155703.tgz
+
+  # Act
+  result="$(get_latest_backup)"
+
+  # Assert
+  assert_equals "backup-test-backup-20210101155704.tgz" "$result"
+}
+
+
+# common/get_oldest_backup
+
+testspec__get_oldest_backup__outputs_the_oldest_backup_in_backup_folder() {
+  test_begin "get_oldest_backup outputs the oldest backup in /backup"
+
+  # Arrange
+  touch /backup/backup-test-backup-20210101155702.tgz
+  touch /backup/backup-test-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155704.tgz
+  touch /backup/backup-test-backup-20210101155703.tgz
+
+  # Act
+  result="$(get_oldest_backup)"
+
+  # Assert
+  assert_equals "backup-test-backup-20210101155701.tgz" "$result"
+}
+
+
+# common/get_reversed_backups
+
+testspec__get_reversed_backups__outputs_backups_in_reversed_order_in_backup_folder() {
+  test_begin "get_reversed_backups outputs backups in reversed order in /backup"
+
+  # Arrange
+  touch /backup/backup-test-backup-20210101155702.tgz
+  touch /backup/backup-test-backup-20210101155701.tgz
+  touch /backup/backup-test-backup-20210101155704.tgz
+  touch /backup/backup-test-backup-20210101155703.tgz
+
+  # Act
+  LFS=$'\n' read -d '' -a result <<< "$(get_reversed_backups)"
+
+  # Assert
+  assert_equals "backup-test-backup-20210101155704.tgz" "${result[0]}"
+  assert_equals "backup-test-backup-20210101155701.tgz" "${result[3]}"
+  assert_equals "4" "${#result[@]}"
 }
 
 

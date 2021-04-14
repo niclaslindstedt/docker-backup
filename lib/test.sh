@@ -27,6 +27,10 @@ main() {
 
 trigger_tests() {
   if is_set "$RUN_TEST"; then
+    (! function_exists "$RUN_TEST") && {
+      /bin/echo -e "${RED}The test $RUN_TEST does not exist.${EC}"
+      exit 1
+    }
     total_tests=1
     /bin/echo -e "${YELLOW}*** SINGLE TEST MODE ***${EC}\n"
     run_test "$RUN_TEST"
@@ -61,6 +65,10 @@ print_summary() {
   else
     /bin/echo -e "${GRAY}FAILED TESTS: $test_failures${EC}"
   fi
+}
+
+function_exists() {
+  type -t "$1"
 }
 
 source "$APP_PATH/common.sh"

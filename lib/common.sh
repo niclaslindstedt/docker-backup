@@ -46,7 +46,7 @@ is_archive() {
   local filename
 
   filename=$(basename "$1")
-  [[ "$filename" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z|sfv)(\.sfv|\.enc)?$ ]] && return 0
+  [[ "$filename" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]] && return 0
   return 1
 }
 
@@ -96,26 +96,22 @@ get_file_size_str() {
   echo "$(get_file_size_mb "$1") MB"
 }
 
+get_backups() {
+  go "$BACKUP_PATH"
+    find . -iname "backup-${1:-*}-??????????????.*" | while read f; do is_archive "$f" && echo "$(basename $f)"; done
+  back
+}
+
 get_backup_count() {
   get_backups | wc -l
 }
 
 get_latest_backup() {
-  go "$BACKUP_PATH"
-    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -r -n | head -n 1
-  back
+  get_backups "$1" | sort -r -n | head -n 1
 }
 
 get_oldest_backup() {
-  go "$BACKUP_PATH"
-    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n' | sort -n | head -n 1
-  back
-}
-
-get_backups() {
-  go "$BACKUP_PATH"
-    find . -iname "*backup-${1:-*}-??????????????.*" -not -iname "*.sfv" -printf '%f\n'
-  back
+  get_backups "$1" | sort -n | head -n 1
 }
 
 get_reversed_backups() {
@@ -161,7 +157,7 @@ stop_containers() {
   log "Stopping containers: $STOP_CONTAINERS (timeout: $DOCKER_STOP_TIMEOUT seconds)"
   IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
   for container_name in "${containers[@]}"; do
-    read -r -a container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
+    read -ra container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
     is_set "${container_ids[*]}" && {
       docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
     }
@@ -173,7 +169,7 @@ start_containers() {
   log "Starting containers: $STOP_CONTAINERS"
   IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
   for container_name in "${containers[@]}"; do
-    read -r -a container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
+    read -ra container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
     is_set "${container_ids[*]}" && {
       docker start ${container_ids[*]} || return 1
     }
