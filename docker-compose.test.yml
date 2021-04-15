@@ -3,7 +3,7 @@ version: '3.7'
 services:
   sut:
     build: .
-    command: /usr/local/lib/docker-backup/test.sh
+    command: /usr/local/lib/docker-backup/tests/run-tests.sh
     environment:
       - CRON_BACKUP=0 0 0 0 0
       - ENABLE_LTS=false
