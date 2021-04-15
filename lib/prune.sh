@@ -4,7 +4,7 @@
 # the backup location and prune backups in the long-term storage
 # to keep disks from overflowing.
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC1090,SC2034
 
 COMPONENT="PRUNE"
 
@@ -24,8 +24,9 @@ purge_backups() {
   go "$BACKUP_PATH"
     for filename in $(get_reversed_backups); do
       [ ! -f "$filename" ] && continue
-      file_unixtime="$(get_filetime "$filename")"
-      [ "$(($(unixtime) - file_unixtime))" -gt "$((KEEP_BACKUPS_FOR_DAYS * ))" ] && {
+      contains_numeric_date "$filename" || error "Cannot parse date in filename: $filename"
+      file_unixtime="$(parse_time "$filename")"
+      [ "$(($(unixtime) - file_unixtime))" -gt "$((KEEP_BACKUPS_FOR_DAYS * ONE_DAY))" ] && {
         logv "Purging $filename"
         #rm -f $filename $filename.sfv
       }
@@ -86,7 +87,7 @@ prune_lts_loop() {
   for volume_name in *; do
 
     log "Entering $volume_name"
-    go $volume_name
+    go "$volume_name"
     compare_time="$(unixtime)"
 
       # Get a list of all backups, newest first, and loop through them
@@ -94,7 +95,8 @@ prune_lts_loop() {
 
         # Go to next file if this is not a file
         [ ! -f "$filename" ] && continue
-        file_unixtime="$(get_filetime "$filename")"
+        contains_numeric_date "$filename" || error "Cannot parse date in filename: $filename"
+        file_unixtime="$(parse_time "$filename")"
 
         # Go to next file if the file is newer than start_time
         [ "$file_unixtime" -gt "$start_time" ] && continue

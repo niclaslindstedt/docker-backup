@@ -118,8 +118,10 @@ get_reversed_backups() {
   get_backups "$1" | sort -n -r
 }
 
-get_filetime() {
+parse_time() {
   local file_date file_year file_month file_day file_hour file_minute file_second
+
+  ! contains_numeric_date "$1" && { echo "0"; return 1; }
 
   file_date=$(echo "$1" | grep -Eo '[[:digit:]]{14}')
   file_year=$(echo "$file_date" | cut -c1-4)
@@ -129,6 +131,12 @@ get_filetime() {
   file_minute=$(echo "$file_date" | cut -c11-12)
   file_second=$(echo "$file_date" | cut -c13-14)
   date --date "$file_year-$file_month-$file_day $file_hour:$file_minute:$file_second" +"%s"
+}
+
+contains_numeric_date() {
+  # Contains a substring of YYYYMMDDHHmmss
+  [[ "$1" =~ (19[7-9][0-9]|20[0-3][0-9])(01|02|03|04|05|06|07|08|09|10|11|12)([0-2][1-9]|30|31)([0-1][1-9]|2[0-3])([0-5][0-9])([0-5][0-9]) ]] && return 0
+  return 1
 }
 
 create_checksum() {

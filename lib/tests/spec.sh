@@ -650,6 +650,114 @@ testspec__get_reversed_backups__outputs_backups_in_reversed_order_in_backup_fold
 }
 
 
+# common/parse_time
+
+testspec__parse_time__outputs_correct_unixtime() {
+  test_begin "parse_time outputs correct unixtime"
+
+  # Arrange
+  backup_filename="backup-test-backup-20140517223556.tgz"
+  expected_unixtime=$(date --date "2014-05-17 22:35:56" +"%s")
+
+  # Act
+  unixtime="$(parse_time "$backup_filename")"
+
+  # Assert
+  assert_equals "$expected_unixtime" "$unixtime"
+}
+
+testspec__contains_numeric_date__returns_1_if_too_short_date() {
+  test_begin "contains_numeric_date returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-201405172235.tgz"
+
+  # Act
+  unixtime=$(contains_numeric_date "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+testspec__contains_numeric_date__returns_1_if_too_old_date() {
+  test_begin "contains_numeric_date returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-19690522143556.tgz"
+
+  # Act
+  unixtime=$(contains_numeric_date "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+testspec__contains_numeric_date__returns_1_if_bad_month() {
+  test_begin "contains_numeric_date returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-19891322143556.tgz"
+
+  # Act
+  unixtime=$(contains_numeric_date "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+testspec__contains_numeric_date__returns_1_if_bad_day() {
+  test_begin "contains_numeric_date returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-19891132143556.tgz"
+
+  # Act
+  unixtime=$(contains_numeric_date "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+testspec__contains_numeric_date__returns_1_if_bad_hour() {
+  test_begin "contains_numeric_date returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-19891131243556.tgz"
+
+  # Act
+  unixtime=$(contains_numeric_date "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+testspec__contains_numeric_date__returns_1_if_bad_minute() {
+  test_begin "contains_numeric_date returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-19891131236056.tgz"
+
+  # Act
+  unixtime=$(contains_numeric_date "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+testspec__parse_time__returns_1_if_bad_minute() {
+  test_begin "parse_time returns 1 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-19891131235960.tgz"
+
+  # Act
+  unixtime=$(parse_time "$backup_filename")
+
+  # Assert
+  assert_equals "0" "$unixtime"
+}
+
+
 # Integration tests
 
 testspec__backup_two_volumes_creates_two_backups() {
