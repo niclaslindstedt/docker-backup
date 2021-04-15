@@ -641,6 +641,7 @@ testspec__get_reversed_backups__outputs_backups_in_reversed_order_in_backup_fold
   touch /backup/backup-test-backup-20210101155703.tgz
 
   # Act
+  # shellcheck disable=SC2162
   LFS=$'\n' read -d '' -a files <<< "$(get_reversed_backups)"
 
   # Assert
@@ -666,8 +667,35 @@ testspec__parse_time__outputs_correct_unixtime() {
   assert_equals "$expected_unixtime" "$result"
 }
 
+testspec__parse_time__outputs_0_if_bad_date() {
+  test_begin "parse_time outputs 0 if bad date"
+
+  # Arrange
+  backup_filename="backup-test-backup-18000517223556.tgz"
+
+  # Act
+  result="$(parse_time "$backup_filename")"
+
+  # Assert
+  assert_equals "0" "$result"
+}
+
 
 # common/contains_numeric_date
+
+testspec__contains_numeric_date__returns_true_if_valid_date() {
+  test_begin "contains_numeric_date returns true if valid date"
+
+  # Arrange
+  backup_filename="backup-test-backup-20140517223559.tgz"
+  result=false
+
+  # Act
+  contains_numeric_date "$backup_filename" && result=true
+
+  # Assert
+  assert_true "$result"
+}
 
 testspec__contains_numeric_date__returns_false_if_too_short_date() {
   test_begin "contains_numeric_date returns false if bad date"
