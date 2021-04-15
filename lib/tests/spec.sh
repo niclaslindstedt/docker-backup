@@ -641,12 +641,12 @@ testspec__get_reversed_backups__outputs_backups_in_reversed_order_in_backup_fold
   touch /backup/backup-test-backup-20210101155703.tgz
 
   # Act
-  LFS=$'\n' read -d '' -a result <<< "$(get_reversed_backups)"
+  LFS=$'\n' read -d '' -a files <<< "$(get_reversed_backups)"
 
   # Assert
-  assert_equals "backup-test-backup-20210101155704.tgz" "${result[0]}"
-  assert_equals "backup-test-backup-20210101155701.tgz" "${result[3]}"
-  assert_equals "4" "${#result[@]}"
+  assert_equals "backup-test-backup-20210101155704.tgz" "${files[0]}"
+  assert_equals "backup-test-backup-20210101155701.tgz" "${files[3]}"
+  assert_equals "4" "${#files[@]}"
 }
 
 
@@ -660,101 +660,111 @@ testspec__parse_time__outputs_correct_unixtime() {
   expected_unixtime=$(date --date "2014-05-17 22:35:56" +"%s")
 
   # Act
-  unixtime="$(parse_time "$backup_filename")"
+  result="$(parse_time "$backup_filename")"
 
   # Assert
-  assert_equals "$expected_unixtime" "$unixtime"
+  assert_equals "$expected_unixtime" "$result"
 }
 
-testspec__contains_numeric_date__returns_1_if_too_short_date() {
-  test_begin "contains_numeric_date returns 1 if bad date"
+
+# common/contains_numeric_date
+
+testspec__contains_numeric_date__returns_false_if_too_short_date() {
+  test_begin "contains_numeric_date returns false if bad date"
 
   # Arrange
   backup_filename="backup-test-backup-201405172235.tgz"
+  result=false
 
   # Act
-  unixtime=$(contains_numeric_date "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_1_if_too_old_date() {
-  test_begin "contains_numeric_date returns 1 if bad date"
+testspec__contains_numeric_date__returns_false_if_old_year() {
+  test_begin "contains_numeric_date returns false if old year"
 
   # Arrange
   backup_filename="backup-test-backup-19690522143556.tgz"
+  result=false
 
   # Act
-  unixtime=$(contains_numeric_date "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_1_if_bad_month() {
-  test_begin "contains_numeric_date returns 1 if bad date"
+testspec__contains_numeric_date__returns_false_if_bad_month() {
+  test_begin "contains_numeric_date returns false if bad month"
 
   # Arrange
   backup_filename="backup-test-backup-19891322143556.tgz"
+  result=false
 
   # Act
-  unixtime=$(contains_numeric_date "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_1_if_bad_day() {
-  test_begin "contains_numeric_date returns 1 if bad date"
+testspec__contains_numeric_date__returns_false_if_bad_day() {
+  test_begin "contains_numeric_date returns false if bad day"
 
   # Arrange
   backup_filename="backup-test-backup-19891132143556.tgz"
+  result=false
 
   # Act
-  unixtime=$(contains_numeric_date "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_1_if_bad_hour() {
-  test_begin "contains_numeric_date returns 1 if bad date"
+testspec__contains_numeric_date__returns_false_if_bad_hour() {
+  test_begin "contains_numeric_date returns false if bad hour"
 
   # Arrange
   backup_filename="backup-test-backup-19891131243556.tgz"
+  result=false
 
   # Act
-  unixtime=$(contains_numeric_date "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_1_if_bad_minute() {
-  test_begin "contains_numeric_date returns 1 if bad date"
+testspec__contains_numeric_date__returns_false_if_bad_minute() {
+  test_begin "contains_numeric_date returns false if bad minute"
 
   # Arrange
   backup_filename="backup-test-backup-19891131236056.tgz"
+  result=false
 
   # Act
-  unixtime=$(contains_numeric_date "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
-testspec__parse_time__returns_1_if_bad_minute() {
-  test_begin "parse_time returns 1 if bad date"
+testspec__parse_time__returns_false_if_bad_second() {
+  test_begin "parse_time returns false if bad second"
 
   # Arrange
   backup_filename="backup-test-backup-19891131235960.tgz"
+  result=false
 
   # Act
-  unixtime=$(parse_time "$backup_filename")
+  contains_numeric_date "$backup_filename" && result=true
 
   # Assert
-  assert_equals "0" "$unixtime"
+  assert_false "$result"
 }
 
 
