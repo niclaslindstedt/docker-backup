@@ -47,9 +47,11 @@ run_test() {
   /bin/echo -e "${BLUE}[$test_num/$total_tests] Running test: $1${EC}"
   if /bin/bash -c "$APP_PATH/tests/runner.sh \"$1\""; then
     ((test_successes++))
+    /bin/echo -e "${LIGHT_GREEN}Test successful!${EC}"
   else
     ((test_failures++))
     failed_tests+=("$1")
+    /bin/echo -e "${RED}Test failed.${EC}"
   fi
   /bin/echo
 }
@@ -64,6 +66,7 @@ print_summary() {
     done
   else
     /bin/echo -e "${GRAY}FAILED TESTS: $test_failures${EC}"
+    /bin/echo -e "\n${LIGHT_GREEN}OK${EC}"
   fi
 }
 

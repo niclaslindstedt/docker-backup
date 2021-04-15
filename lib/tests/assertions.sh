@@ -79,10 +79,10 @@ assert_equals() {
 }
 
 assert_success() {
-  /bin/echo -e "${GREEN}Assertion successful!${EC} $*"
+  (/bin/echo -e "${DARK_GREEN}Assertion successful:${EC} $*")
 }
 
 assert_fail() {
-  /bin/echo -e "${RED}Assertion failed.${EC} $*"
-  exit 1
+  (/bin/echo -e "${DARK_RED}Assertion failed:${EC} $*"
+  exit 1)
 }
