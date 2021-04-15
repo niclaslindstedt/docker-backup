@@ -27,7 +27,7 @@ main() {
 
 trigger_tests() {
   if is_set "$RUN_TEST"; then
-    (! function_exists "$RUN_TEST") && {
+    ! function_exists "$RUN_TEST" && {
       /bin/echo -e "${RED}The test $RUN_TEST does not exist.${EC}"
       exit 1
     }
