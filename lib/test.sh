@@ -45,7 +45,7 @@ trigger_tests() {
 
 run_test() {
   /bin/echo -e "${BLUE}[$test_num/$total_tests] Running test: $1${EC}"
-  if /bin/bash -c "$APP_PATH/tests/runner.sh \"$1\""; then
+  if (COMPONENT="TESTRUNNER" TEST_PATH="/tmp/0f0dddf7" eval "$1"); then
     ((test_successes++))
     /bin/echo -e "${LIGHT_GREEN}Test successful!${EC}"
   else
@@ -74,9 +74,17 @@ function_exists() {
   type -t "$1"
 }
 
+load() {
+  /bin/echo -e "${YELLOW}Loading file: $1${EC}"
+  source "$1"
+}
+
 source "$APP_PATH/common.sh"
-source "$APP_PATH/tests/assertions.sh"
-source "$APP_PATH/tests/common.sh"
-source "$APP_PATH/tests/spec.sh"
+load "$APP_PATH/tests/assertions.sh"
+load "$APP_PATH/tests/common.sh"
+for spec in "$APP_PATH/tests/specs/"*; do
+  load "$spec"
+done
+/bin/echo
 
 main "$*"
