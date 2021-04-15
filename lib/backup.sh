@@ -12,10 +12,10 @@ main() {
 
   is_set "$STOP_CONTAINERS" && stop_containers
 
-  if is_not_set "$1"; then
+  if ! is_set "$1"; then
     backup_all
   else
-    is_not_directory "$VOLUME_PATH/$1" && error "Volume '$1' not found (is it mounted?)"
+    ! is_directory "$VOLUME_PATH/$1" && error "Volume '$1' not found (is it mounted?)"
     backup_volume "$1"
   fi
 

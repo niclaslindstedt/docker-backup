@@ -20,7 +20,7 @@ error() {
 }
 
 is_not_empty() {
-  is_not_directory "$1" && return 1
+  ! is_directory "$1" && return 1
   [ "$(find "$1" | wc -l)" -gt 1 ]
 }
 
@@ -33,7 +33,7 @@ get_volume_name() {
 
 # Free space in kilobytes
 get_free_space() {
-  is_not_directory "$1" && { echo "0"; return 1; }
+  ! is_directory "$1" && { echo "0"; return 1; }
   df -P "$1" | tail -1 | awk '{print $4}'
 }
 
@@ -41,7 +41,7 @@ get_free_space_gb() { echo "$(($(get_free_space "$1") / 1024 / 1024))"; }
 
 # Folder size in kilobytes
 get_folder_size() {
-  is_not_directory "$1" && { echo "0"; return 1; }
+  ! is_directory "$1" && { echo "0"; return 1; }
   du -s "$1" | awk '{print $1}'
 }
 
@@ -50,7 +50,7 @@ get_folder_size_gb() { echo "$(($(get_folder_size "$1") / 1024 / 1024))"; }
 get_folder_size_str() { echo "$(get_folder_size_mb "$1") MB"; }
 
 get_file_size() {
-  is_not_file "$1" && { echo "0"; return 1; }
+  ! is_file "$1" && { echo "0"; return 1; }
   stat -c%s "$1"
 }
 
@@ -90,12 +90,9 @@ contains_numeric_date() {
 }
 
 create_checksum() {
-  local filename
-
-  filename="$1"
-  [ "$CREATE_CHECKSUMS" = "true" ] && {
-    logv "Creating checksum at $filename.sfv"
-    cksfv -q -b "$filename" > "$filename.sfv" || error "Could not create checksum for $filename"
+  should_create_checksum && is_file "$1" && {
+    logv "Creating checksum at $1.sfv"
+    cksfv -q -b "$1" > "$1.sfv" || error "Could not create checksum for $1"
   }
 }
 
@@ -103,8 +100,7 @@ verify_checksum() {
   local filename
 
   filename="$1.sfv"
-  [ "$VERIFY_CHECKSUMS" = "true" ] && {
-    is_not_file "$filename" && return 1
+  [ "$VERIFY_CHECKSUMS" = "true" ] && is_file "$filename" && {
     logv "Verifying checksum $filename"
     cksfv -q -g "$filename" || error "Could not verify checksum for $1"
   }
@@ -206,10 +202,8 @@ is_encrypted() { [[ "$1" =~ \.enc$ ]]; }
 is_verbose() { [ "$VERBOSE" = "true" ]; }
 is_debug() { [ "$DEBUG" = "true" ]; }
 is_file() { [ -f "$1" ]; }
-is_not_file() { [ ! -f "$1" ]; }
 is_directory() { [ -d "$1" ]; }
-is_not_directory() { [ ! -d "$1" ]; }
 is_set() { [ -n "$1" ]; }
-is_not_set() { [ -z "$1" ]; }
+should_create_checksum() { [ "$CREATE_CHECKSUMS" = "true" ]; }
 
 OUTPUT="$(get_output)"

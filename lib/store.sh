@@ -25,7 +25,7 @@ store() {
   volume_name=$(get_volume_name "$1")
   target_path="$LTS_PATH/$volume_name"
   target_filename="$target_path/$1"
-  is_not_file "$target_filename" && {
+  ! is_file "$target_filename" && {
     copy_backup "$1" "$target_path"
     verify_checksum "$target_filename" || error "Checksum verification failed on $target_filename"
   }
@@ -34,7 +34,7 @@ store() {
 copy_backup() {
   local free_space file_size_str
 
-  is_file "$1" && is_not_file "$2/$1" && {
+  is_file "$1" && ! is_file "$2/$1" && {
     mkdir -p "$2"
     free_space=$(get_free_space "$2")
     file_size_str=$(get_file_size_str "$1")
