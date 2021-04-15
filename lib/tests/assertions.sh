@@ -57,17 +57,9 @@ assert_string_contains() {
   fi
 }
 
-assert_null() {
-  assert_equals "" "$1"
-}
-
-assert_false() {
-  assert_equals "false" "$1"
-}
-
-assert_true() {
-  assert_equals "true" "$1"
-}
+assert_null() { assert_equals "" "$1"; }
+assert_false() { assert_equals "false" "$1"; }
+assert_true() { assert_equals "true" "$1"; }
 
 # param 1: expected string, param 2: actual string
 assert_equals() {
@@ -78,11 +70,5 @@ assert_equals() {
   fi
 }
 
-assert_success() {
-  (/bin/echo -e "${DARK_GREEN}Assertion successful:${EC} $*")
-}
-
-assert_fail() {
-  (/bin/echo -e "${DARK_RED}Assertion failed:${EC} $*"
-  exit 1)
-}
+assert_success() { (/bin/echo -e "${DARK_GREEN}Assertion successful:${EC} $*"); }
+assert_fail() { (/bin/echo -e "${DARK_RED}Assertion failed:${EC} $*"; exit 1); }

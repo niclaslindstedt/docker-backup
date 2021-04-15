@@ -10,6 +10,7 @@ RUN apt-get install -y \
     p7zip \
     rar \
     unrar \
+    uuid-runtime \
     zip \
   && rm -rf /var/lib/apt/lists/*
 ARG RUN_AS_USER=docker-backup

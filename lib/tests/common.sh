@@ -1,6 +1,8 @@
 #!/bin/bash
 
-TEST_PATH="/tmp/0f0dddf7"
+# shellcheck disable=SC2034
+
+TEST_PATH="/tmp/$(uuidgen)"
 GRAY="\e[2m"
 RED="\e[31m"
 GREEN="\e[32m"

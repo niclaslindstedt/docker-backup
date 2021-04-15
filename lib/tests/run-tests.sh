@@ -3,7 +3,7 @@
 # This script will run all test functions that start with "test__"
 # and deliver a result of the tests and their assertions.
 
-# shellcheck disable=SC1090,SC2034
+# shellcheck disable=SC1090,SC2034,SC2153
 
 COMPONENT="TEST"
 
@@ -45,6 +45,8 @@ trigger_tests() {
 
 run_test() {
   function_exists "__before_all" && __before_all
+  test_path="$TEST_PATH/$(uuidgen)"
+  /bin/mkdir -p "$test_path" && cd "$test_path" || exit 1
   /bin/echo -e "${BLUE}[$test_num/$total_tests] Running test: $1${EC}"
   if (COMPONENT="TESTRUNNER" eval "$1"); then
     ((test_successes++))
@@ -83,12 +85,14 @@ load() {
 
 load "$APP_PATH/tests/assertions.sh"
 load "$APP_PATH/tests/common.sh"
-load "$APP_PATH/tests/specs/"__*_spec.sh
+  for spec in "$APP_PATH/tests/specs/"__*.sh; do
+    load "$spec"
+  done
 if is_spec "$RUN_SPEC"; then
   load "$APP_PATH/tests/specs/$RUN_SPEC"*
 else
-  for spec in $(find "$APP_PATH/tests/specs" -type f -not -iname "__*.sh"); do
-    load "$spec"
+  for spec in "$APP_PATH/tests/specs/"*; do
+    [[ "$spec" =~ ^[^_].*_spec\.sh$ ]] && load "$spec"
   done
 fi
 /bin/echo
