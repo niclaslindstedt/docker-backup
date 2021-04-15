@@ -97,12 +97,9 @@ create_checksum() {
 }
 
 verify_checksum() {
-  local filename
-
-  filename="$1.sfv"
-  [ "$VERIFY_CHECKSUMS" = "true" ] && is_file "$filename" && {
-    logv "Verifying checksum $filename"
-    cksfv -q -g "$filename" || error "Could not verify checksum for $1"
+  should_verify_checksum && is_file "$1" && is_file "$1.sfv" && {
+    logv "Verifying checksum for $1"
+    cksfv -q -g "$1.sfv" || error "Could not verify checksum for $1"
   }
 }
 
@@ -205,5 +202,6 @@ is_file() { [ -f "$1" ]; }
 is_directory() { [ -d "$1" ]; }
 is_set() { [ -n "$1" ]; }
 should_create_checksum() { [ "$CREATE_CHECKSUMS" = "true" ]; }
+should_verify_checksum() { [ "$VERIFY_CHECKSUMS" = "true" ]; }
 
 OUTPUT="$(get_output)"
