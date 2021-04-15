@@ -44,8 +44,9 @@ trigger_tests() {
 }
 
 run_test() {
+  function_exists "__before_all" && __before_all
   /bin/echo -e "${BLUE}[$test_num/$total_tests] Running test: $1${EC}"
-  if (COMPONENT="TESTRUNNER" TEST_PATH="/tmp/0f0dddf7" eval "$1"); then
+  if (COMPONENT="TESTRUNNER" eval "$1"); then
     ((test_successes++))
     /bin/echo -e "${LIGHT_GREEN}Test successful!${EC}"
   else
@@ -71,7 +72,8 @@ print_summary() {
 }
 
 function_exists() {
-  type -t "$1"
+  type -t "$1" >/dev/null && return 0
+  return 1
 }
 
 load() {
@@ -79,7 +81,6 @@ load() {
   source "$1"
 }
 
-source "$APP_PATH/common.sh"
 load "$APP_PATH/tests/assertions.sh"
 load "$APP_PATH/tests/common.sh"
 for spec in "$APP_PATH/tests/specs/"*; do

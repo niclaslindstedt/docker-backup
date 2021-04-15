@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__is_archive__returns_true_for_backup_tgz() {
   test_begin "is_archive returns true for backup ending with .tgz"
 

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__is_not_empty__returns_false_if_empty() {
   test_begin "is_not_empty returns false if directory is empty"
 

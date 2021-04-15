@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC1090,SC2034
+
+source "$APP_PATH/common.sh"
 
 testspec__logv__calls_echo_if_verbose() {
   test_begin "logv calls echo if VERBOSE is true"

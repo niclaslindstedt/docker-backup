@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC2162
+# shellcheck disable=SC1090,SC2162
+
+source "$APP_PATH/common.sh"
 
 testspec__get_reversed_backups__outputs_backups_in_reversed_order_in_backup_folder() {
   test_begin "get_reversed_backups outputs backups in reversed order in /backup"

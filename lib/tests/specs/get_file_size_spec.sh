@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__get_file_size__returns_file_size_in_bytes() {
   test_begin "get_file_size returns file size in bytes"
 

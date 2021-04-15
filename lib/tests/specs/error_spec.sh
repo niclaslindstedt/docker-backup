@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC1090,SC2034
+
+source "$APP_PATH/common.sh"
 
 testspec__error__starts_containers_if_stop_containers_is_set() {
   test_begin "error starts Docker containers if STOP_CONTAINERS is set"

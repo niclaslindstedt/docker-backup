@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__get_free_space__returns_free_space_in_kb_from_df() {
   test_begin "get_free_space returns free space in kilobytes from df"
 

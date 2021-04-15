@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__get_folder_size__returns_folder_size_in_kb_from_du() {
   test_begin "get_folder_size returns folder size in kilobytes from du"
 

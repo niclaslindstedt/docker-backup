@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__contains_numeric_date__returns_true_if_valid_date() {
   test_begin "contains_numeric_date returns true if valid date"
 

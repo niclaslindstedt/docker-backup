@@ -6,15 +6,6 @@ ONE_HOUR=3600
 ONE_DAY=$((ONE_HOUR * 24))
 ONE_WEEK=$((ONE_DAY * 7))
 ONE_MONTH=$((ONE_WEEK * 4))
-GRAY="\e[2m"
-RED="\e[31m"
-GREEN="\e[32m"
-YELLOW="\e[33m"
-BLUE="\e[34m"
-DARK_RED="\e[38;5;88m"
-LIGHT_GREEN="\e[92m"
-DARK_GREEN="\e[38;5;22m"
-EC="\e[0m"
 
 log() {
   echo -e "[$COMPONENT] $*" | tee -a "$LOG_PATH"

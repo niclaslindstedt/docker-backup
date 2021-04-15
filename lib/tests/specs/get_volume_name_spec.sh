@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck disable=SC1090
+
+source "$APP_PATH/common.sh"
+
 testspec__get_volume_name__returns_only_volume_name_from_archive_filename() {
   test_begin "get_volume_name returns only volume name from archive filename"
 
