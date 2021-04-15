@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_volume_name__returns_only_volume_name_from_archive_filename() {
+test__get_volume_name__returns_only_volume_name_from_archive_filename() {
   test_begin "get_volume_name returns only volume name from archive filename"
 
   # Arrange
@@ -17,7 +17,7 @@ testspec__get_volume_name__returns_only_volume_name_from_archive_filename() {
   assert_equals "sample-app-5" "$result"
 }
 
-testspec__get_volume_name__returns_volume_name_with_underscore() {
+test__get_volume_name__returns_volume_name_with_underscore() {
   test_begin "get_volume_name returns volume name with underscores"
 
   # Arrange

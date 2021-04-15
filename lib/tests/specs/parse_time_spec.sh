@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__parse_time__outputs_correct_unixtime() {
+test__parse_time__outputs_correct_unixtime() {
   test_begin "parse_time outputs correct unixtime"
 
   # Arrange
@@ -18,7 +18,7 @@ testspec__parse_time__outputs_correct_unixtime() {
   assert_equals "$expected_unixtime" "$result"
 }
 
-testspec__parse_time__outputs_0_if_bad_date() {
+test__parse_time__outputs_0_if_bad_date() {
   test_begin "parse_time outputs 0 if bad date"
 
   # Arrange

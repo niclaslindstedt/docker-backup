@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__is_archive__returns_true_for_backup_tgz() {
+test__is_archive__returns_true_for_backup_tgz() {
   test_begin "is_archive returns true for backup ending with .tgz"
 
   # Arrange
@@ -17,7 +17,7 @@ testspec__is_archive__returns_true_for_backup_tgz() {
   assert_true "$result"
 }
 
-testspec__is_archive__returns_true_for_backup_zip() {
+test__is_archive__returns_true_for_backup_zip() {
   test_begin "is_archive returns true for backup ending with .zip"
 
   # Arrange
@@ -30,7 +30,7 @@ testspec__is_archive__returns_true_for_backup_zip() {
   assert_true "$result"
 }
 
-testspec__is_archive__returns_true_for_backup_rar() {
+test__is_archive__returns_true_for_backup_rar() {
   test_begin "is_archive returns true for backup ending with .rar"
 
   # Arrange
@@ -43,7 +43,7 @@ testspec__is_archive__returns_true_for_backup_rar() {
   assert_true "$result"
 }
 
-testspec__is_archive__returns_true_for_backup_7z() {
+test__is_archive__returns_true_for_backup_7z() {
   test_begin "is_archive returns true for backup ending with .7z"
 
   # Arrange
@@ -56,7 +56,7 @@ testspec__is_archive__returns_true_for_backup_7z() {
   assert_true "$result"
 }
 
-testspec__is_archive__returns_false_if_file_does_not_start_with_backup() {
+test__is_archive__returns_false_if_file_does_not_start_with_backup() {
   test_begin "is_archive returns false if file does not start with backup"
 
   # Arrange
@@ -69,7 +69,7 @@ testspec__is_archive__returns_false_if_file_does_not_start_with_backup() {
   assert_false "$result"
 }
 
-testspec__is_archive__returns_false_if_date_is_too_short() {
+test__is_archive__returns_false_if_date_is_too_short() {
   test_begin "is_archive returns false if date is too short"
 
   # Arrange

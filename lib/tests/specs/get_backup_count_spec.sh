@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_backup_count__outputs_backup_count_in_backup_folder() {
+test__get_backup_count__outputs_backup_count_in_backup_folder() {
   test_begin "get_backup_count outputs backup count in /backup"
 
   # Arrange

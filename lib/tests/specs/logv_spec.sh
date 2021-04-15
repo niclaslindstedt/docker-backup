@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__logv__calls_echo_if_verbose() {
+test__logv__calls_echo_if_verbose() {
   test_begin "logv calls echo if VERBOSE is true"
 
   # Arrange
@@ -19,7 +19,7 @@ testspec__logv__calls_echo_if_verbose() {
   assert_string_ends_with "$(get_result)" "$test_message"
 }
 
-testspec__logv__does_not_call_echo_if_not_verbose() {
+test__logv__does_not_call_echo_if_not_verbose() {
   test_begin "logv does not call echo if VERBOSE is false"
 
   # Arrange

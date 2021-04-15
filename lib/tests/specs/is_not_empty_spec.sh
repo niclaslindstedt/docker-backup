@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__is_not_empty__returns_false_if_empty() {
+test__is_not_empty__returns_false_if_empty() {
   test_begin "is_not_empty returns false if directory is empty"
 
   # Arrange
@@ -18,7 +18,7 @@ testspec__is_not_empty__returns_false_if_empty() {
   assert_false "$result"
 }
 
-testspec__is_not_empty__returns_true_if_not_empty() {
+test__is_not_empty__returns_true_if_not_empty() {
   test_begin "is_not_empty returns true if directory is not empty"
 
   # Arrange

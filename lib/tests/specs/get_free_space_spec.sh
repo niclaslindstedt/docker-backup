@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_free_space__returns_free_space_in_kb_from_df() {
+test__get_free_space__returns_free_space_in_kb_from_df() {
   test_begin "get_free_space returns free space in kilobytes from df"
 
   # Arrange
@@ -20,7 +20,7 @@ testspec__get_free_space__returns_free_space_in_kb_from_df() {
   assert_equals "67961984" "$result"
 }
 
-testspec__get_free_space__returns_0_if_not_a_directory() {
+test__get_free_space__returns_0_if_not_a_directory() {
   test_begin "get_free_space returns 0 if not a directory"
 
   # Arrange

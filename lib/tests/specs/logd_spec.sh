@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__logd__calls_echo_if_debug() {
+test__logd__calls_echo_if_debug() {
   test_begin "logd calls echo if DEBUG is true"
 
   # Arrange
@@ -19,7 +19,7 @@ testspec__logd__calls_echo_if_debug() {
   assert_string_ends_with "$(get_result)" "$test_message"
 }
 
-testspec__logd__does_not_call_echo_if_not_debug() {
+test__logd__does_not_call_echo_if_not_debug() {
   test_begin "logd does not call echo if DEBUG is false"
 
   # Arrange

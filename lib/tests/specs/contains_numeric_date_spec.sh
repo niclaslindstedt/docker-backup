@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__contains_numeric_date__returns_true_if_valid_date() {
+test__contains_numeric_date__returns_true_if_valid_date() {
   test_begin "contains_numeric_date returns true if valid date"
 
   # Arrange
@@ -18,7 +18,7 @@ testspec__contains_numeric_date__returns_true_if_valid_date() {
   assert_true "$result"
 }
 
-testspec__contains_numeric_date__returns_false_if_too_short_date() {
+test__contains_numeric_date__returns_false_if_too_short_date() {
   test_begin "contains_numeric_date returns false if bad date"
 
   # Arrange
@@ -32,7 +32,7 @@ testspec__contains_numeric_date__returns_false_if_too_short_date() {
   assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_false_if_old_year() {
+test__contains_numeric_date__returns_false_if_old_year() {
   test_begin "contains_numeric_date returns false if old year"
 
   # Arrange
@@ -46,7 +46,7 @@ testspec__contains_numeric_date__returns_false_if_old_year() {
   assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_false_if_bad_month() {
+test__contains_numeric_date__returns_false_if_bad_month() {
   test_begin "contains_numeric_date returns false if bad month"
 
   # Arrange
@@ -60,7 +60,7 @@ testspec__contains_numeric_date__returns_false_if_bad_month() {
   assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_false_if_bad_day() {
+test__contains_numeric_date__returns_false_if_bad_day() {
   test_begin "contains_numeric_date returns false if bad day"
 
   # Arrange
@@ -74,7 +74,7 @@ testspec__contains_numeric_date__returns_false_if_bad_day() {
   assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_false_if_bad_hour() {
+test__contains_numeric_date__returns_false_if_bad_hour() {
   test_begin "contains_numeric_date returns false if bad hour"
 
   # Arrange
@@ -88,7 +88,7 @@ testspec__contains_numeric_date__returns_false_if_bad_hour() {
   assert_false "$result"
 }
 
-testspec__contains_numeric_date__returns_false_if_bad_minute() {
+test__contains_numeric_date__returns_false_if_bad_minute() {
   test_begin "contains_numeric_date returns false if bad minute"
 
   # Arrange
@@ -102,7 +102,7 @@ testspec__contains_numeric_date__returns_false_if_bad_minute() {
   assert_false "$result"
 }
 
-testspec__parse_time__returns_false_if_bad_second() {
+test__parse_time__returns_false_if_bad_second() {
   test_begin "parse_time returns false if bad second"
 
   # Arrange

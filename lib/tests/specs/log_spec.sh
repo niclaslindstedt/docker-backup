@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__log__calls_echo() {
+test__log__calls_echo() {
   test_begin "log calls echo"
 
   # Arrange

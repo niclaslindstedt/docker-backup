@@ -7,21 +7,10 @@ ONE_DAY=$((ONE_HOUR * 24))
 ONE_WEEK=$((ONE_DAY * 7))
 ONE_MONTH=$((ONE_WEEK * 4))
 
-log() {
-  echo -e "[$COMPONENT] $*" | tee -a "$LOG_PATH"
-}
-
-loga() {
-  echo -n "[$COMPONENT] $*" | tee -a "$LOG_PATH"
-}
-
-logv() {
-  [ "$VERBOSE" = "true" ] && log "$*"
-}
-
-logd() {
-  [ "$DEBUG" = "true" ] && log "$*"
-}
+log() { echo -e "[$COMPONENT] $*" | tee -a "$LOG_PATH"; }
+loga() { echo -n "[$COMPONENT] $*" | tee -a "$LOG_PATH"; }
+logv() { is_verbose && log "$*"; }
+logd() { is_debug && log "$*"; }
 
 error() {
   is_set "$1" && log "ERROR: $*"
@@ -32,17 +21,10 @@ error() {
 
 is_not_empty() {
   is_not_directory "$1" && return 1
-  [ "$(find "$1" | wc -l)" -gt 1 ] && return 0
-  return 1
+  [ "$(find "$1" | wc -l)" -gt 1 ]
 }
 
-is_archive() {
-  local filename
-
-  filename=$(basename "$1")
-  [[ "$filename" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]] && return 0
-  return 1
-}
+is_archive() { [[ "$(basename "$1")" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]]; }
 
 get_volume_name() {
   is_archive "$1" || return 1
@@ -55,9 +37,7 @@ get_free_space() {
   df -P "$1" | tail -1 | awk '{print $4}'
 }
 
-get_free_space_gb() {
-  echo "$(($(get_free_space "$1") / 1024 / 1024))"
-}
+get_free_space_gb() { echo "$(($(get_free_space "$1") / 1024 / 1024))"; }
 
 # Folder size in kilobytes
 get_folder_size() {
@@ -65,52 +45,29 @@ get_folder_size() {
   du -s "$1" | awk '{print $1}'
 }
 
-get_folder_size_mb() {
-  echo "$(($(get_folder_size "$1") / 1024))"
-}
-
-get_folder_size_gb() {
-  echo "$(($(get_folder_size "$1") / 1024 / 1024))"
-}
-
-get_folder_size_str() {
-  echo "$(get_folder_size_mb "$1") MB"
-}
+get_folder_size_mb() { echo "$(($(get_folder_size "$1") / 1024))"; }
+get_folder_size_gb() { echo "$(($(get_folder_size "$1") / 1024 / 1024))"; }
+get_folder_size_str() { echo "$(get_folder_size_mb "$1") MB"; }
 
 get_file_size() {
   is_not_file "$1" && { echo "0"; return 1; }
   stat -c%s "$1"
 }
 
-get_file_size_mb() {
-  echo "$(($(get_file_size "$1") / 1024 / 1024))"
-}
-
-get_file_size_str() {
-  echo "$(get_file_size_mb "$1") MB"
-}
+get_file_size_mb() { echo "$(($(get_file_size "$1") / 1024 / 1024))"; }
+get_file_size_str() { echo "$(get_file_size_mb "$1") MB"; }
 
 get_backups() {
   go "$BACKUP_PATH"
-    find . -iname "backup-${1:-*}-??????????????.*" | while read f; do is_archive "$f" && echo "$(basename $f)"; done
+    find . -iname "backup-${1:-*}-??????????????.*" | \
+      while read f; do is_archive "$f" && echo "$(basename $f)"; done
   back
 }
 
-get_backup_count() {
-  get_backups | wc -l
-}
-
-get_latest_backup() {
-  get_backups "$1" | sort -r -n | head -n 1
-}
-
-get_oldest_backup() {
-  get_backups "$1" | sort -n | head -n 1
-}
-
-get_reversed_backups() {
-  get_backups "$1" | sort -n -r
-}
+get_backup_count() { get_backups | wc -l; }
+get_latest_backup() { get_backups "$1" | sort -r -n | head -n 1; }
+get_oldest_backup() { get_backups "$1" | sort -n | head -n 1; }
+get_reversed_backups() { get_backups "$1" | sort -n -r; }
 
 parse_time() {
   local file_date file_year file_month file_day file_hour file_minute file_second
@@ -129,8 +86,7 @@ parse_time() {
 
 contains_numeric_date() {
   # Contains a substring of YYYYMMDDHHmmss
-  [[ "$1" =~ (19[7-9][0-9]|20[0-3][0-9])(01|02|03|04|05|06|07|08|09|10|11|12)([0-2][1-9]|30|31)([0-1][1-9]|2[0-3])([0-5][0-9])([0-5][0-9]) ]] && return 0
-  return 1
+  [[ "$1" =~ (19[7-9][0-9]|20[0-3][0-9])(01|02|03|04|05|06|07|08|09|10|11|12)([0-2][1-9]|30|31)([0-1][1-9]|2[0-3])([0-5][0-9])([0-5][0-9]) ]]
 }
 
 create_checksum() {
@@ -152,7 +108,6 @@ verify_checksum() {
     logv "Verifying checksum $filename"
     cksfv -q -g "$filename" || error "Could not verify checksum for $1"
   }
-  return 0
 }
 
 stop_containers() {
@@ -164,7 +119,6 @@ stop_containers() {
       docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
     }
   done
-  return 0
 }
 
 start_containers() {
@@ -176,7 +130,6 @@ start_containers() {
       docker start ${container_ids[*]} || return 1
     }
   done
-  return 0
 }
 
 pack() {
@@ -225,17 +178,6 @@ unpack() {
   back
 }
 
-is_encrypted() {
-  local filename
-
-  filename="$1"
-  [ "${filename##*.}" = "enc" ] && {
-    logv "Container is encrypted: $filename"
-    return 0
-  }
-  return 1
-}
-
 encrypt() {
   log "Encrypting archive to $2"
   openssl enc -e -v -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt \
@@ -255,58 +197,19 @@ decrypt() {
     -k "$ENCRYPTION_PASSWORD" -in "$1" -out "$2" 2>/"$OUTPUT" || error "Could not decrypt $1"
 }
 
-datetime() {
-  date +"%Y%m%d%H%M%S"
-}
-
-unixtime() {
-  date +"%s"
-}
-
-go() {
-  pushd "$1" 1>"$OUTPUT" || error "Could not change directory to $1"
-}
-
-back() {
-  popd 1>"$OUTPUT" || error "Could not go back to previous path"
-}
-
-get_output() {
-  if [[ "$DEBUG" = "true" ]]; then
-    echo "/dev/stdout"
-  else
-    echo "/dev/null"
-  fi
-}
-
-is_file() {
-  [ -f "$1" ] && return 0
-  return 1
-}
-
-is_not_file() {
-  [ ! -f "$1" ] && return 0
-  return 1
-}
-
-is_directory() {
-  [ -d "$1" ] && return 0
-  return 1
-}
-
-is_not_directory() {
-  [ ! -d "$1" ] && return 0
-  return 1
-}
-
-is_set() {
-  [ -n "$1" ] && return 0
-  return 1
-}
-
-is_not_set() {
-  [ -z "$1" ] && return 0
-  return 1
-}
+datetime() { date +"%Y%m%d%H%M%S"; }
+unixtime() { date +"%s"; }
+go() { pushd "$1" 1>"$OUTPUT" || error "Could not change directory to $1"; }
+back() { popd 1>"$OUTPUT" || error "Could not go back to previous path"; }
+get_output() { is_debug && echo "/dev/stdout" || echo "/dev/null"; }
+is_encrypted() { [[ "$1" =~ \.enc$ ]]; }
+is_verbose() { [ "$VERBOSE" = "true" ]; }
+is_debug() { [ "$DEBUG" = "true" ]; }
+is_file() { [ -f "$1" ]; }
+is_not_file() { [ ! -f "$1" ]; }
+is_directory() { [ -d "$1" ]; }
+is_not_directory() { [ ! -d "$1" ]; }
+is_set() { [ -n "$1" ]; }
+is_not_set() { [ -z "$1" ]; }
 
 OUTPUT="$(get_output)"

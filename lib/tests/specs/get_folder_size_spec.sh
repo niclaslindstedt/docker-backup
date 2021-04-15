@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_folder_size__returns_folder_size_in_kb_from_du() {
+test__get_folder_size__returns_folder_size_in_kb_from_du() {
   test_begin "get_folder_size returns folder size in kilobytes from du"
 
   # Arrange
@@ -19,7 +19,7 @@ testspec__get_folder_size__returns_folder_size_in_kb_from_du() {
   assert_equals "22530640" "$result"
 }
 
-testspec__get_folder_size__returns_0_if_not_a_directory() {
+test__get_folder_size__returns_0_if_not_a_directory() {
   test_begin "get_folder_size returns 0 if not a directory"
 
   # Arrange

@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__backup_remove_restore() {
+test__backup_remove_restore() {
   local file_to_restore
 
   test_begin "Backup, remove and then restore file"
@@ -23,7 +23,7 @@ testspec__backup_remove_restore() {
   assert_file_exists "$file_to_restore"
 }
 
-testspec__backup_remove_restore_encrypted() {
+test__backup_remove_restore_encrypted() {
   local file_to_restore latest_backup
 
   test_begin "Backup, remove and then restore file (with encryption)"
@@ -46,7 +46,7 @@ testspec__backup_remove_restore_encrypted() {
   assert_file_exists "$file_to_restore"
 }
 
-testspec__restore_encrypted_with_bad_password() {
+test__restore_encrypted_with_bad_password() {
   local file_to_restore latest_backup
 
   test_begin "Restore encrypted backup with bad password"

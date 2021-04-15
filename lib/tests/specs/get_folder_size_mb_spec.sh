@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_folder_size_mb__returns_folder_size_in_mb() {
+test__get_folder_size_mb__returns_folder_size_in_mb() {
   test_begin "get_folder_size_mb returns folder size in mb"
 
   # Arrange

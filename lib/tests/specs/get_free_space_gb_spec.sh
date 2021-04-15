@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_free_space_gb__returns_free_space_in_gb() {
+test__get_free_space_gb__returns_free_space_in_gb() {
   test_begin "get_free_space_gb returns free space in gb"
 
   # Arrange

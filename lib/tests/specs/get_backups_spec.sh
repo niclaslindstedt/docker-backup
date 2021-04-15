@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_backups__lists_backups_in_backup_folder() {
+test__get_backups__lists_backups_in_backup_folder() {
   test_begin "get_backups lists backups in /backup"
 
   # Arrange
@@ -19,7 +19,7 @@ testspec__get_backups__lists_backups_in_backup_folder() {
   assert_equals "3" "$result"
 }
 
-testspec__get_backups__does_not_list_sfv_files() {
+test__get_backups__does_not_list_sfv_files() {
   test_begin "get_backups lists backups in /backup"
 
   # Arrange
@@ -36,7 +36,7 @@ testspec__get_backups__does_not_list_sfv_files() {
   assert_equals "4" "$result"
 }
 
-testspec__get_backups__only_lists_given_argument() {
+test__get_backups__only_lists_given_argument() {
   test_begin "get_backups lists backups matching given argument in /backup"
 
   # Arrange

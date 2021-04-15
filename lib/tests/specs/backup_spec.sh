@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__backup__two_volumes_creates_two_backups() {
+test__backup__two_volumes_creates_two_backups() {
   local backup_count
 
   test_begin "Backup two volumes and get two backups"
@@ -18,7 +18,7 @@ testspec__backup__two_volumes_creates_two_backups() {
   assert_equals "2" "$backup_count"
 }
 
-testspec__backup__volume_with_correct_name() {
+test__backup__volume_with_correct_name() {
   local backup_count
 
   test_begin "Backup a volume with the correct backup filename"

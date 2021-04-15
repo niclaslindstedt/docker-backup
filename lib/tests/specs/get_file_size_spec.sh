@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_file_size__returns_file_size_in_bytes() {
+test__get_file_size__returns_file_size_in_bytes() {
   test_begin "get_file_size returns file size in bytes"
 
   # Arrange
@@ -19,7 +19,7 @@ testspec__get_file_size__returns_file_size_in_bytes() {
   assert_equals "1113999" "$result"
 }
 
-testspec__get_file_size__returns_0_if_file_does_not_exist() {
+test__get_file_size__returns_0_if_file_does_not_exist() {
   test_begin "get_file_size returns file size in bytes"
 
   # Arrange

@@ -4,7 +4,7 @@
 
 source "$APP_PATH/common.sh"
 
-testspec__get_latest_backup__outputs_the_latest_backup_in_backup_folder() {
+test__get_latest_backup__outputs_the_latest_backup_in_backup_folder() {
   test_begin "get_latest_backup outputs the latest backup in /backup"
 
   # Arrange

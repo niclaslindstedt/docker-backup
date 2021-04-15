@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script will run all test functions that start with "testspec_"
+# This script will run all test functions that start with "test__"
 # and deliver a result of the tests and their assertions.
 
 # shellcheck disable=SC1090,SC2034
@@ -15,7 +15,7 @@ main() {
   failed_tests=()
   total_tests=0
   test_num=1
-  is_set "$1" && RUN_TEST="$1"
+  is_set "$1" && is_test "$1" && RUN_TEST="$1"
 
   trigger_tests
   print_summary
@@ -83,9 +83,14 @@ load() {
 
 load "$APP_PATH/tests/assertions.sh"
 load "$APP_PATH/tests/common.sh"
-for spec in "$APP_PATH/tests/specs/"*; do
-  load "$spec"
-done
+load "$APP_PATH/tests/specs/"__*_spec.sh
+if is_spec "$RUN_SPEC"; then
+  load "$APP_PATH/tests/specs/$RUN_SPEC"*
+else
+  for spec in $(find "$APP_PATH/tests/specs" -type f -not -iname "__*.sh"); do
+    load "$spec"
+  done
+fi
 /bin/echo
 
 main "$*"
