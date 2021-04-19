@@ -10,7 +10,7 @@ COMPONENT="RESTORE"
 main() {
   log "Starting restore process"
 
-  is_set "$PAUSE_CONTAINERS" && pause_containers
+  is_set "$PAUSE_CONTAINERS" && pause_containers "$PAUSE_CONTAINERS"
 
   go "$BACKUP_PATH"
     if is_set "$1"; then
@@ -21,7 +21,7 @@ main() {
     fi
   back
 
-  is_set "$PAUSE_CONTAINERS" && start_containers
+  is_set "$PAUSE_CONTAINERS" && start_containers "$PAUSE_CONTAINERS"
 
   log "Finished restore process"
 }
