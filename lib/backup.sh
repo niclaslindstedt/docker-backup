@@ -10,7 +10,7 @@ COMPONENT="BACKUP"
 main() {
   log "Starting backup process"
 
-  is_set "$STOP_CONTAINERS" && stop_containers
+  is_set "$PAUSE_CONTAINERS" && pause_containers
 
   if ! is_set "$1"; then
     backup_all
@@ -19,7 +19,7 @@ main() {
     backup_volume "$1"
   fi
 
-  is_set "$STOP_CONTAINERS" && start_containers
+  is_set "$PAUSE_CONTAINERS" && start_containers
 
   log "Finished backup process"
 }

@@ -4,11 +4,11 @@
 
 source "$APP_PATH/common.sh"
 
-test__error__starts_containers_if_stop_containers_is_set() {
-  test_begin "error starts Docker containers if STOP_CONTAINERS is set"
+test__error__starts_containers_if_pause_containers_is_set() {
+  test_begin "error starts Docker containers if PAUSE_CONTAINERS is set"
 
   # Arrange
-  STOP_CONTAINERS="container1, container2"
+  PAUSE_CONTAINERS="container1, container2"
   set_result "false"
   start_containers() { set_result "true"; }
   exit() { noop; }
@@ -20,11 +20,11 @@ test__error__starts_containers_if_stop_containers_is_set() {
   assert_true "$(get_result)"
 }
 
-test__error__does_not_start_containers_if_stop_containers_is_null() {
-  test_begin "error does not start containers if STOP_CONTAINERS is null"
+test__error__does_not_start_containers_if_pause_containers_is_null() {
+  test_begin "error does not start containers if PAUSE_CONTAINERS is null"
 
   # Arrange
-  STOP_CONTAINERS=""
+  PAUSE_CONTAINERS=""
   set_result "false"
   start_containers() { set_result "true"; }
   exit() { noop; }

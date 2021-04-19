@@ -14,7 +14,7 @@ logd() { is_debug && log "$*"; }
 
 error() {
   is_set "$1" && log "ERROR: $*"
-  is_set "$STOP_CONTAINERS" && start_containers
+  is_set "$PAUSE_CONTAINERS" && start_containers
   log "Exiting script"
   exit 1
 }
@@ -59,8 +59,9 @@ get_file_size_str() { echo "$(get_file_size_mb "$1") MB"; }
 
 get_backups() {
   go "$BACKUP_PATH"
+    # shellcheck disable=SC2162
     find . -iname "backup-${1:-*}-??????????????.*" | \
-      while read f; do is_archive "$f" && echo "$(basename $f)"; done
+      while read f; do is_archive "$f" && basename "$f"; done
   back
 }
 
@@ -103,23 +104,33 @@ verify_checksum() {
   }
 }
 
-stop_containers() {
-  log "Stopping containers: $STOP_CONTAINERS (timeout: $DOCKER_STOP_TIMEOUT seconds)"
-  IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
+get_container_ids() {
+  docker ps -q --filter name="${PROJECT_NAME}_$(echo "$1" | xargs)_" "$2"
+}
+
+get_all_container_ids() {
+  get_container_ids "$1" "-a"
+}
+
+pause_containers() {
+  log "Pausing containers: $PAUSE_CONTAINERS"
+  IFS=',' read -ra containers <<< "$PAUSE_CONTAINERS"
   for container_name in "${containers[@]}"; do
-    read -ra container_ids <<< "$(docker ps -q --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
+    read -ra container_ids <<< "$(get_container_ids "$container_name")"
     is_set "${container_ids[*]}" && {
-      docker stop --time "$DOCKER_STOP_TIMEOUT" ${container_ids[*]} || return 1
+      # shellcheck disable=SC2086
+      docker pause ${container_ids[*]} || return 1
     }
   done
 }
 
 start_containers() {
-  log "Starting containers: $STOP_CONTAINERS"
-  IFS=',' read -ra containers <<< "$STOP_CONTAINERS"
+  log "Starting containers: $PAUSE_CONTAINERS"
+  IFS=',' read -ra containers <<< "$PAUSE_CONTAINERS"
   for container_name in "${containers[@]}"; do
-    read -ra container_ids <<< "$(docker ps -aq --filter name="${PROJECT_NAME}_$(echo "$container_name" | xargs)_")"
+    read -ra container_ids <<< "$(get_all_container_ids "$container_name")"
     is_set "${container_ids[*]}" && {
+      # shellcheck disable=SC2086
       docker start ${container_ids[*]} || return 1
     }
   done

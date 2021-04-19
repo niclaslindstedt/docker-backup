@@ -26,12 +26,11 @@ services:
       - CREATE_CHECKSUMS=true
       - VERIFY_CHECKSUMS=true
       - PROJECT_NAME=docker-backup # should be set to the folder name (used for matching containers)
-      - STOP_CONTAINERS=sample-app-1,sample-app-2
+      - PAUSE_CONTAINERS=sample-app-1,sample-app-2
       - ARCHIVE_TYPE=7z
       - ENCRYPT_ARCHIVES=true
       - ENCRYPTION_PASSWORD=passw0rd
       - VERBOSE=true
-      - DOCKER_STOP_TIMEOUT=5
     volumes:
       - ./lib:/usr/local/lib/docker-backup
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
