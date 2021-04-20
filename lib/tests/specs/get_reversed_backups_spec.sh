@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC1090,SC2162
+# shellcheck disable=SC1091,SC2162
 
 source "$APP_PATH/common.sh"
 

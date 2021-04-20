@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 
 source "$APP_PATH/common.sh"
 
@@ -9,6 +9,20 @@ test__contains_numeric_date__returns_true_if_valid_date() {
 
   # Arrange
   backup_filename="backup-test-backup-20140517223559.tgz"
+  result=false
+
+  # Act
+  contains_numeric_date "$backup_filename" && result=true
+
+  # Assert
+  assert_true "$result"
+}
+
+test__contains_numeric_date__returns_true_if_valid_date_2() {
+  test_begin "parse_time returns true if valid date (2)"
+
+  # Arrange
+  backup_filename="backup-test-backup-20210110120000.tgz"
   result=false
 
   # Act
@@ -102,8 +116,8 @@ test__contains_numeric_date__returns_false_if_bad_minute() {
   assert_false "$result"
 }
 
-test__parse_time__returns_false_if_bad_second() {
-  test_begin "parse_time returns false if bad second"
+test__contains_numeric_date__returns_false_if_bad_second() {
+  test_begin "contains_numeric_date returns false if bad second"
 
   # Arrange
   backup_filename="backup-test-backup-19891131235960.tgz"

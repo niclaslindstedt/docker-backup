@@ -3,7 +3,7 @@
 # This script will copy files from the backup
 # location to the long-term storage location.
 
-# shellcheck disable=SC1090,SC2034
+# shellcheck disable=SC1091,SC2034
 
 COMPONENT="LTS"
 

@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091,SC2034
 
 source "$APP_PATH/common.sh"
 
 test__backup_remove_restore() {
   local file_to_restore
 
-  test_begin "Backup, remove and then restore file"
+  test_begin "Create a backup of a volume, remove a file from the volume and then restore the backup"
 
   # Arrange
   file_to_restore="$VOLUME_PATH/test/test_file_2"
@@ -26,7 +26,7 @@ test__backup_remove_restore() {
 test__backup_remove_restore_encrypted() {
   local file_to_restore latest_backup
 
-  test_begin "Backup, remove and then restore file (with encryption)"
+  test_begin "Create an encrypted backup of a volume, remove a file from the volume and then restore the encrypted backup"
 
   # Arrange
   ENCRYPT_ARCHIVES=true
@@ -49,7 +49,7 @@ test__backup_remove_restore_encrypted() {
 test__restore_encrypted_with_bad_password() {
   local file_to_restore latest_backup
 
-  test_begin "Restore encrypted backup with bad password"
+  test_begin "Try to restore an encrypted backup with a bad password"
 
   # Arrange
   ENCRYPT_ARCHIVES=true
