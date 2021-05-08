@@ -38,6 +38,7 @@ ENV ENABLE_LTS=true \
   CRON_BACKUP="0 5 * * *" \
   CRON_LTS="0 9 * * *" \
   CRON_PRUNE="0 3 * * *" \
+  TZ_DIFF=2 \
   VERBOSE=false \
   DEBUG=false \
   ASSUME_YES=false \

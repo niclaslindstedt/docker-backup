@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__is_not_empty__returns_false_if_empty() {
   test_begin "is_not_empty returns false if directory is empty"

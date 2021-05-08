@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1091,SC2034
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__create_checksum__calls_cksfv_if_create_checksums_is_true() {
   test_begin "create_checksum calls cksfv if CREATE_CHECKSUMS is true"

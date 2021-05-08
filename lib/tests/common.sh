@@ -3,6 +3,9 @@
 # shellcheck disable=SC2034
 
 TEST_PATH="/tmp/$(uuidgen)"
+BACKUP_PATH="/backup"
+LTS_PATH="/lts"
+VOLUME_PATH="/volumes"
 GRAY="\e[2m"
 RED="\e[31m"
 GREEN="\e[32m"

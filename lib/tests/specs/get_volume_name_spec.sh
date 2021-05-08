@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__get_volume_name__returns_only_volume_name_from_archive_filename() {
   test_begin "get_volume_name returns only volume name from archive filename"

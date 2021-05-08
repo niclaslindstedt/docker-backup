@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1091,SC2034
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__get_container_filter__returns_trimmed_project_name() {
   test_begin "get_container_filter returns trimmed project name"

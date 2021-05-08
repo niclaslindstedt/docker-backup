@@ -3,7 +3,7 @@
 # This script will restore a backup
 # into its corresponding volume.
 
-# shellcheck disable=SC1091,SC2034
+# shellcheck disable=SC1090,SC1091,SC2034
 
 COMPONENT="RESTORE"
 
@@ -80,6 +80,6 @@ restore_volume() {
   unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name backup"
 }
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 main "$1"

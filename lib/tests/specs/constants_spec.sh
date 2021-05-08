@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__one_hour__is_one_hour_in_seconds() {
   test_begin "ONE_HOUR is one hour in seconds"
@@ -29,5 +29,5 @@ test__one_month__is_one_month_in_seconds() {
   test_begin "ONE_MONTH is one month in seconds"
 
   # Assert
-  assert_equals "2419200" "$ONE_MONTH"
+  assert_equals "2628002" "$ONE_MONTH" # 30,4167 days
 }

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__get_folder_size_str__returns_folder_size_in_mb_with_unit() {
   test_begin "get_folder_size_str returns folder size in mb with unit"

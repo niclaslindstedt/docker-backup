@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__get_backup_count__outputs_backup_count_in_backup_folder() {
   test_begin "get_backup_count outputs backup count in /backup"

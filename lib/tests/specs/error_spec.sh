@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1091,SC2034
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__error__starts_containers_if_pause_containers_is_set() {
   test_begin "error starts Docker containers if PAUSE_CONTAINERS is set"

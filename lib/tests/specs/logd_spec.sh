@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1091,SC2034
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__logd__calls_echo_if_debug() {
   test_begin "logd calls echo if DEBUG is true"

@@ -3,7 +3,7 @@
 # This script will copy files from the backup
 # location to the long-term storage location.
 
-# shellcheck disable=SC1091,SC2034
+# shellcheck disable=SC1090,SC1091,SC2034
 
 COMPONENT="LTS"
 
@@ -44,6 +44,6 @@ copy_backup() {
   }
 }
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 main "$1"

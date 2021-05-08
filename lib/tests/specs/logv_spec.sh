@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1091,SC2034
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__logv__calls_echo_if_verbose() {
   test_begin "logv calls echo if VERBOSE is true"

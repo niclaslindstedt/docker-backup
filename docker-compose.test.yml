@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   sut:
@@ -13,6 +13,8 @@ services:
       - DEBUG=false
       - RUN_TEST=${RUN_TEST}
       - RUN_SPEC=${RUN_SPEC}
+      - TZ_DIFF=2 # Diff from UTC (put +2 for Stockholm, -5 for New York, etc)
     volumes:
       - ./lib:/usr/local/lib/docker-backup
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
+      - /etc/localtime:/etc/localtime:ro # to get accurate time for backups

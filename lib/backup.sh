@@ -3,7 +3,7 @@
 # This script will create tarball gzips of all
 # mounted volumes in the volume location.
 
-# shellcheck disable=SC1091,SC2034,SC2153
+# shellcheck disable=SC1090,SC1091,SC2034,SC2153
 
 COMPONENT="BACKUP"
 
@@ -68,6 +68,6 @@ backup_volume() {
   pack "$backup_path" "$1" || error "Could not backup $backup_filename"
 }
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 main "$1"

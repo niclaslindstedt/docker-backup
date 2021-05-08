@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   sample-app-1:
@@ -31,6 +31,7 @@ services:
       - ENCRYPT_ARCHIVES=true
       - ENCRYPTION_PASSWORD=passw0rd
       - VERBOSE=true
+      - TZ_DIFF=2 # Diff from UTC (put +2 for Stockholm, -5 for New York, etc)
     volumes:
       - ./lib:/usr/local/lib/docker-backup
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__get_latest_backup__outputs_the_latest_backup_in_backup_folder() {
   test_begin "get_latest_backup outputs the latest backup in /backup"

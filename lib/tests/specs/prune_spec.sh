@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091,SC2034,SC2012
+# shellcheck disable=SC1090,SC1091,SC2034,SC2012
 
-source "$APP_PATH/common.sh"
-source "$APP_PATH/prune_functions.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
+for f in "$APP_PATH"/prune/*; do . "$f"; done
 
-test__purge_2_day_old_backups() {
-  local file_to_restore latest_backup
-
+test__purge_backups__purge_2_day_old_backups() {
   test_begin "Purge 2 day old backups from short-term backup path"
 
   # Arrange
@@ -37,9 +35,7 @@ test__purge_2_day_old_backups() {
   assert_equals "6" "$(ls "$BACKUP_PATH" | wc -l)"
 }
 
-test__purge_4_day_old_backups() {
-  local file_to_restore latest_backup
-
+test__purge_backups__purge_4_day_old_backups() {
   test_begin "Purge 4 day old backups from short-term backup path"
 
   # Arrange
@@ -68,4 +64,105 @@ test__purge_4_day_old_backups() {
 
   # Assert
   assert_equals "9" "$(ls "$BACKUP_PATH" | wc -l)"
+}
+
+test__prune_lts__prune_daily_backups() {
+  test_begin "Prune long-term storage backups"
+
+  # Arrange
+  KEEP_DAILY_AFTER_HOURS=24
+  KEEP_WEEKLY_AFTER_DAYS=7
+  unixtime() { date --date "2021-01-01 00:01:23" +"%s"; }
+  unixtime_this_hour() { date --date "2021-01-01 00:00:00" +"%s"; }
+  unixtime_this_day() { date --date "2021-01-01 00:00:00" +"%s"; }
+  generate_hourly_lts_backups "sample-app-1" "2021-01-01 00:00:10" 6 # 6 days of hourly backups ending at 1st jan 00:00:10
+
+  # Act
+  prune_lts
+
+  # Assert
+  assert_equals "30" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+}
+
+test__prune_lts__prune_weekly_backups() {
+  test_begin "Prune long-term storage backups"
+
+  # Arrange
+  KEEP_LTS_FOR_MONTHS=12
+  KEEP_DAILY_AFTER_HOURS=24
+  KEEP_WEEKLY_AFTER_DAYS=7
+  KEEP_MONTHLY_AFTER_WEEKS=10
+  unixtime() { date --date "2021-01-01 00:01:23" +"%s"; }
+  unixtime_this_hour() { date --date "2021-01-01 00:00:00" +"%s"; }
+  unixtime_this_day() { date --date "2021-01-01 00:00:00" +"%s"; }
+  unixtime_this_week() { date --date "2020-12-28 00:00:00" +"%s"; }
+  unixtime_this_month() { date --date "2020-01-01 00:00:00" +"%s"; }
+  generate_daily_lts_backups "sample-app-1" "2021-01-01 00:00:05" 40 # 40 days of daily backups ending at 1st jan 00:00:05
+  generate_hourly_lts_backups "sample-app-1" "2021-01-01 00:00:10" 8 # 8 days of hourly backups ending at 1st jan 00:00:10
+
+  # Act
+  prune_lts
+
+  # Assert
+  assert_equals "38" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+}
+
+test__prune_lts__prune_monthly_backups() {
+  test_begin "Prune long-term storage backups"
+
+  # Arrange
+  KEEP_LTS_FOR_MONTHS=12
+  KEEP_DAILY_AFTER_HOURS=24
+  KEEP_WEEKLY_AFTER_DAYS=7
+  KEEP_MONTHLY_AFTER_WEEKS=10
+  unixtime() { date --date "2021-01-01 00:01:23" +"%s"; }
+  unixtime_this_hour() { date --date "2021-01-01 00:00:00" +"%s"; }
+  unixtime_this_day() { date --date "2021-01-01 00:00:00" +"%s"; }
+  unixtime_this_week() { date --date "2020-12-28 00:00:00" +"%s"; }
+  unixtime_this_month() { date --date "2021-01-01 00:00:00" +"%s"; }
+  generate_daily_lts_backups "sample-app-1" "2021-01-01 00:00:05" 370 # 370 days of daily backups ending at 1st jan 00:00:05
+  generate_hourly_lts_backups "sample-app-1" "2021-01-01 00:00:10" 8 # 8 days of hourly backups ending at 1st jan 00:00:10
+
+  # Act
+  prune_lts
+
+  # Assert
+  assert_equals "51" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+}
+
+
+# Helper functions
+
+generate_hourly_lts_backups() {
+  local timestamp starttime now backuptime backupname
+
+  timestamp="$(date --date="$2" +"%s")"
+  starttime="$((timestamp - $3 * ONE_DAY))" # calculate when we should start generating backups
+  logd "Hourly backups generated from $starttime"
+  now="$(date -d "@$starttime" +"%s")" # start from this date and generate backups until today
+  mkdir -p "$LTS_PATH/$1"
+  for day in $(seq 1 "$3"); do
+    for hour in $(seq -f "%02g" 1 24); do
+      backuptime="$(date -d "@$now" +"%Y%m%d%H%M%S")"
+      backupname="$LTS_PATH/$1/backup-$1-$backuptime.tgz"
+      touch "$backupname"
+      now="$((now + ONE_HOUR))"
+    done
+  done
+}
+
+generate_daily_lts_backups() {
+  local timestamp starttime now backuptime backupname
+
+  timestamp="$(date --date "$2" +"%s")"
+  starttime="$((timestamp - $3 * ONE_DAY))" # calculate when we should start generating backups
+  logd "Daily backups generated from $starttime"
+  now="$(date -d "@$starttime" +"%s")" # start from this date and generate backups until today
+  mkdir -p "$LTS_PATH/$1"
+  for day in $(seq 1 "$3"); do
+    backuptime="$(date -d "@$now" +"%Y%m%d%H%M%S")"
+    backupname="$LTS_PATH/$1/backup-$1-$backuptime.tgz"
+    touch "$backupname"
+    now="$((now + ONE_DAY))"
+  done
 }

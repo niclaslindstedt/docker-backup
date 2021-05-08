@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# shellcheck disable=SC2034
+
+ONE_HOUR=3600
+ONE_DAY=$((ONE_HOUR * 24))
+ONE_WEEK=$((ONE_DAY * 7))
+ONE_MONTH=$((ONE_DAY * 304167 / 10000))
+ONE_YEAR=31556926
+FIRST_MONDAY=$((338400 + (TZ_DIFF - 1) * 3600)) # Mon Jan  5 00:00:00 CET 1970

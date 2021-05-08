@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1091,SC2162
 
-source "$APP_PATH/common.sh"
+for f in "$APP_PATH"/common/*; do . "$f"; done
 
 test__get_reversed_backups__outputs_backups_in_reversed_order_in_backup_folder() {
   test_begin "get_reversed_backups outputs backups in reversed order in /backup"
