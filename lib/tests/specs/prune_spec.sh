@@ -81,7 +81,7 @@ test__prune_lts__prune_daily_backups() {
   prune_lts
 
   # Assert
-  assert_equals "30" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+  assert_equals "29" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
 }
 
 test__prune_lts__prune_weekly_backups() {
@@ -104,7 +104,7 @@ test__prune_lts__prune_weekly_backups() {
   prune_lts
 
   # Assert
-  assert_equals "38" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+  assert_equals "37" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
 }
 
 test__prune_lts__prune_monthly_backups() {
@@ -127,7 +127,7 @@ test__prune_lts__prune_monthly_backups() {
   prune_lts
 
   # Assert
-  assert_equals "51" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+  assert_equals "50" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
 }
 
 

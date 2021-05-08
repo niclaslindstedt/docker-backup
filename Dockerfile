@@ -3,6 +3,7 @@ FROM ubuntu:18.04
 RUN apt-get update \
   && apt-get install -y curl \
   && curl -sSL https://get.docker.com/ | sh
+ENV TZ=UTC
 RUN apt-get install -y \
     cksfv \
     cron \
@@ -12,7 +13,8 @@ RUN apt-get install -y \
     unrar \
     uuid-runtime \
     zip \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ARG RUN_AS_USER=docker-backup
 RUN adduser --disabled-password --gecos "" ${RUN_AS_USER} \
   && adduser ${RUN_AS_USER} docker
@@ -38,7 +40,6 @@ ENV ENABLE_LTS=true \
   CRON_BACKUP="0 5 * * *" \
   CRON_LTS="0 9 * * *" \
   CRON_PRUNE="0 3 * * *" \
-  TZ_DIFF=2 \
   VERBOSE=false \
   DEBUG=false \
   ASSUME_YES=false \
