@@ -62,12 +62,12 @@ restore_volume() {
   is_not_empty "$target_volume" && {
     backup_existing_volume="y"
     [ "$ASSUME_YES" != "true" ] && {
-      loga "The volume $volume_name is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
+      loga "The volume '$volume_name' is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
       read -r backup_existing_volume
     }
     [ "$backup_existing_volume" != "n" ] && {
       prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(datetime).$ARCHIVE_TYPE"
-      log "Backing up $volume_name to $prerestore_backup_filename"
+      log "Backing up volume '$volume_name' to $prerestore_backup_filename"
       go "$target_volume"
         pack "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
       back
@@ -76,7 +76,7 @@ restore_volume() {
 
   # Restore backup
   volume_name=$(get_volume_name "$backup_name")
-  log "Restoring $volume_name backup to $target_volume"
+  log "Restoring backup of volume '$volume_name' to $target_volume"
   unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name backup"
 }
 

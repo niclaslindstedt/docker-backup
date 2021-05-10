@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  sample-app-1:
+    image: bash
+    command: bash -c "while true; do echo \"$$(date)\" > /data/$$(date +\"%s\"); sleep 10; done"
+    volumes:
+      - sample-app-data:/data
+
+  backup:
+    image: niclaslindstedt/docker-backup:latest
+    environment:
+      - CRON_BACKUP=* * * * *
+      - CRON_LTS=*/10 * * * *
+    volumes:
+      - sample-app-data:/volumes/test
+      - ./backups:/backup
+      - ftp-volume:/lts
+
+volumes:
+  sample-app-data:
+  ftp-volume:
+    external: true

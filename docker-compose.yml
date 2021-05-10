@@ -19,8 +19,8 @@ services:
     build: .
     restart: always
     environment:
-      - CRON_BACKUP=*/10 * * * * # create backups every minute
-      - CRON_LTS=*/30 * * * * # copy to long-term storage every 10 minutes
+      - CRON_BACKUP=* * * * * # create backups every minute
+      - CRON_LTS=*/10 * * * * # copy to long-term storage every 10 minutes
       - CRON_PRUNE=0 3 * * * # prune at 3:00 every day
       - KEEP_BACKUPS_FOR_DAYS=7
       - CREATE_CHECKSUMS=true
@@ -31,6 +31,7 @@ services:
       - ENCRYPT_ARCHIVES=true
       - ENCRYPTION_PASSWORD=passw0rd
       - VERBOSE=true
+      - TZ=Europe/Stockholm
     volumes:
       - ./lib:/usr/local/lib/docker-backup
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
@@ -38,7 +39,6 @@ services:
       - ./backups:/backup # backups will be stored here until pruned
       - ./lts:/lts # backups will be stored here (and never pruned)
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
-      - /etc/localtime:/etc/localtime:ro # to get accurate time for backups
 
 volumes:
   sample-app-data:
