@@ -24,13 +24,15 @@ prepare_backup_data() {
 
           contains_numeric_date "$file_name" || error "Cannot parse date in filename: $file_name"
 
+
+
           # Get information about backup
           file_fullpath="$(pwd)/$file_name"
           file_volume="$(get_volume_name "$file_name")"
           file_unixtime="$(parse_time "$file_name")"
           file_year="$(date -d @"$file_unixtime" +%Y)"
           file_month="$(((file_year - 1970) * 12 + 10#$(date -d @"$file_unixtime" +%m)))"
-          file_week="$(((file_unixtime - FIRST_MONDAY) / ONE_WEEK + 1))"
+          file_week="$(((file_unixtime - $(get_first_monday)) / ONE_WEEK + 1))"
           file_dow="$(date -d @"$file_unixtime" +%u)"
           file_day="$((file_unixtime / ONE_DAY))"
           file_hour="$((file_unixtime / ONE_HOUR))"
@@ -49,6 +51,11 @@ prepare_backup_data() {
     done
 
   back
+}
+
+# Returns unixtime of the first monday of 1970
+get_first_monday() {
+  echo $((345600 + $(timezone_difference) * 3600))
 }
 
 get_backup_volume() {

@@ -91,5 +91,6 @@ prune_lts() {
 }
 
 purge_file() {
-  rm -fv "$1" >"$OUTPUT"
+  logv "Pruning $filename"
+  rm -f "$1" >"$OUTPUT"
 }

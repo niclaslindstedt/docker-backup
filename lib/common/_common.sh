@@ -11,3 +11,11 @@ error() {
   log "Exiting script"
   exit 1
 }
+
+is_debug() { [ "$DEBUG" = "true" ]; }
+is_verbose() { [ "$VERBOSE" = "true" ]; }
+
+get_output() { is_debug && echo "/dev/stdout" || echo "/dev/null"; }
+
+# shellcheck disable=SC2034
+OUTPUT="$(get_output)"
