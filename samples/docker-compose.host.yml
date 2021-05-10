@@ -1,0 +1,15 @@
+version: "3.7"
+
+# This example will backup files on your host computer.
+# Read more at https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases#backup-files-from-your-host-computer
+
+services:
+  backup:
+    build: ..
+    environment:
+      - CRON_BACKUP=* * * * * # Backup at 1:00 am on Sundays
+      - ENABLE_LTS=false # Just for this sample, we turn off long-term storage
+      - ENABLE_PRUNE=false # ... and prune
+    volumes:
+      - /home/${USER}/Pictures:/volumes/pictures
+      - /home/${USER}/Backups:/backup

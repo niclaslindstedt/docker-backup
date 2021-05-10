@@ -1,5 +1,8 @@
 version: "3.7"
 
+# This example will backup long-term storage to an ftp server.
+# Read more at https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases#backup-files-to-an-ftp-server
+
 services:
   sample-app-1:
     image: bash
