@@ -3,21 +3,22 @@ FROM ubuntu:18.04
 RUN apt-get update \
   && apt-get install -y curl \
   && curl -sSL https://get.docker.com/ | sh
-ENV TZ=UTC
 RUN apt-get install -y \
     cksfv \
     cron \
     curl \
     p7zip \
     rar \
+    sudo \
     unrar \
     uuid-runtime \
     zip \
-  && rm -rf /var/lib/apt/lists/* \
-  && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  && rm -rf /var/lib/apt/lists/*
 ARG RUN_AS_USER=docker-backup
 RUN adduser --disabled-password --gecos "" ${RUN_AS_USER} \
-  && adduser ${RUN_AS_USER} docker
+  && adduser ${RUN_AS_USER} docker \
+  && adduser ${RUN_AS_USER} sudo \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ENV APP_PATH=/home/${RUN_AS_USER} \
   LOG_PATH=/var/log/output.log \
   VOLUME_PATH=/volumes \
@@ -55,6 +56,7 @@ ENV ENABLE_LTS=true \
   CREATE_CHECKSUMS=true \
   VERIFY_CHECKSUMS=true \
   PROJECT_NAME= \
-  PAUSE_CONTAINERS=
+  PAUSE_CONTAINERS= \
+  TZ=UTC
 
 CMD ["sh", "-c", "${APP_PATH}/entrypoint.sh"]

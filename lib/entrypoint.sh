@@ -7,9 +7,12 @@
   [ "$ENABLE_LTS" = "true" ] && echo "$CRON_LTS   root   store"
   [ "$ENABLE_PRUNE" = "true" ] && echo "$CRON_PRUNE   root   prune"
   echo
-} > /etc/cron.d/docker-backup
+} | sudo tee /etc/cron.d/docker-backup >/dev/null
 
-cron
+sudo ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime
+echo "$TZ" | sudo tee /etc/timezone >/dev/null
+
+sudo cron
 
 echo "*** SETTINGS ***"
 echo "APP_PATH => $APP_PATH"
@@ -24,6 +27,7 @@ echo "CRON_LTS => $CRON_LTS"
 echo "CRON_PRUNE => $CRON_PRUNE"
 echo "VERBOSE => $VERBOSE"
 echo "DEBUG => $DEBUG"
+echo "ASSUME_YES => $ASSUME_YES"
 echo "ARCHIVE_TYPE => $ARCHIVE_TYPE"
 echo "ENCRYPT_ARCHIVES => $ENCRYPT_ARCHIVES"
 printf "ENCRYPTION_PASSWORD => " && echo "$ENCRYPTION_PASSWORD" | sed -r "s/./\*/g"
@@ -37,8 +41,9 @@ echo "CREATE_CHECKSUMS => $CREATE_CHECKSUMS"
 echo "VERIFY_CHECKSUMS => $VERIFY_CHECKSUMS"
 echo "PROJECT_NAME => $PROJECT_NAME"
 echo "PAUSE_CONTAINERS => $PAUSE_CONTAINERS"
+echo "TZ => $TZ"
 echo
 
-echo "*** OUTPUT ***"
+echo "tail -f $LOG_PATH:"
 touch "$LOG_PATH"
 tail -f "$LOG_PATH"
