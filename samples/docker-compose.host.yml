@@ -7,7 +7,7 @@ services:
   backup:
     build: ..
     environment:
-      - CRON_BACKUP=* * * * * # Backup at 1:00 am on Sundays
+      - CRON_BACKUP=* * * * *
       - ENABLE_LTS=false # Just for this sample, we turn off long-term storage
       - ENABLE_PRUNE=false # ... and prune
     volumes:

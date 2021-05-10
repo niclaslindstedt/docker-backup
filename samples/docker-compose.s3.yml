@@ -1,0 +1,34 @@
+version: "3.7"
+
+# This example will backup files to an s3 bucket.
+# Read more at https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases#backup-files-to-an-s3-bucket
+
+services:
+  sample-app-1:
+    image: bash
+    command: bash -c "while true; do echo \"$$(date)\" > /data/$$(date +\"%s\"); sleep 10; done"
+    volumes:
+      - sample-app-data:/data
+
+  s3:
+    image: elementar/s3-volume
+    command: /data s3://${S3_BUCKET_NAME}
+    environment:
+      - BACKUP_INTERVAL=${S3_BACKUP_INTERVAL} # in minutes
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - s3-volume:/data
+
+  backup:
+    image: niclaslindstedt/docker-backup:latest
+    environment:
+      - CRON_BACKUP=* * * * *
+      - CRON_LTS=*/5 * * * *
+    volumes:
+      - sample-app-data:/volumes/sample-app-1
+      - s3-volume:/lts
+
+volumes:
+  s3-volume:
+    driver: local

@@ -1,0 +1,21 @@
+version: "3.7"
+
+# This example will pause containers that are backed up during backup.
+# Read more at https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases#backup-files-to-an-s3-bucket
+
+services:
+  sample-app:
+    image: bash
+    command: bash -c "while true; do echo \"$$(date)\" > /data/$$(date +\"%s\"); sleep 13; done"
+    volumes:
+      - ../data:/data # host-mounted folder
+
+  backup:
+    build: ..
+    environment:
+      - CRON_BACKUP=* * * * *
+      - PROJECT_NAME=samples # should be set to the parent folder of the compose file (this file)
+      - PAUSE_CONTAINERS=sample-app # these containers will be paused
+    volumes:
+      - ../data:/volumes/sample-app
+      - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
