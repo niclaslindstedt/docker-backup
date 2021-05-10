@@ -5,7 +5,7 @@ version: "3.7"
 
 services:
   backup:
-    build: ..
+    image: niclaslindstedt/docker-backup:latest
     environment:
       - CRON_BACKUP=* * * * *
       - ENABLE_LTS=false # Just for this sample, we turn off long-term storage

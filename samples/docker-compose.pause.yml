@@ -1,7 +1,7 @@
 version: "3.7"
 
 # This example will pause containers that are backed up during backup.
-# Read more at https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases#backup-files-to-an-s3-bucket
+# Read more at https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases#pause-other-docker-containers-during-backup
 
 services:
   sample-app:
@@ -11,7 +11,7 @@ services:
       - ../data:/data # host-mounted folder
 
   backup:
-    build: ..
+    image: niclaslindstedt/docker-backup:latest
     environment:
       - CRON_BACKUP=* * * * *
       - PROJECT_NAME=samples # should be set to the parent folder of the compose file (this file)

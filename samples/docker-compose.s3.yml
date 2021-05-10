@@ -12,13 +12,13 @@ services:
 
   s3:
     image: elementar/s3-volume
-    command: /data s3://${S3_BUCKET_NAME}
+    command: /bucket s3://${S3_BUCKET_NAME}
     environment:
-      - BACKUP_INTERVAL=${S3_BACKUP_INTERVAL} # in minutes
+      - BACKUP_INTERVAL=${S3_BACKUP_INTERVAL} # in seconds
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     volumes:
-      - s3-volume:/data
+      - s3-volume:/bucket
 
   backup:
     image: niclaslindstedt/docker-backup:latest
@@ -31,4 +31,4 @@ services:
 
 volumes:
   s3-volume:
-    driver: local
+  sample-app-data:

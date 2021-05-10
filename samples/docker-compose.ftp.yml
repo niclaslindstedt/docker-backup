@@ -17,7 +17,7 @@ services:
       - CRON_LTS=*/10 * * * *
     volumes:
       - sample-app-data:/volumes/test
-      - ./backups:/backup
+      - ../backups:/backup
       - ftp-volume:/lts
 
 volumes:

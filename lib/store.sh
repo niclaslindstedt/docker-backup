@@ -35,7 +35,7 @@ copy_backup() {
     mkdir -p "$2"
     free_space=$(get_free_space_gb "$2")
     file_size_str=$(get_file_size_str "$1")
-    logv "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
+    log "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
     sudo cp -n "$1" "$2" || error "Could not copy $1 to long-term storage location"
     is_file "$1.sfv" && cp -n "$1.sfv" "$2"
   }
