@@ -14,7 +14,7 @@ RUN apt-get install -y \
     uuid-runtime \
     zip \
   && rm -rf /var/lib/apt/lists/*
-ARG RUN_AS_USER=docker-backup
+ENV RUN_AS_USER=docker-backup
 RUN adduser --disabled-password --gecos "" ${RUN_AS_USER} \
   && adduser ${RUN_AS_USER} docker \
   && adduser ${RUN_AS_USER} sudo \

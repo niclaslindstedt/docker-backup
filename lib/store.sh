@@ -1,14 +1,11 @@
 #!/bin/bash
 
-# This script will copy files from the backup
-# location to the long-term storage location.
-
-# shellcheck disable=SC1090,SC1091,SC2034
+# shellcheck disable=SC1090,SC1091,SC2034,SC2046
 
 COMPONENT="LTS"
 
 main() {
-  log "Starting long-term storage process"
+  log "+++ Starting long-term storage process"
 
   go "$BACKUP_PATH"
     for filename in $(get_reversed_backups); do
@@ -16,7 +13,7 @@ main() {
     done
   back
 
-  log "Finished long-term storage process"
+  log "--- Finished long-term storage process"
 }
 
 store() {
@@ -36,14 +33,15 @@ copy_backup() {
 
   is_file "$1" && ! is_file "$2/$1" && {
     mkdir -p "$2"
-    free_space=$(get_free_space "$2")
+    free_space=$(get_free_space_gb "$2")
     file_size_str=$(get_file_size_str "$1")
     logv "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
-    cp -n "$1" "$2" || error "Could not copy $1 to long-term storage location"
+    sudo cp -n "$1" "$2" || error "Could not copy $1 to long-term storage location"
     is_file "$1.sfv" && cp -n "$1.sfv" "$2"
   }
 }
 
+. /.env
 for f in "$APP_PATH"/common/*; do . "$f"; done
 
 main "$1"

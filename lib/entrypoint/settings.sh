@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo_settings() {
-  echo "+-----------------------------------+"
-  echo "| SETTINGS                          |"
-  echo "+--------------------+--------------+"
+  echo "+--------------------------------------------------------+"
+  echo "| SETTINGS                                               |"
+  echo "+---------------------------+----------------------------+"
   [ "$DEBUG" = "true" ] && echo_setting "APP_PATH" "$APP_PATH"
   [ "$DEBUG" = "true" ] && echo_setting "LOG_PATH" "$LOG_PATH"
   [ "$DEBUG" = "true" ] && echo_setting "VOLUME_PATH" "$VOLUME_PATH"
@@ -31,10 +31,10 @@ echo_settings() {
   [ -n "$PROJECT_NAME" ] && echo_setting "PROJECT_NAME" "$PROJECT_NAME"
   [ -n "$PAUSE_CONTAINERS" ] && echo_setting "PAUSE_CONTAINERS" "$PAUSE_CONTAINERS"
   echo_setting "TZ" "$TZ"
-  echo "+--------------------+--------------+"
+  echo "+---------------------------+----------------------------+"
   echo
 }
 
 echo_setting() {
-  echo "| $(printf '%-18s' "$1") | $(printf '%-12s' "$2") |"
+  echo "| $(printf '%-25s' "$1") | $(printf '%-26s' "$2") |"
 }

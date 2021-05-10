@@ -7,7 +7,7 @@ logd() { is_debug && log "$*"; }
 
 error() {
   is_set "$1" && log "ERROR: $*"
-  is_set "$PAUSE_CONTAINERS" && start_containers
+  is_set "$PAUSE_CONTAINERS" && unpause_containers "$PAUSE_CONTAINERS"
   log "Exiting script"
   exit 1
 }

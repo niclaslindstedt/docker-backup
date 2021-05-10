@@ -33,7 +33,6 @@ services:
       - VERBOSE=true
       - TZ=Europe/Stockholm
     volumes:
-      - ./lib:/usr/local/lib/docker-backup
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
       - ./data:/volumes/sample-app-2 # will be backed up to /backup
       - ./backups:/backup # backups will be stored here until pruned

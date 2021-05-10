@@ -10,7 +10,7 @@ test__error__starts_containers_if_pause_containers_is_set() {
   # Arrange
   PAUSE_CONTAINERS="container1, container2"
   set_result "false"
-  start_containers() { set_result "true"; }
+  unpause_containers() { set_result "true"; }
   exit() { noop; }
 
   # Act
@@ -20,13 +20,13 @@ test__error__starts_containers_if_pause_containers_is_set() {
   assert_true "$(get_result)"
 }
 
-test__error__does_not_start_containers_if_pause_containers_is_null() {
+test__error__does_not_unpause_containers_if_pause_containers_is_null() {
   test_begin "error does not start containers if PAUSE_CONTAINERS is null"
 
   # Arrange
   PAUSE_CONTAINERS=""
   set_result "false"
-  start_containers() { set_result "true"; }
+  unpause_containers() { set_result "true"; }
   exit() { noop; }
 
   # Act

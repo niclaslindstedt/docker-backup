@@ -1,14 +1,11 @@
 #!/bin/bash
 
-# This script will restore a backup
-# into its corresponding volume.
-
-# shellcheck disable=SC1090,SC1091,SC2034
+# shellcheck disable=SC1090,SC1091,SC2034,SC2046
 
 COMPONENT="RESTORE"
 
 main() {
-  log "Starting restore process"
+  log "+++ Starting restore process"
 
   is_set "$PAUSE_CONTAINERS" && pause_containers "$PAUSE_CONTAINERS"
 
@@ -21,9 +18,9 @@ main() {
     fi
   back
 
-  is_set "$PAUSE_CONTAINERS" && start_containers "$PAUSE_CONTAINERS"
+  is_set "$PAUSE_CONTAINERS" && unpause_containers "$PAUSE_CONTAINERS"
 
-  log "Finished restore process"
+  log "--- Finished restore process"
 }
 
 restore_all() {
@@ -80,6 +77,7 @@ restore_volume() {
   unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name backup"
 }
 
+. /.env
 for f in "$APP_PATH"/common/*; do . "$f"; done
 
 main "$1"

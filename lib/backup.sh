@@ -1,15 +1,11 @@
 #!/bin/bash
 
-# This script will create tarball gzips of all
-# mounted volumes in the volume location.
-
-# shellcheck disable=SC1090,SC1091,SC2034,SC2153
+# shellcheck disable=SC1090,SC1091,SC2034,SC2046,SC2153
 
 COMPONENT="BACKUP"
 
 main() {
-  log "Starting backup process"
-
+  log "+++ Starting backup process"
   is_set "$PAUSE_CONTAINERS" && pause_containers "$PAUSE_CONTAINERS"
 
   if ! is_set "$1"; then
@@ -19,9 +15,9 @@ main() {
     backup_volume "$1"
   fi
 
-  is_set "$PAUSE_CONTAINERS" && start_containers "$PAUSE_CONTAINERS"
+  is_set "$PAUSE_CONTAINERS" && unpause_containers "$PAUSE_CONTAINERS"
 
-  log "Finished backup process"
+  log "--- Finished backup process"
 }
 
 backup_all() {
@@ -68,6 +64,7 @@ backup_volume() {
   pack "$backup_path" "$1" || error "Could not backup $backup_filename"
 }
 
+. /.env
 for f in "$APP_PATH"/common/*; do . "$f"; done
 
 main "$1"

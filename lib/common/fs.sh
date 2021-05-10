@@ -1,7 +1,7 @@
 #!/bin/bash
 
-go() { pushd "$1" 1>"$OUTPUT" || error "Could not change directory to $1"; }
-back() { popd 1>"$OUTPUT" || error "Could not go back to previous path"; }
+go() { cd "$1" || error "Could not change directory to $1"; }
+back() { cd - >/dev/null || error "Could not go back to previous path"; }
 
 get_free_space() {
   ! is_directory "$1" && { echo "0"; return 1; }

@@ -24,14 +24,14 @@ pause_containers() {
   done
 }
 
-start_containers() {
-  log "Starting containers: $PAUSE_CONTAINERS"
-  IFS=',' read -ra containers <<< "$PAUSE_CONTAINERS"
+unpause_containers() {
+  log "Unpausing containers: $1"
+  IFS=',' read -ra containers <<< "$1"
   for container_name in "${containers[@]}"; do
     read -ra container_ids <<< "$(get_all_container_ids "$container_name")"
     is_set "${container_ids[*]}" && {
       # shellcheck disable=SC2086
-      docker start ${container_ids[*]} || return 1
+      docker unpause ${container_ids[*]} || return 1
     }
   done
 }
