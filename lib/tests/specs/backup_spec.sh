@@ -5,7 +5,7 @@
 for f in "$APP_PATH"/common/*; do . "$f"; done
 for f in "$APP_PATH"/backup/*; do . "$f"; done
 
-test__backup__two_volumes_creates_two_backups() {
+test__run_backup__two_volumes_creates_two_backups() {
   local backup_count
 
   test_begin "Backup two volumes and get two backups"
@@ -19,7 +19,7 @@ test__backup__two_volumes_creates_two_backups() {
   assert_equals "2" "$backup_count"
 }
 
-test__backup__volume_with_correct_name() {
+test__run_backup__volume_with_correct_name() {
   local backup_count
 
   test_begin "Backup a volume with the correct backup filename"

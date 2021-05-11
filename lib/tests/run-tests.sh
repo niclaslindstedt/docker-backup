@@ -3,7 +3,7 @@
 # This script will run all test functions that start with "test__"
 # and deliver a result of the tests and their assertions.
 
-# shellcheck disable=SC1091,SC2034,SC2153
+# shellcheck disable=SC1090,SC1091,SC2034,SC2153
 
 COMPONENT="TEST"
 

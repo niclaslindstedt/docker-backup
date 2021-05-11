@@ -1,7 +1,7 @@
 #!/bin/bash
 
 __before_all() {
-  /bin/rm -rf "${BACKUP_PATH:?}"/* "${LTS_PATH:?}"/* "${VOLUME_PATH:?}"/* "${TEST_PATH:?}/*"
+  /bin/rm -rf "${BACKUP_PATH:?}"/* "${LTS_PATH:?}"/* "${VOLUME_PATH:?}"/* "${TEST_PATH:?}"/*
   /bin/echo > "$LOG_PATH"
   prepare test
 }

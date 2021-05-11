@@ -1,23 +1,21 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091,SC2034
+# shellcheck disable=SC1090,SC1091,SC2034
 
 for f in "$APP_PATH"/common/*; do . "$f"; done
 
-test__create_checksum__calls_cksfv_if_create_checksums_is_true() {
-  test_begin "create_checksum calls cksfv if CREATE_CHECKSUMS is true"
+test__create_checksum__creates_checksum_if_create_checksums_is_true() {
+  test_begin "create_checksum creates checksum if CREATE_CHECKSUMS is true"
 
   # Arrange
   CREATE_CHECKSUMS="true"
   /bin/echo "test" > ./test.7z
-  set_result "false"
-  cksfv() { set_result "true"; }
 
   # Act
   create_checksum ./test.7z
 
   # Assert
-  assert_true "$(get_result)"
+  assert_file_exists "./test.7z.sfv"
 }
 
 test__create_checksum__does_not_call_cksfv_if_create_checksums_is_false() {

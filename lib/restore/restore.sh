@@ -1,7 +1,7 @@
 #!/bin/bash
 
 run_restore() {
-  is_set "$PAUSE_CONTAINERS" && pause_containers "$PAUSE_CONTAINERS"
+  pause_containers "$PAUSE_CONTAINERS"
 
   go "$BACKUP_PATH"
     if is_set "$1"; then
@@ -12,7 +12,7 @@ run_restore() {
     fi
   back
 
-  is_set "$PAUSE_CONTAINERS" && unpause_containers "$PAUSE_CONTAINERS"
+  unpause_containers "$PAUSE_CONTAINERS"
 }
 
 restore_all() {
@@ -66,5 +66,5 @@ restore_volume() {
   # Restore backup
   volume_name=$(get_volume_name "$backup_name")
   log "Restoring backup of volume '$volume_name' to $target_volume"
-  unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name backup"
+  unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name"
 }

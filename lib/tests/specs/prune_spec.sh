@@ -32,7 +32,7 @@ test__purge_backups__purge_2_day_old_backups() {
   purge_backups
 
   # Assert
-  assert_equals "6" "$(ls "$BACKUP_PATH" | wc -l)"
+  assert_equals "6" "$(get_file_count "$BACKUP_PATH")"
 }
 
 test__purge_backups__purge_4_day_old_backups() {
@@ -63,7 +63,7 @@ test__purge_backups__purge_4_day_old_backups() {
   purge_backups
 
   # Assert
-  assert_equals "9" "$(ls "$BACKUP_PATH" | wc -l)"
+  assert_equals "9" "$(get_file_count "$BACKUP_PATH")"
 }
 
 test__prune_lts__prune_daily_backups() {
@@ -81,7 +81,7 @@ test__prune_lts__prune_daily_backups() {
   prune_lts
 
   # Assert
-  assert_equals "29" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+  assert_equals "29" "$(get_file_count "$LTS_PATH/sample-app-1")"
 }
 
 test__prune_lts__prune_weekly_backups() {
@@ -104,7 +104,7 @@ test__prune_lts__prune_weekly_backups() {
   prune_lts
 
   # Assert
-  assert_equals "37" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+  assert_equals "37" "$(get_file_count "$LTS_PATH/sample-app-1")"
 }
 
 test__prune_lts__prune_monthly_backups() {
@@ -127,7 +127,7 @@ test__prune_lts__prune_monthly_backups() {
   prune_lts
 
   # Assert
-  assert_equals "50" "$(ls "$LTS_PATH/sample-app-1" | wc -l)"
+  assert_equals "50" "$(get_file_count "$LTS_PATH/sample-app-1")"
 }
 
 

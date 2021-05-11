@@ -70,5 +70,5 @@ assert_equals() {
   fi
 }
 
-assert_success() { (/bin/echo -e "${DARK_GREEN}Assertion successful:${EC} $*"); }
-assert_fail() { (/bin/echo -e "${DARK_RED}Assertion failed:${EC} $*"; exit 1); }
+assert_success() { /bin/echo -e "${DARK_GREEN}Assertion successful:${EC} $*"; }
+assert_fail() { /bin/echo -e "${DARK_RED}Assertion failed:${EC} $*"; exit 1; }

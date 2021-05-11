@@ -20,6 +20,7 @@ noop() { /bin/touch /dev/null; }
 get_test_functions() { declare -F | sed -r 's/^declare \-f //g' | grep -E ^test__; }
 set_result() { /bin/echo "$1" > "$TEST_PATH/test_result"; }
 get_result() { /bin/cat "$TEST_PATH/test_result"; }
+get_file_count() { find "$1" ! -path "$1" | wc -l; }
 test_begin() { /bin/echo -e "${YELLOW}*** TEST: $* ***${EC}"; }
 is_test() { [[ "$1" =~ ^test__ ]]; }
 is_spec() { [[ "$1" =~ _spec(.sh)?$ ]]; }

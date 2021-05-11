@@ -13,6 +13,8 @@ get_all_container_ids() {
 }
 
 pause_containers() {
+  should_pause_containers || return 0
+
   log "Pausing containers: $1"
   IFS=',' read -ra containers <<< "$1"
   for container_name in "${containers[@]}"; do
@@ -25,6 +27,8 @@ pause_containers() {
 }
 
 unpause_containers() {
+  should_pause_containers || return 0
+
   log "Unpausing containers: $1"
   IFS=',' read -ra containers <<< "$1"
   for container_name in "${containers[@]}"; do
@@ -34,4 +38,8 @@ unpause_containers() {
       docker unpause ${container_ids[*]} || return 1
     }
   done
+}
+
+should_pause_containers() {
+  is_set "$PAUSE_CONTAINERS"
 }

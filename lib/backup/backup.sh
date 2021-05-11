@@ -3,7 +3,7 @@
 # shellcheck disable=SC2153
 
 run_backup() {
-  is_set "$PAUSE_CONTAINERS" && pause_containers "$PAUSE_CONTAINERS"
+  pause_containers "$PAUSE_CONTAINERS"
 
   if ! is_set "$1"; then
     backup_all
@@ -12,7 +12,7 @@ run_backup() {
     backup_volume "$1"
   fi
 
-  is_set "$PAUSE_CONTAINERS" && unpause_containers "$PAUSE_CONTAINERS"
+  unpause_containers "$PAUSE_CONTAINERS"
 }
 
 backup_all() {
