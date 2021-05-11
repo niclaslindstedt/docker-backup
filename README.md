@@ -22,7 +22,11 @@ Backs up your Docker volumes and/or data folders and stores them both short-term
 
 See the [Use cases wiki page](https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases) for more advanced use cases.
 
-Submit a [question](https://github.com/niclaslindstedt/docker-backup/issues/new)
+## Getting help
+
+See the [Frequently asked questions wiki page](https://github.com/niclaslindstedt/docker-backup/wiki/Frequently-asked-questions) for a list of common questions.
+
+Submit a [question](https://github.com/niclaslindstedt/docker-backup/issues/new) yourself if you can't find your question there.
 
 ## Environment variables
 
