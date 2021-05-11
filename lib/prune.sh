@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# shellcheck disable=SC1090,SC1091,SC2034,SC2046
+# shellcheck disable=SC1090,SC1091,SC2034
 
 COMPONENT="PRUNE"
 
 main() {
   log "+++ Starting prune process"
 
-  purge_backups
-  prune_lts
+  run_prune "$1"
 
   log "--- Finished prune process"
 }

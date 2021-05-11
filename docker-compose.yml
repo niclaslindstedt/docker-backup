@@ -1,5 +1,9 @@
 version: "3.7"
 
+# This compose file is mainly used to demonstrate functionality
+# without having to use the pre-built image. Here you can experiment
+# with settings before using it for real projects.
+
 services:
   sample-app-1:
     image: bash
