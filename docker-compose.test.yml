@@ -3,7 +3,7 @@ version: "3.7"
 services:
   sut:
     build: .
-    command: /usr/local/lib/docker-backup/tests/run-tests.sh
+    command: /home/docker-backup/tests/run-tests.sh
     environment:
       - CRON_BACKUP=0 0 0 0 0
       - ENABLE_LTS=false
@@ -16,5 +16,5 @@ services:
       - MINIMUM_FREE_SPACE=10
       - TZ=UTC
     volumes:
-      - ./lib:/usr/local/lib/docker-backup
+      - ./tests:/home/docker-backup/tests
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
