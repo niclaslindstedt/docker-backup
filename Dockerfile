@@ -1,9 +1,16 @@
 FROM ubuntu:18.04
 
+ENV RUN_AS_USER=docker-backup \
+  APP_PATH=/home/${RUN_AS_USER} \
+  LOG_PATH=/var/log/output.log \
+  VOLUME_PATH=/volumes \
+  BACKUP_PATH=/backup \
+  LTS_PATH=/lts \
+  PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin
 RUN apt-get update \
   && apt-get install -y curl \
-  && curl -sSL https://get.docker.com/ | sh
-RUN apt-get install -y \
+  && curl -sSL https://get.docker.com/ | sh \
+  && apt-get install -y \
     cksfv \
     cron \
     p7zip \
@@ -13,18 +20,11 @@ RUN apt-get install -y \
     unrar \
     uuid-runtime \
     zip \
-  && rm -rf /var/lib/apt/lists/*
-ENV RUN_AS_USER=docker-backup
-RUN adduser --disabled-password --gecos "" ${RUN_AS_USER} \
+  && rm -rf /var/lib/apt/lists/* \
+  && adduser --disabled-password --gecos "" ${RUN_AS_USER} \
   && adduser ${RUN_AS_USER} docker \
   && adduser ${RUN_AS_USER} sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-ENV APP_PATH=/home/${RUN_AS_USER} \
-  LOG_PATH=/var/log/output.log \
-  VOLUME_PATH=/volumes \
-  BACKUP_PATH=/backup \
-  LTS_PATH=/lts
-ENV PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin
 COPY lib ${APP_PATH}
 RUN mkdir -p /home/${RUN_AS_USER}/.local/bin ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} \
   && ln -s ${APP_PATH}/backup.sh /home/${RUN_AS_USER}/.local/bin/backup \
