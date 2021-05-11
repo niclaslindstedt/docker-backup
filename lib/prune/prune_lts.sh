@@ -17,9 +17,9 @@ prune_lts() {
 
   go "$LTS_PATH"
 
-    prepare_backup_data .
-
     for volume_name in *; do
+
+      prepare_backup_data
 
       for backup in $(get_backups_by_hour "$volume_name"); do
         local filename hours_old last_month last_week last_day last_hour file_age_days
@@ -37,7 +37,7 @@ prune_lts() {
           log "Removing old backup: $file_name ($file_age_months months old)"
 
           # Remove all backups older than purge date
-          purge_file "$file_path"
+          prune_file "$file_path"
           last_month="$(get_backup_month "$backup")"
 
         # Purge monthly
@@ -46,7 +46,7 @@ prune_lts() {
           # Only keep one per month -- keep the earliest
           if [ "$(get_backup_month "$backup")" = "$last_month" ]; then
             logd "Removing monthly backup: $file_name ($file_age_months months old)"
-            purge_file "$file_path"
+            prune_file "$file_path"
             continue
           fi
 
@@ -60,7 +60,7 @@ prune_lts() {
           # Only keep one per week -- keep the earliest
           if [ "$(get_backup_week "$backup")" = "$last_week" ]; then
             logd "Removing weekly backup: $file_name ($file_age_weeks weeks old)"
-            purge_file "$file_path"
+            prune_file "$file_path"
             continue
           fi
 
@@ -73,7 +73,7 @@ prune_lts() {
 
           # Only keep one per day -- keep the earliest
           if [ "$(get_backup_day "$backup")" = "$last_day" ]; then
-            purge_file "$file_path"
+            prune_file "$file_path"
             continue
           fi
 
@@ -90,7 +90,7 @@ prune_lts() {
 
 }
 
-purge_file() {
-  logv "Pruning $filename"
+prune_file() {
+  logv "Pruning $1"
   rm -f "$1" >"$OUTPUT"
 }
