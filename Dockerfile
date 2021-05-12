@@ -6,6 +6,7 @@ ENV APP_PATH=/home/${RUN_AS_USER} \
   VOLUME_PATH=/volumes \
   BACKUP_PATH=/backup \
   LTS_PATH=/lts \
+  TMP_PATH=/tmp/backup \
   PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin
 RUN apt-get update \
   && apt-get install -y \
@@ -26,13 +27,13 @@ RUN apt-get update \
   && adduser ${RUN_AS_USER} sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 COPY lib ${APP_PATH}
-RUN mkdir -p /home/${RUN_AS_USER}/.local/bin ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} \
+RUN mkdir -p /home/${RUN_AS_USER}/.local/bin ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} ${TMP_PATH} \
   && ln -s ${APP_PATH}/backup.sh /home/${RUN_AS_USER}/.local/bin/backup \
   && ln -s ${APP_PATH}/restore.sh /home/${RUN_AS_USER}/.local/bin/restore \
   && ln -s ${APP_PATH}/store.sh /home/${RUN_AS_USER}/.local/bin/store \
   && ln -s ${APP_PATH}/prune.sh /home/${RUN_AS_USER}/.local/bin/prune \
   && touch ${LOG_PATH} \
-  && chown -R ${RUN_AS_USER}:${RUN_AS_USER} ${APP_PATH} ${LOG_PATH} ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH}
+  && chown -R ${RUN_AS_USER}:${RUN_AS_USER} ${APP_PATH} ${LOG_PATH} ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} ${TMP_PATH}
 USER ${RUN_AS_USER}
 
 ENV ENABLE_LTS=true \

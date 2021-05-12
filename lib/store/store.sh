@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Entrypoint for store script
 run_store() {
   local volume_name backup_name
 
@@ -9,10 +10,11 @@ run_store() {
     # Get the latest of each backup and store it.
     backup_name="$(get_latest_backup "$volume_name")"
     store "$backup_name"
-
   done
 }
 
+# Copy the latest backups of each volume to long-term storage
+# Params: <backup filename>
 store() {
   local volume_name target_path target_filename
 
@@ -27,6 +29,8 @@ store() {
   back
 }
 
+# Copy a specific backup to a target path. Take care not to violate free space requirements.
+# Params: <backup path>, <target path>
 copy_backup() {
   local free_space file_size_str
 
@@ -35,15 +39,22 @@ copy_backup() {
     free_space=$(get_free_space_gb "$2")
     file_size_str=$(get_file_size_str "$1")
     log "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
-    copy_file "$1" "$2"
+    copy_file "$1" "$2" || error "Could not copy $1 to long-term storage location"
     copy_soft "$1.sfv" "$2"
   }
 }
 
+# Copy file if source file exists
+# Params: <source file path>, <target path>
 copy_soft() {
-  is_file "$1" && copy_file "$1" "$2"
+  if is_file "$1"; then
+    copy_file "$1" "$2" || return 1
+  fi
+  return 0
 }
 
+# Copy a file with sudo if needed
+# Params: <source file path>, <target path>
 copy_file() {
-  $(is_writable "$2" && echo "sudo") cp -n "$1" "$2" || error "Could not copy $1 to long-term storage location"
+  $(is_writable "$2" && echo "sudo") cp -n "$1" "$2" || return 1
 }

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Purge old backups in backup directory
 purge_backups() {
   local file_unixtime
 
@@ -13,7 +14,7 @@ purge_backups() {
       file_unixtime="$(parse_time "$filename")"
       [ "$(($(unixtime) - file_unixtime))" -gt "$((KEEP_BACKUPS_FOR_DAYS * ONE_DAY))" ] && {
         logv "Purging $filename"
-        rm -f "$filename" "$filename.sfv"
+        remove_file "$filename" "$filename.sfv"
       }
     done
   back

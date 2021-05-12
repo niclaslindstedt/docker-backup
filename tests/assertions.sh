@@ -12,7 +12,7 @@ assert_file_does_not_exist() {
 
 # param 1: file, param 2: string
 assert_file_ends_with() {
-  [ ! -f "$1" ] || assert_fail "Expected file to end with '$2'. It does not exist: $1"
+  [ ! -f "$1" ] && assert_fail "Expected file to end with '$2'. It does not exist: $1"
   if [[ "$1" =~ "$2"$ ]]; then
     assert_success "File ends with '$2': $1"
   else

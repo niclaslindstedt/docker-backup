@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Set current timezone to the value of the TZ variable
 set_timezone() {
   [ -f "/usr/share/zoneinfo/$TZ" ] || {
     echo "Invalid timezone"

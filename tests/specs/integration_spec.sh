@@ -15,7 +15,7 @@ test__backup_remove_restore() {
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   run_backup
-  rm -f "$file_to_restore"
+  /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
 
   # Act
@@ -35,11 +35,11 @@ test__backup_remove_restore_encrypted() {
   ENCRYPTION_PASSWORD=abc123
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
-  run_backup
+  run_backup test
   latest_backup="$(get_latest_backup test)"
-  rm -f "$file_to_restore"
+  /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
 
   # Act
   run_restore "$latest_backup"
@@ -60,9 +60,9 @@ test__restore_encrypted_with_bad_password() {
   assert_file_exists "$file_to_restore"
   run_backup
   latest_backup="$(get_latest_backup test)"
-  rm -f "$file_to_restore"
+  /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
 
   # Act
   ENCRYPTION_PASSWORD=badpassword

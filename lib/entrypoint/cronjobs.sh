@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Create cronjobs in /etc/cron.d
 create_cronjobs() {
   local cronfile
 

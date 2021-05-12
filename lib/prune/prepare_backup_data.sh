@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Prepare backup data for use by the prune script
 prepare_backup_data() {
   local csv_filename
 
@@ -48,87 +49,26 @@ prepare_backup_data() {
 }
 
 # Returns unixtime of the first monday of 1970
-get_first_monday() {
-  echo $((345600 + $(timezone_difference) * 3600))
-}
+get_first_monday() { echo $((345600 + $(timezone_difference) * 3600)); }
 
-get_backup_volume() {
-  get_backup_info_by_column "$1" 1
-}
-
-get_backup_filename() {
-  get_backup_info_by_column "$1" 2
-}
-
-get_backup_path() {
-  get_backup_info_by_column "$1" 3
-}
-
-get_backup_unixtime() {
-  get_backup_info_by_column "$1" 4
-}
-
-get_backup_month() {
-  get_backup_info_by_column "$1" 6
-}
-
-get_backup_week() {
-  get_backup_info_by_column "$1" 7
-}
-
-get_backup_day() {
-  get_backup_info_by_column "$1" 8
-}
-
-get_backup_hour() {
-  get_backup_info_by_column "$1" 9
-}
-
-get_backup_age_hours() {
-  get_backup_info_by_column "$1" 10
-}
-
-get_backup_age_days() {
-  get_backup_info_by_column "$1" 11
-}
-
-get_backup_age_weeks() {
-  get_backup_info_by_column "$1" 12
-}
-
-get_backup_age_months() {
-  get_backup_info_by_column "$1" 13
-}
-
-get_backups_by_month() {
-  get_backups_by_column "$1" 6
-}
-
-get_backups_by_week() {
-  get_backups_by_column "$1" 7
-}
-
-get_backups_by_day() {
-  get_backups_by_column "$1" 8
-}
-
-get_backups_by_hour() {
-  get_backups_by_column "$1" 9
-}
-
-get_backups_by_age() {
-  get_backups_by_column "$1" 10
-}
-
-get_backup_info_by_column() {
-  echo "$1" | cut -d\; -f"$2"
-}
-
-get_backups_by_column() {
-  sort -k"$2" -n -t\; "$(get_prune_csv_filename "$1")"
-}
-
-get_prune_csv_filename() {
-  mkdir -p /tmp/prune/
-  echo "/tmp/prune/$1.csv"
-}
+# Helper functions for csv written in prepare_backup_data()
+get_backup_volume() { get_backup_info_by_column "$1" 1; }
+get_backup_filename() { get_backup_info_by_column "$1" 2; }
+get_backup_path() { get_backup_info_by_column "$1" 3; }
+get_backup_unixtime() { get_backup_info_by_column "$1" 4; }
+get_backup_month() { get_backup_info_by_column "$1" 6; }
+get_backup_week() { get_backup_info_by_column "$1" 7; }
+get_backup_day() { get_backup_info_by_column "$1" 8; }
+get_backup_hour() { get_backup_info_by_column "$1" 9; }
+get_backup_age_hours() { get_backup_info_by_column "$1" 10; }
+get_backup_age_days() { get_backup_info_by_column "$1" 11; }
+get_backup_age_weeks() { get_backup_info_by_column "$1" 12; }
+get_backup_age_months() { get_backup_info_by_column "$1" 13; }
+get_backup_info_by_column() { echo "$1" | cut -d\; -f"$2"; }
+get_backups_by_month() { get_backups_by_column "$1" 6; }
+get_backups_by_week() { get_backups_by_column "$1" 7; }
+get_backups_by_day() { get_backups_by_column "$1" 8; }
+get_backups_by_hour() { get_backups_by_column "$1" 9; }
+get_backups_by_age() { get_backups_by_column "$1" 10; }
+get_backups_by_column() { sort -k"$2" -n -t\; "$(get_prune_csv_filename "$1")"; }
+get_prune_csv_filename() { mkdir -p /tmp/prune/; echo "/tmp/prune/$1.csv"; }

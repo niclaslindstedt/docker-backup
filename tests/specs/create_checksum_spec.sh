@@ -43,7 +43,7 @@ test__create_checksum__calls_error_if_file_does_not_exist() {
   cksfv() { set_result "true"; }
 
   # Act
-  rm -f ./non_existant_file.7z
+  /bin/rm -f ./non_existant_file.7z
   create_checksum ./non_existant_file.7z
 
   # Assert

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Entrypoint for restore script
+# Params: [volume]
 run_restore() {
   pause_containers "$PAUSE_CONTAINERS"
 
@@ -15,6 +17,7 @@ run_restore() {
   unpause_containers "$PAUSE_CONTAINERS"
 }
 
+# Restore all volumes to their latest backup
 restore_all() {
   local volume
   for volume_to_restore in "$VOLUME_PATH"/*; do
@@ -23,6 +26,8 @@ restore_all() {
   done
 }
 
+# Restore a specific volume to its latest backup or to a specific backup
+# Params: [volume|backup filename]
 restore_volume() {
   local backup_name volume_name target_volume backup_existing_volume
 

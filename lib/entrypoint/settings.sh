@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Print out the current settings
 echo_settings() {
   echo "+--------------------------------------------------------+"
   echo "| SETTINGS                                               |"
@@ -35,6 +36,7 @@ echo_settings() {
   echo
 }
 
+# Print out a specific setting and format it
 echo_setting() {
   echo "| $(printf '%-25s' "$1") | $(printf '%-26s' "$2") |"
 }

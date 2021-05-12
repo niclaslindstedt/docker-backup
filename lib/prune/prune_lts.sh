@@ -2,6 +2,7 @@
 
 # shellcheck disable=SC1091,SC2034
 
+# Prune long-term storage and remove backups that are no longer needed.
 prune_lts() {
   local purge_age monthly_age weekly_age daily_age
 
@@ -90,7 +91,9 @@ prune_lts() {
 
 }
 
+# Prune a file (remove it)
+# Params: <path>
 prune_file() {
   logv "Pruning $1"
-  rm -f "$1" >"$OUTPUT"
+  remove_file "$1"
 }

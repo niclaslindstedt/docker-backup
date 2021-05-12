@@ -1,17 +1,25 @@
 #!/bin/bash
 
+# Returns a container filter to find containers associated to a service
+# Params: <service name>
 get_container_filter() {
   echo "$(echo "${PROJECT_NAME}" | xargs)_$(echo "$1" | xargs)_"
 }
 
+# Returns a list of associated running container ids
+# Params: <service name>
 get_container_ids() {
   docker ps -q --filter name="$(get_container_filter "$1")"
 }
 
+# Returns a list of associated container ids (stopped containers too)
+# Params: <service name>
 get_all_container_ids() {
   docker ps -aq --filter name="$(get_container_filter "$1")"
 }
 
+# Pauses containers associated to a list of service names
+# Params: <service names (comma-separated>
 pause_containers() {
   should_pause_containers || return 0
 
@@ -26,6 +34,8 @@ pause_containers() {
   done
 }
 
+# Unpauses containers associated to a list of service names
+# Params: <service names (comma-separated>
 unpause_containers() {
   should_pause_containers || return 0
 
@@ -40,6 +50,7 @@ unpause_containers() {
   done
 }
 
+# Checks if containers should be paused
 should_pause_containers() {
   is_set "$PAUSE_CONTAINERS"
 }

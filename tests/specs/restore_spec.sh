@@ -11,12 +11,12 @@ test__run_restore__restores_a_backup() {
   # Arrange
   ASSUME_YES=true
   vol_folder="$VOLUME_PATH/restore-test"
-  rm -rf "$vol_folder"
+  /bin/rm -rf "$vol_folder"
   mkdir -p "$vol_folder"
   /bin/echo "abc123" > "$vol_folder/one_file"
   cd "$vol_folder" || exit 1
   tar czf "$BACKUP_PATH/backup-restore-test-20210101155701.tgz" .
-  rm "$vol_folder/one_file"
+  /bin/rm "$vol_folder/one_file"
   cd - >/dev/null || exit 1
   assert_file_does_not_exist "$vol_folder/one_file"
 
@@ -33,7 +33,7 @@ test__run_restore__removes_content_before_restoring_a_backup() {
   # Arrange
   ASSUME_YES=true
   vol_folder="$VOLUME_PATH/restore-test"
-  rm -rf "$vol_folder"
+  /bin/rm -rf "$vol_folder"
   mkdir -p "$vol_folder"
   /bin/echo "abc123" > "$vol_folder/one_file"
   cd "$vol_folder" || exit 1
