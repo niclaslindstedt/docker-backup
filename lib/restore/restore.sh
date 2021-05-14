@@ -58,7 +58,7 @@ restore_volume() {
   is_not_empty "$target_volume" && {
     backup_existing_volume="y"
     [ "$ASSUME_YES" != "$TRUE" ] && {
-      loga "The volume '$volume_name' is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
+      logn "The volume '$volume_name' is not empty. Do you want to back it up before replacing its contents? [Y/n]: "
       read -r backup_existing_volume
     }
     [ "$backup_existing_volume" != "n" ] && {

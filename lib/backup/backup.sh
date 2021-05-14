@@ -24,7 +24,6 @@ run_backup() {
 
 # Backup all volumes
 backup_all() {
-  echo "backing up all"
   for path_to_backup in *; do
     is_directory "$VOLUME_PATH/$path_to_backup" && backup_volume "$path_to_backup"
   done
@@ -74,6 +73,9 @@ backup_volume() {
     move_backup "$temp_path" "$BACKUP_PATH"
 
   back
+
+  should_encrypt && backup_filename+=".enc"
+  log "=> Backup finished: $backup_filename"
 }
 
 # Move a backup to a target path

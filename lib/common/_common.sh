@@ -6,7 +6,7 @@ log() { echo -e "[$COMPONENT] $*" | tee -a "$LOG_PATH"; }
 
 # Logs a message to stdout + log file without trailing newline
 # Params: <string>
-loga() { echo -n "[$COMPONENT] $*" | tee -a "$LOG_PATH"; }
+logn() { echo -n "[$COMPONENT] $*" | tee -a "$LOG_PATH"; }
 
 # Logs a message if verbose mode is enabled
 # Params: <string>
