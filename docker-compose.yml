@@ -42,6 +42,8 @@ services:
       - ./backups:/backup # backups will be stored here until pruned
       - ./lts:/lts # backups will be stored here (and never pruned)
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
+    tmpfs:
+      - /tmp/backup:mode=700,uid=1000,gid=1000
 
 volumes:
   sample-app-data:
