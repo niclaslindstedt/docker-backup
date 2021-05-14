@@ -33,6 +33,8 @@ restore_all() {
 restore_volume() {
   local backup_path volume_name target_volume backup_existing_volume
 
+  ! is_set "$1" && error "You have to provide a volume name or backup filename"
+
   [ ! -d "$VOLUME_PATH/$1" ] && [ ! -f "$BACKUP_PATH/$1" ] && {
     error "Volume or backup '$1' not found (is it mounted?)"
   }

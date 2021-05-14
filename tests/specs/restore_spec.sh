@@ -48,3 +48,27 @@ test__run_restore__removes_content_before_restoring_a_backup() {
   # Assert
   assert_equals "1" "$(get_file_count "$vol_folder")"
 }
+
+test__restore_volume__does_not_accept_empty_argument() {
+  test_begin "restore_volume does not accept empty argument"
+
+  # Arrange -- we use an arrangement we know should work
+  # since we don't want it to fail because of a bad setup
+  ASSUME_YES=true
+  vol_folder="$VOLUME_PATH/restore-test"
+  /bin/rm -rf "$vol_folder"
+  mkdir -p "$vol_folder"
+  /bin/echo "abc123" > "$vol_folder/one_file"
+  cd "$vol_folder" || exit 1
+  tar czf "$BACKUP_PATH/backup-restore-test-20210101155701.tgz" .
+  /bin/rm "$vol_folder/one_file"
+  cd - >/dev/null || exit 1
+  assert_file_does_not_exist "$vol_folder/one_file"
+  result=0
+
+  # Act
+  (restore_volume "") && result=1
+
+  # Assert
+  assert_equals "0" "$result"
+}
