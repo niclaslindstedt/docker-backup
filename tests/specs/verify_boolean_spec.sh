@@ -9,10 +9,11 @@ test__verify_boolean__returns_true_on_true() {
   test_begin "verify_boolean returns true on true"
 
   # Arrange
+  value="true"
   result=0
 
   # Act
-  (verify_cron "true") && result=1
+  (verify_boolean value) && result=1
 
   # Assert
   assert_equals "1" "$result"
@@ -22,10 +23,11 @@ test__verify_boolean__returns_true_on_false() {
   test_begin "verify_boolean returns false on false"
 
   # Arrange
+  value="false"
   result=0
 
   # Act
-  (verify_cron "false") && result=1
+  (verify_boolean value) && result=1
 
   # Assert
   assert_equals "1" "$result"
@@ -35,10 +37,11 @@ test__verify_boolean__returns_false_on_uppercase_true() {
   test_begin "verify_boolean returns false on TRUE"
 
   # Arrange
+  value="TRUE"
   result=0
 
   # Act
-  (verify_cron "TRUE") && result=1
+  (verify_boolean value) && result=1
 
   # Assert
   assert_equals "0" "$result"

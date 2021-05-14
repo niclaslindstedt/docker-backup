@@ -39,6 +39,8 @@ move_file_noclutter() {
   else
     logd "No file to move at $1"
   fi
+
+  return 0
 }
 
 # Move a file with sudo if needed

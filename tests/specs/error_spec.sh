@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091,SC2034
+# shellcheck disable=SC1090,SC1091,SC2034
 
 for f in "$APP_PATH"/common/*; do . "$f"; done
 

@@ -79,8 +79,8 @@ backup_volume() {
 # Move a backup to a target path
 # Params: <backup path>, <target path>
 move_backup() {
-  move_file_noclutter "$1" "$2"
   move_file_noclutter "$1.sfv" "$2"
-  move_file_noclutter "$1.enc" "$2"
+  move_file_noclutter "$1" "$2" && verify_checksum "$2/$(basename "$1")"
   move_file_noclutter "$1.enc.sfv" "$2"
+  move_file_noclutter "$1.enc" "$2" && verify_checksum "$2/$(basename "$1.enc")"
 }

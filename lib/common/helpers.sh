@@ -19,21 +19,13 @@ is_directory() { [ -d "$1" ]; }
 # Params: <string>
 is_set() { [ -n "$1" ]; }
 
-# Checks if a path is writable to the caller
-# Params: <path>
-is_writable() {
-  if is_directory "$1"; then
-    [ -w "$1" ]
-  else
-    [ -w "$(dirname "$1")" ]
-  fi
-}
-
 # Adds a 'sudo' before a command if
 # Example: $(sudo_if_unwritable "$path") rm -rf $path
 # Params: <path>
 sudo_if_unwritable() {
-  is_writable "$2" && echo "sudo"
+  if [ -d "$1" ] && [ ! -w "$1" ] || [ ! -w "$(dirname "$1")" ]; then
+    echo "sudo"
+  fi
 }
 
 # Checks if a file is a backup

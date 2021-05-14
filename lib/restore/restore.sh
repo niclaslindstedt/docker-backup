@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2153
+
 # Entrypoint for restore script
 # Params: [volume]
 run_restore() {
@@ -29,25 +31,23 @@ restore_all() {
 # Restore a specific volume to its latest backup or to a specific backup
 # Params: [volume|backup filename]
 restore_volume() {
-  local backup_name volume_name target_volume backup_existing_volume
+  local backup_path volume_name target_volume backup_existing_volume
 
   [ ! -d "$VOLUME_PATH/$1" ] && [ ! -f "$BACKUP_PATH/$1" ] && {
     error "Volume or backup '$1' not found (is it mounted?)"
   }
 
+  # Parameter is a backup filename
   if is_file "$BACKUP_PATH/$1"; then
-    backup_name="$BACKUP_PATH/$1"
+    backup_path="$BACKUP_PATH/$1"
     volume_name="$(get_volume_name "$1")"
-  elif is_file "$1"; then
-    backup_name="$1"
-    volume_name="$(get_volume_name "$(basename "$1")")"
   else
-    backup_name="$(get_latest_backup "$1")"
+    backup_path="$BACKUP_PATH/$(get_latest_backup "$1")"
     volume_name="$1"
-    [ ! -f "$backup_name" ] && error "No backups for volume: $volume_name"
+    [ ! -f "$backup_path" ] && error "No backups for volume: $volume_name"
   fi
 
-  logv "Found backup '$backup_name' which belongs to volume '$volume_name'"
+  logv "Found backup '$backup_path' which belongs to volume '$volume_name'"
 
   target_volume="$VOLUME_PATH/$volume_name"
   [ ! -d "$target_volume" ] && error "No such volume: $volume_name"
@@ -69,7 +69,7 @@ restore_volume() {
   }
 
   # Restore backup
-  volume_name=$(get_volume_name "$backup_name")
+  volume_name=$(get_volume_name "$backup_path")
   log "Restoring backup of volume '$volume_name' to $target_volume"
-  unpack "$backup_name" "$target_volume" || error "Could not restore $backup_name"
+  unpack "$backup_path" "$target_volume" || error "Could not restore $backup_path"
 }

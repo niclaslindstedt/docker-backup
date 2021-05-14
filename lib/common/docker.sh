@@ -14,8 +14,8 @@ get_container_ids() {
 
 # Returns a list of associated container ids (stopped containers too)
 # Params: <service name>
-get_all_container_ids() {
-  docker ps -aq --filter name="$(get_container_filter "$1")"
+get_paused_container_ids() {
+  docker ps -q --filter status=paused --filter name="$(get_container_filter "$1")"
 }
 
 # Pauses containers associated to a list of service names
@@ -42,7 +42,7 @@ unpause_containers() {
   log "Unpausing containers: $1"
   IFS=',' read -ra containers <<< "$1"
   for container_name in "${containers[@]}"; do
-    read -ra container_ids <<< "$(get_all_container_ids "$container_name")"
+    read -ra container_ids <<< "$(get_paused_container_ids "$container_name")"
     is_set "${container_ids[*]}" && {
       # shellcheck disable=SC2086
       docker unpause ${container_ids[*]} || return 1

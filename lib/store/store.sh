@@ -56,5 +56,5 @@ copy_soft() {
 # Copy a file with sudo if needed
 # Params: <source file path>, <target path>
 copy_file() {
-  $(is_writable "$2" && echo "sudo") cp -n "$1" "$2" || return 1
+  $(sudo_if_unwritable "$2") cp -n "$1" "$2" || return 1
 }
