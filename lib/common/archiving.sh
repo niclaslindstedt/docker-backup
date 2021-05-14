@@ -19,6 +19,8 @@ pack() {
     fi
 
     create_checksum "$1"
+    verify_checksum "$1"
+
     encrypt "$1" "$1.enc"
 
   back

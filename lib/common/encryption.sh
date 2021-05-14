@@ -9,9 +9,10 @@ encrypt() {
   encrypt_file "$1" "$2" || error "Could not encrypt $1"
 
   create_checksum "$2"
+  verify_checksum "$2"
 
   log "Removing unencrypted archive $1"
-  remove_file "$1"
+  remove_file "$1" "$1.sfv"
 }
 
 # Decrypts a file

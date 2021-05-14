@@ -37,7 +37,7 @@ move_file_noclutter() {
     logv "Moving $1 to $2"
     move_file "$1" "$2"
   else
-    logv "No file to move at $1"
+    logd "No file to move at $1"
   fi
 }
 

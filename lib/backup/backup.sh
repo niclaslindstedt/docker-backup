@@ -55,7 +55,7 @@ backup_volume() {
       go "$BACKUP_PATH"
         backup_to_remove="$(get_oldest_backup "$volume_name")"
         log "Removing oldest $volume_name backup before continuing ($((backup_count - 1)) left)"
-        remove_file "${backup_to_remove:?}"
+        remove_file "${backup_to_remove:?}" "${backup_to_remove:?}.sfv"
       back
     }
 
@@ -82,4 +82,5 @@ move_backup() {
   move_file_noclutter "$1" "$2"
   move_file_noclutter "$1.sfv" "$2"
   move_file_noclutter "$1.enc" "$2"
+  move_file_noclutter "$1.enc.sfv" "$2"
 }
