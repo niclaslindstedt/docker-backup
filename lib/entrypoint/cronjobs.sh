@@ -12,10 +12,8 @@ create_cronjobs() {
     echo "SHELL=/bin/bash"
     echo
     echo "$CRON_BACKUP   $RUN_AS_USER   $APP_PATH/backup.sh"
-    #[ "$ENABLE_LTS" = "true" ] &&
-    echo "$CRON_LTS   $RUN_AS_USER   $APP_PATH/store.sh"
-    #[ "$ENABLE_PRUNE" = "true" ] &&
-    echo "$CRON_PRUNE   $RUN_AS_USER   $APP_PATH/prune.sh"
+    [ "$ENABLE_LTS" = "$TRUE" ] && echo "$CRON_LTS   $RUN_AS_USER   $APP_PATH/store.sh"
+    [ "$ENABLE_PRUNE" = "$TRUE" ] && echo "$CRON_PRUNE   $RUN_AS_USER   $APP_PATH/prune.sh"
   } | sudo tee $cronfile >/dev/null
 
   sudo cron

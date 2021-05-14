@@ -33,7 +33,7 @@ create_sfv() { $(sudo_if_unwritable "$1.sfv") cksfv -q -b "$1" > "$1.sfv" || ret
 verify_sfv() { cksfv -q -g "$1.sfv" || return 1; }
 
 # Checks if checksums should be created
-should_create_checksum() { [ "$CREATE_CHECKSUMS" = "true" ]; }
+should_create_checksum() { [ "$CREATE_CHECKSUMS" = "$TRUE" ]; }
 
 # Checks if checksums should be verified
-should_verify_checksum() { [ "$VERIFY_CHECKSUMS" = "true" ]; }
+should_verify_checksum() { [ "$VERIFY_CHECKSUMS" = "$TRUE" ]; }

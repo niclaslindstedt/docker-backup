@@ -44,4 +44,4 @@ decrypt_file() {
 is_encrypted() { [[ "$1" =~ \.enc$ ]]; }
 
 # Checks if archives should be encrypted
-should_encrypt() { [ "$ENCRYPT_ARCHIVES" = "true" ]; }
+should_encrypt() { [ "$ENCRYPT_ARCHIVES" = "$TRUE" ]; }

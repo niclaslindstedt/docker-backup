@@ -8,7 +8,7 @@ test__create_checksum__creates_checksum_if_create_checksums_is_true() {
   test_begin "create_checksum creates checksum if CREATE_CHECKSUMS is true"
 
   # Arrange
-  CREATE_CHECKSUMS="true"
+  CREATE_CHECKSUMS="$TRUE"
   /bin/echo "test" > ./test.7z
 
   # Act
@@ -22,10 +22,10 @@ test__create_checksum__does_not_call_cksfv_if_create_checksums_is_false() {
   test_begin "create_checksum does not call cksfv if CREATE_CHECKSUMS is false"
 
   # Arrange
-  CREATE_CHECKSUMS="false"
+  CREATE_CHECKSUMS="$FALSE"
   /bin/echo "test" > ./test.7z
-  set_result "false"
-  cksfv() { set_result "true"; }
+  set_result "$FALSE"
+  cksfv() { set_result "$TRUE"; }
 
   # Act
   create_checksum ./test.7z
@@ -38,9 +38,9 @@ test__create_checksum__calls_error_if_file_does_not_exist() {
   test_begin "create_checksum calls error if file does not exist"
 
   # Arrange
-  CREATE_CHECKSUMS="true"
-  set_result "false"
-  cksfv() { set_result "true"; }
+  CREATE_CHECKSUMS="$TRUE"
+  set_result "$FALSE"
+  cksfv() { set_result "$TRUE"; }
 
   # Act
   /bin/rm -f ./non_existant_file.7z

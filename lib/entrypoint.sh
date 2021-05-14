@@ -5,6 +5,7 @@
 COMPONENT="ENTRYPOINT"
 
 main() {
+  verify_settings
   echo_settings
   create_cronjobs
   set_timezone

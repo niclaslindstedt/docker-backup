@@ -26,10 +26,10 @@ error() {
 }
 
 # Checks if debug mode is enabled
-is_debug() { [ "$DEBUG" = "true" ]; }
+is_debug() { [ "$DEBUG" = "$TRUE" ]; }
 
 # Checks if verbose mode is enabled
-is_verbose() { [ "$VERBOSE" = "true" ]; }
+is_verbose() { [ "$VERBOSE" = "$TRUE" ]; }
 
 # Returns output device depending on debug mode
 get_output() { is_debug && echo "/dev/stdout" || echo "/dev/null"; }

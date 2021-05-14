@@ -58,8 +58,8 @@ assert_string_contains() {
 }
 
 assert_null() { assert_equals "" "$1"; }
-assert_false() { assert_equals "false" "$1"; }
-assert_true() { assert_equals "true" "$1"; }
+assert_false() { assert_equals "$FALSE" "$1"; }
+assert_true() { assert_equals "$TRUE" "$1"; }
 
 # param 1: expected string, param 2: actual string
 assert_equals() {
