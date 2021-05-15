@@ -1,7 +1,8 @@
 name: Push Tag
 
 on:
-  tags: [v*.*.*]
+  push:
+    tags: [v*.*.*]
 
 jobs:
   push-tag:
