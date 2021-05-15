@@ -33,7 +33,7 @@ services:
       - PAUSE_CONTAINERS=sample-app-1,sample-app-2
       - ARCHIVE_TYPE=7z
       - ENCRYPT_ARCHIVES=true
-      - ENCRYPTION_PASSWORD=passw0rd
+      - ENCRYPTION_PASSWORD=passw0rdpassw0rdpassw0rdpassw0rd
       - ENCRYPTION_ALGORITHM=AES256
       - VERBOSE=true
       - TZ=Europe/Stockholm

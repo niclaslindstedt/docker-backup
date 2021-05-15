@@ -17,7 +17,7 @@ verify_settings() {
   verify_boolean ASSUME_YES
   verify_archive ARCHIVE_TYPE
   verify_boolean ENCRYPT_ARCHIVES
-  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_not_null ENCRYPTION_PASSWORD
+  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && [ "$SKIP_PASSWORD_LENGTH_CHECK" != "$TRUE" ] && verify_length ENCRYPTION_PASSWORD 30
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_encryption_algo ENCRYPTION_ALGORITHM
   verify_number KEEP_BACKUPS_FOR_DAYS
   verify_number KEEP_LTS_FOR_MONTHS
@@ -73,7 +73,7 @@ echo_setting() {
 
 # Prints a specific setting and masks it with stars (*), useful for passwords
 echo_setting_masked() {
-  echo "| $(printf '%-25s' "$1") | $(printf '%-26s' "$(echo "${!1}" | sed -r "s/./\*/g")") |"
+  echo "| $(printf '%-25s' "$1") | $(printf '%-26s' "$(echo "${!1}" | cut -c1-16 | sed -r "s/./\*/g")") |"
 }
 
 # Helpers
@@ -81,11 +81,16 @@ error() { echo "$*"; exit 1; }
 verify_boolean() { [ "${!1}" = "$TRUE" ] || [ "${!1}" = "$FALSE" ] || error "$1 is not a valid boolean (${!1})"; }
 verify_number() { [[ "${!1}" =~ ^[0-9]+$ ]] || error "$1 is not a number (${!1})"; }
 verify_writable_path() { [ -w "${!1}" ] || error "$1 is not a writable path (${!1})"; }
-verify_not_null() { [[ "$1" =~ ^[^\s]+$ ]] || error "$1 cannot be an empty string (${!1})"; }
 verify_archive() { [[ "${!1}" =~ ^(tgz|7z|zip|rar)$ ]] || error "$1 is not a valid archive (${!1})"; }
 
+verify_length() {
+  local tmp
+  tmp="${!1}"
+  [ "${#tmp}" -gt "$2" ] || error "$1 needs to be at least $2 characters long"
+}
+
 verify_encryption_algo() {
-  [[ "${!1}" =~ ^(IDEA|3DES|CAST5|BLOWFISH|AES|AES192|AES256|TWOFISH|CAMELLIA128|CAMELLIA192|CAMELLIA256)$ ]] || \
+  [[ "${!1}" =~ ^(IDEA|CAST5|BLOWFISH|AES256|TWOFISH|CAMELLIA256)$ ]] || \
     error "$1 is not a valid gnupg encryption algorithm (${!1})";
 }
 
