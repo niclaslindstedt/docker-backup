@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  run-tests:
+  build-and-push:
     runs-on: ubuntu-latest
     env:
       - DOCKER_REGISTRY=niclaslindstedt

@@ -1,10 +1,10 @@
-name: Build & Push
+name: Push Tag
 
 on:
   tags: [v*.*.*]
 
 jobs:
-  run-tests:
+  push-tag:
     runs-on: ubuntu-latest
     env:
       - DOCKER_REGISTRY=niclaslindstedt

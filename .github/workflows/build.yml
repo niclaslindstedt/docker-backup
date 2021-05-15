@@ -1,4 +1,4 @@
-name: Build
+name: Build Image
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  run-tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
