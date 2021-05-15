@@ -29,53 +29,17 @@ decrypt() {
 # Encrypts a file (adapter/implementation)
 # Params: <unencrypted file path>, <encrypted file target path>
 encrypt_file() {
-  if [ "$ENCRYPTION_PROGRAM" = "openssl" ]; then
-    encrypt_openssl "$1" "$2"
-  elif [ "$ENCRYPTION_PROGRAM" = "gnupg" ]; then
-    encrypt_gnupg "$1" "$2"
-  fi
-}
-
-# Encrypts a file using openssl. This is not the recommended way, but kept for compatibility reasons.
-# Params: <unencrypted file path>, <encrypted file target path>
-encrypt_openssl() {
-  $(sudo_if_unwritable "$2") \
-    openssl enc -e -v -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt \
-      -k "$ENCRYPTION_PASSWORD" -in "$1" -out "$2" 2>"$OUTPUT" || return 1
-}
-
-# Encrypts a file using openssl. This is the recommended way!
-# Params: <unencrypted file path>, <encrypted file target path>
-encrypt_gnupg() {
   $(sudo_if_unwritable "$2") \
     gpg --verbose --batch --passphrase "$ENCRYPTION_PASSWORD" --output "$2" \
-      -z 0 --symmetric "$1" 2>"$OUTPUT" || return 1
+      -z 0 --cipher-algo "$ENCRYPTION_ALGORITHM" --symmetric "$1" 2>"$OUTPUT" || return 1
 }
 
 # Decrypts a file (adapter/implementation)
 # Params: <encrypted file>, <unencrypted file target path>
 decrypt_file() {
-  if [ "$ENCRYPTION_PROGRAM" = "openssl" ]; then
-    decrypt_openssl "$1" "$2"
-  elif [ "$ENCRYPTION_PROGRAM" = "gnupg" ]; then
-    decrypt_gnupg "$1" "$2"
-  fi
-}
-
-# Decrypts a file using openssl. This is not the recommended way, but kept for compatibility reasons.
-# Params: <unencrypted file path>, <encrypted file target path>
-decrypt_openssl() {
-  $(sudo_if_unwritable "$2") \
-    openssl enc -d -v -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt \
-      -k "$ENCRYPTION_PASSWORD" -in "$1" -out "$2" 2>/"$OUTPUT" || return 1
-}
-
-# Decrypts a file using openssl. This is the recommended way!
-# Params: <unencrypted file path>, <encrypted file target path>
-decrypt_gnupg() {
   $(sudo_if_unwritable "$2") \
     gpg --verbose --batch --passphrase "$ENCRYPTION_PASSWORD" --output "$2" \
-      --cipher-algo "$ENCRYPTION_ALGORITHM" --decrypt "$1" 2>"$OUTPUT" || return 1
+      --decrypt "$1" 2>"$OUTPUT" || return 1
 }
 
 # Checks if an archive is encrypted

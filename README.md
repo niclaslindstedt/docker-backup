@@ -39,8 +39,9 @@ Submit a [question](https://github.com/niclaslindstedt/docker-backup/issues/new)
 | `CRON_PRUNE`               | `0 3 * * *` | Cron schedule for pruning backups.                                                                                               |
 | `VERBOSE`                  | `false`     | Set to 'true' to enable extra verbose logging.                                                                                   |
 | `ARCHIVE_TYPE`             | `tgz`       | Use this archive type for storage, one of: `tgz` `zip` `rar` `7z`                                                                |
-| `ENCRYPT_ARCHIVES`         | `false`     | Encrypt archives using AES-256 CBC.                                                                                              |
-| `ENCRYPTION_PASSWORD`      |             | Set a password to encrypt (and decrypt) files with.                                                                              |
+| `ENCRYPT_ARCHIVES`         | `false`     | Encrypt archives after compressing them.                                                                                         |
+| `ENCRYPTION_PASSWORD`      |             | Set a password (symmetric key) to encrypt (and decrypt) files with.                                                              |
+| `ENCRYPT_ALGORITHM`        | `AES256`    | The encryption algorithm used when encrypting backups.                                                                           |
 | `KEEP_BACKUPS_FOR_DAYS`    | `30`        | Set to how many days you want to keep backups in the short-term backup folder.                                                   |
 | `KEEP_LTS_FOR_MONTHS`      | `6`         | Set to how long you want to keep long-term storage backups.                                                                      |
 | `KEEP_DAILY_AFTER_HOURS`   | `24`        | The breakpoint (in hours) for when hourly backups turn into daily.                                                               |
