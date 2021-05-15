@@ -27,6 +27,7 @@ RUN apt-get update \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ARG INSTALL_DOCKER=true
 RUN [ "$INSTALL_DOCKER" = "true" ] && curl -sSL https://get.docker.com/ | sh \
+  && rm -rf /var/lib/apt/lists/* \
   && adduser ${RUN_AS_USER} docker \
   ; exit 0
 COPY lib ${APP_PATH}
