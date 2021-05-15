@@ -14,7 +14,8 @@ Backup your Docker volumes and/or data folders and store them both short-term an
 - Encrypt your backups for safe storage in the cloud.
 - Verify your backups' integrity with sfv checksums.
 - Cron scheduling for precise backup schedules.
-- Pause your other Docker containers during backup/restoration to prevent invalid states.
+- Pause your other Docker containers during backup/restoration to prevent invalid states
+  - Note: _This is only supported on the `-docker` tagged images._
 
 ## Instructions
 

@@ -11,7 +11,7 @@ services:
       - ../data:/data # host-mounted folder
 
   backup:
-    image: niclaslindstedt/docker-backup:latest
+    image: niclaslindstedt/docker-backup:latest-docker # this needs to be a '-docker' tagged image
     environment:
       - CRON_BACKUP=* * * * *
       - PROJECT_NAME=samples # should be set to the parent folder of the compose file (this file)
