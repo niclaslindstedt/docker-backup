@@ -1,7 +1,8 @@
 # Docker Backup
 
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/niclaslindstedt/docker-backup.svg)](https://hub.docker.com/r/niclaslindstedt/docker-backup/builds/)
-[![Docker Automated build](https://img.shields.io/docker/cloud/automated/niclaslindstedt/docker-backup.svg)](https://hub.docker.com/r/niclaslindstedt/docker-backup/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/niclaslindstedt/docker-backup)](https://hub.docker.com/r/niclaslindstedt/docker-backup)
+[![Tests](https://github.com/niclaslindstedt/docker-backup/actions/workflows/test.yml/badge.svg)](https://github.com/niclaslindstedt/docker-backup/actions/workflows/test.yml)
+[![CD](https://github.com/niclaslindstedt/docker-backup/actions/workflows/cd.yml/badge.svg)](https://github.com/niclaslindstedt/docker-backup/actions/workflows/cd.yml)
 
 Backup your Docker volumes and/or data folders and store them both short-term and long-term. Prune unwanted backups according to precise pruning settings, or when free space gets tight.
 
