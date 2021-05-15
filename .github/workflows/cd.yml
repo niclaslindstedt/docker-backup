@@ -1,12 +1,13 @@
 name: Build & Push
 
 on:
-  pull_request:
-    branches:
-      - "master"
   push:
-    branches:
-      - "!master"
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
 
 jobs:
   run-tests:
