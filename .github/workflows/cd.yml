@@ -8,7 +8,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     env:
-      - DOCKER_REGISTRY=niclaslindstedt
+      DOCKER_REGISTRY: niclaslindstedt
     steps:
       - name: checkout
         uses: actions/checkout@v2
