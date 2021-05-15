@@ -1,0 +1,17 @@
+name: Run Tests
+
+on:
+  push:
+    branches-ignore: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: run tests
+        run: docker-compose -f docker-compose.test.yml run --rm sut

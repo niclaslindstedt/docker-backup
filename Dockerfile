@@ -1,6 +1,5 @@
 FROM ubuntu:18.04
 
-ARG INSTALL_DOCKER=true
 ENV RUN_AS_USER=docker-backup
 ENV APP_PATH=/home/${RUN_AS_USER} \
   LOG_PATH=/var/log/output.log \
@@ -26,6 +25,7 @@ RUN apt-get update \
   && adduser --disabled-password --gecos "" ${RUN_AS_USER} \
   && adduser ${RUN_AS_USER} sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+ARG INSTALL_DOCKER=true
 RUN [ "$INSTALL_DOCKER" = "true" ] && curl -sSL https://get.docker.com/ | sh \
   && adduser ${RUN_AS_USER} docker \
   ; exit 0
