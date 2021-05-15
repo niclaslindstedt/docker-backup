@@ -20,7 +20,10 @@ jobs:
         run: docker-compose -f docker-compose.test.yml run --rm sut
 
       - name: docker build
-        run: ./scripts/build.sh ${env.DOCKER_REGISTRY}
+        run: ./scripts/build.sh ${{ env.DOCKER_REGISTRY }}
+
+      - name: docker tag
+        run: ./scripts/tag.sh ${GITHUB_REF##*/} ${{ env.DOCKER_REGISTRY }}
 
       - name: docker push
-        run: docker push
+        run: ./scripts/push.sh ${GITHUB_REF##*/} ${{ env.DOCKER_REGISTRY }}
