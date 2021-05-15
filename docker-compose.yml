@@ -20,7 +20,10 @@ services:
       - ./data:/data # this shows how you can use a local folder
 
   backup:
-    build: .
+    build:
+      context: .
+      args:
+        - INSTALL_DOCKER=true
     restart: always
     environment:
       - CRON_BACKUP=* * * * * # create backups every minute

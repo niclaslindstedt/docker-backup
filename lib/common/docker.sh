@@ -52,5 +52,5 @@ get_paused_container_ids() {
 
 # Checks if containers should be paused
 should_pause_containers() {
-  is_set "$PAUSE_CONTAINERS"
+  [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PAUSE_CONTAINERS"
 }

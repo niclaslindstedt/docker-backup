@@ -5,12 +5,12 @@
 COMPONENT="ENTRYPOINT"
 
 main() {
+  write_environment
   verify_settings
   echo_settings
   create_cronjobs
   set_timezone
   check_permissions
-  write_environment
   trail_log
 }
 

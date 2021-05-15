@@ -1,5 +1,6 @@
 FROM ubuntu:18.04
 
+ARG INSTALL_DOCKER=true
 ENV RUN_AS_USER=docker-backup
 ENV APP_PATH=/home/${RUN_AS_USER} \
   LOG_PATH=/var/log/output.log \
@@ -13,6 +14,7 @@ RUN apt-get update \
     cksfv \
     cron \
     curl \
+    gnupg2 \
     p7zip \
     rar \
     sudo \
@@ -20,12 +22,13 @@ RUN apt-get update \
     unrar \
     uuid-runtime \
     zip \
-  && curl -sSL https://get.docker.com/ | sh \
   && rm -rf /var/lib/apt/lists/* \
   && adduser --disabled-password --gecos "" ${RUN_AS_USER} \
-  && adduser ${RUN_AS_USER} docker \
   && adduser ${RUN_AS_USER} sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN [ "$INSTALL_DOCKER" = "true" ] && curl -sSL https://get.docker.com/ | sh \
+  && adduser ${RUN_AS_USER} docker \
+  ; exit 0
 COPY lib ${APP_PATH}
 RUN mkdir -p /home/${RUN_AS_USER}/.local/bin ${VOLUME_PATH} ${BACKUP_PATH} ${LTS_PATH} ${TMP_PATH} \
   && ln -s ${APP_PATH}/backup.sh /home/${RUN_AS_USER}/.local/bin/backup \

@@ -31,6 +31,7 @@ verify_settings() {
 
 # Print out the current settings
 echo_settings() {
+  echo
   echo "+--------------------------------------------------------+"
   echo "| SETTINGS                                               |"
   echo "+---------------------------+----------------------------+"
@@ -59,8 +60,8 @@ echo_settings() {
   echo_setting MINIMUM_FREE_SPACE
   echo_setting CREATE_CHECKSUMS
   [ "$CREATE_CHECKSUMS" = "$TRUE" ] && echo_setting VERIFY_CHECKSUMS
-  is_set "$PROJECT_NAME" && echo_setting PROJECT_NAME
-  is_set "$PAUSE_CONTAINERS" && echo_setting PAUSE_CONTAINERS
+  [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PROJECT_NAME" && echo_setting PROJECT_NAME
+  [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PAUSE_CONTAINERS" && echo_setting PAUSE_CONTAINERS
   echo_setting TZ
   echo "+---------------------------+----------------------------+"
   echo

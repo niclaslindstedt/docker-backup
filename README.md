@@ -3,15 +3,17 @@
 [![Docker Build Status](https://img.shields.io/docker/cloud/build/niclaslindstedt/docker-backup.svg)](https://hub.docker.com/r/niclaslindstedt/docker-backup/builds/)
 [![Docker Automated build](https://img.shields.io/docker/cloud/automated/niclaslindstedt/docker-backup.svg)](https://hub.docker.com/r/niclaslindstedt/docker-backup/)
 
-Backs up your Docker volumes and/or data folders and stores them both short-term and long-term. Prune old backups after X days or when free space gets tight.
+Backup your Docker volumes and/or data folders and store them both short-term and long-term. Prune unwanted backups according to precise pruning settings, or when free space gets tight.
 
 **CAUTION: Do not use this for production environments. It has not been thorougly tested yet.**
 
 ## Features
 
-- Cron for precise backup schedules.
-- Backup any folder or Docker volume on your host machine.
-- Easily restore backups.
+- Backup any Docker volume or folder on your host machine.
+- Easily restore backups with one command.
+- Encrypt your backups for safe storage in the cloud.
+- Verify your backups' integrity with sfv checksums.
+- Cron scheduling for precise backup schedules.
 - Pause your other Docker containers during backup/restoration to prevent invalid states.
 
 ## Instructions
