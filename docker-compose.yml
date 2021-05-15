@@ -34,6 +34,8 @@ services:
       - ARCHIVE_TYPE=7z
       - ENCRYPT_ARCHIVES=true
       - ENCRYPTION_PASSWORD=passw0rd
+      - ENCRYPTION_PROGRAM=gnupg
+      - ENCRYPTION_ALGORITHM=AES256
       - VERBOSE=true
       - TZ=Europe/Stockholm
     volumes:

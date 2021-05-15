@@ -19,7 +19,8 @@ is_directory() { [ -d "$1" ]; }
 # Params: <string>
 is_set() { [ -n "$1" ]; }
 
-# Adds a 'sudo' before a command if
+# Adds a 'sudo' before a command if the destination path
+# is not writable by the caller
 # Example: $(sudo_if_unwritable "$path") rm -rf $path
 # Params: <path>
 sudo_if_unwritable() {

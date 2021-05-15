@@ -1,23 +1,5 @@
 #!/bin/bash
 
-# Returns a container filter to find containers associated to a service
-# Params: <service name>
-get_container_filter() {
-  echo "$(echo "${PROJECT_NAME}" | xargs)_$(echo "$1" | xargs)_"
-}
-
-# Returns a list of associated running container ids
-# Params: <service name>
-get_container_ids() {
-  docker ps -q --filter name="$(get_container_filter "$1")"
-}
-
-# Returns a list of associated container ids (stopped containers too)
-# Params: <service name>
-get_paused_container_ids() {
-  docker ps -q --filter status=paused --filter name="$(get_container_filter "$1")"
-}
-
 # Pauses containers associated to a list of service names
 # Params: <service names (comma-separated>
 pause_containers() {
@@ -48,6 +30,24 @@ unpause_containers() {
       docker unpause ${container_ids[*]} || return 1
     }
   done
+}
+
+# Returns a container filter to find containers associated to a service
+# Params: <service name>
+get_container_filter() {
+  echo "$(echo "${PROJECT_NAME}" | xargs)_$(echo "$1" | xargs)_"
+}
+
+# Returns a list of associated running container ids
+# Params: <service name>
+get_container_ids() {
+  docker ps -q --filter name="$(get_container_filter "$1")"
+}
+
+# Returns a list of associated container ids (stopped containers too)
+# Params: <service name>
+get_paused_container_ids() {
+  docker ps -q --filter status=paused --filter name="$(get_container_filter "$1")"
 }
 
 # Checks if containers should be paused
