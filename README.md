@@ -30,7 +30,7 @@ See the [Use cases wiki page](https://github.com/niclaslindstedt/docker-backup/w
 
 See the [Frequently asked questions wiki page](https://github.com/niclaslindstedt/docker-backup/wiki/Frequently-asked-questions) for a list of common questions.
 
-Submit a [question](https://github.com/niclaslindstedt/docker-backup/issues/new) yourself if you can't find your question there.
+Ask questions in the [Discussions](https://github.com/niclaslindstedt/docker-backup/discussions) section if your question hasn't been answered in the FAQ.
 
 ## Environment variables
 
@@ -78,4 +78,4 @@ See the [Commands wiki page](https://github.com/niclaslindstedt/docker-backup/wi
 
 Submit a [pull request](https://github.com/niclaslindstedt/docker-backup/pulls)! See the [Development wiki page](https://github.com/niclaslindstedt/docker-backup/wiki/Development) for information on how to get started with development.
 
-If you're not a developer, you are more than welcome to [submit an issue](https://github.com/niclaslindstedt/docker-backup/issues/new).
+If you're not a developer, you are more than welcome to [submit an issue](https://github.com/niclaslindstedt/docker-backup/issues/new) with a feature request or bug report.
