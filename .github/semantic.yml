@@ -1,0 +1,12 @@
+titleOnly: true
+allowMergeCommits: false
+types:
+  - feat
+  - fix
+  - docs
+  - refactor
+  - test
+  - ci
+  - chore
+  - revert
+  - script
