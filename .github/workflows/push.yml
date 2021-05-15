@@ -23,7 +23,7 @@ jobs:
         run: ./scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
       - name: docker tag
-        run: ./scripts/tag.sh ${GITHUB_REF##*/} ${{ env.DOCKER_REGISTRY }}
+        run: ./scripts/tag.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
 
       - name: docker push
-        run: ./scripts/push.sh ${GITHUB_REF##*/} ${{ env.DOCKER_REGISTRY }}
+        run: ./scripts/push.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
