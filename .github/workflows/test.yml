@@ -5,11 +5,6 @@ on:
     branches-ignore: [master]
   pull_request:
     branches: [master]
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: "Branch to test"
-        required: true
 
 jobs:
   run-tests:
