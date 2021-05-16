@@ -63,6 +63,7 @@ ENV ENABLE_LTS=true \
   VERIFY_CHECKSUMS=true \
   PROJECT_NAME= \
   PAUSE_CONTAINERS= \
+  LOCK_TIMEOUT=600 \
   TZ=UTC
 
 CMD ["sh", "-c", "${APP_PATH}/entrypoint.sh"]

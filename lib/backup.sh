@@ -5,11 +5,15 @@
 COMPONENT="BACKUP"
 
 main() {
-  log "+++ Starting backup process"
-
-  run_backup "$1"
-
-  log "--- Finished backup process"
+  logv "Attempting to get a lock on backup.lock"
+  (
+    flock -w "$LOCK_TIMEOUT" -e 200
+    logd "Aquired lock"
+    log "+++ Starting backup process"
+    run_backup "$1"
+    log "--- Finished backup process"
+  ) 200>/var/lock/backup.lock
+  logd "Lock released"
 }
 
 . /.env

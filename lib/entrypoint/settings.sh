@@ -27,6 +27,7 @@ verify_settings() {
   verify_number MINIMUM_FREE_SPACE
   verify_boolean CREATE_CHECKSUMS
   verify_boolean VERIFY_CHECKSUMS
+  verify_number LOCK_TIMEOUT
 }
 
 # Print out the current settings
@@ -63,6 +64,7 @@ echo_settings() {
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PROJECT_NAME" && echo_setting PROJECT_NAME
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PAUSE_CONTAINERS" && echo_setting PAUSE_CONTAINERS
   echo_setting TZ
+  echo_setting LOCK_TIMEOUT
   echo "+---------------------------+----------------------------+"
   echo
 }

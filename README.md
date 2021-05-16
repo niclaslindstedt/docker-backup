@@ -55,6 +55,7 @@ Ask questions in the [Discussions](https://github.com/niclaslindstedt/docker-bac
 | `MINIMUM_FREE_SPACE`         | `30`        | Set to how many gigabytes of storage you want to keep free.                                                                      |
 | `CREATE_CHECKSUMS`           | `true`      | Set to 'false' to disable creation of checksums (sfv).                                                                           |
 | `VERIFY_CHECKSUMS`           | `true`      | Set to 'false' to disable checksum (sfv) verification before restoring a backup and after copying a backup to long-term storage. |
+| `LOCK_TIMEOUT`               | `600`       | How long the scripts should wait for other scripts to finish before giving up.                                                   |
 | `PROJECT_NAME`               |             | The name of the project folder (used for naming containers with docker-compose).                                                 |
 | `PAUSE_CONTAINERS`           |             | The names of the containers that should be stopped before backing up & restoring. Comma-separated list.                          |
 | `TZ`                         | UTC         | The timezone used for setting timestamps (and comparing times) on backups.                                                       |

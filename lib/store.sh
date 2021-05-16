@@ -5,11 +5,15 @@
 COMPONENT="LTS"
 
 main() {
-  log "+++ Starting long-term storage process"
-
-  run_store "$1"
-
-  log "--- Finished long-term storage process"
+  logv "Attempting to get a lock on backup.lock"
+  (
+    flock -w "$LOCK_TIMEOUT" -e 200
+    logd "Aquired lock"
+    log "+++ Starting long-term storage process"
+    run_store "$1"
+    log "--- Finished long-term storage process"
+  ) 200>/var/lock/backup.lock
+  logd "Lock released"
 }
 
 . /.env
