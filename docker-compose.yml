@@ -40,6 +40,7 @@ services:
       - ENCRYPTION_PASSWORD=passw0rdpassw0rdpassw0rdpassw0rd
       - ENCRYPTION_ALGORITHM=AES256
       - VERBOSE=true
+      - DEBUG=false
       - TZ=Europe/Stockholm
     volumes:
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
