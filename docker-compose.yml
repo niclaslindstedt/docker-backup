@@ -22,6 +22,7 @@ services:
   backup:
     build:
       context: .
+      dockerfile: Dockerfile
       args:
         - INSTALL_DOCKER=true
     restart: always

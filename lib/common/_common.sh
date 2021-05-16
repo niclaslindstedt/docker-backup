@@ -25,6 +25,9 @@ error() {
   exit 1
 }
 
+# Checks if running image is alpine build
+is_alpine() { [ "$IS_ALPINE" = "true" ]; }
+
 # Checks if debug mode is enabled
 is_debug() { [ "$DEBUG" = "$TRUE" ]; }
 

@@ -142,7 +142,7 @@ generate_hourly_lts_backups() {
   now="$(date -d "@$starttime" +"%s")" # start from this date and generate backups until today
   mkdir -p "$LTS_PATH/$1"
   for day in $(seq 1 "$3"); do
-    for hour in $(seq -f "%02g" 1 24); do
+    for hour in $(seq -w 1 24); do
       backuptime="$(date -d "@$now" +"%Y%m%d%H%M%S")"
       backupname="$LTS_PATH/$1/backup-$1-$backuptime.tgz"
       touch "$backupname"

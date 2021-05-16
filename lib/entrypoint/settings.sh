@@ -82,7 +82,10 @@ error() { echo "$*"; exit 1; }
 verify_boolean() { [ "${!1}" = "$TRUE" ] || [ "${!1}" = "$FALSE" ] || error "$1 is not a valid boolean (${!1})"; }
 verify_number() { [[ "${!1}" =~ ^[0-9]+$ ]] || error "$1 is not a number (${!1})"; }
 verify_writable_path() { [ -w "${!1}" ] || error "$1 is not a writable path (${!1})"; }
-verify_archive() { [[ "${!1}" =~ ^(tgz|7z|zip|rar)$ ]] || error "$1 is not a valid archive (${!1})"; }
+verify_archive() {
+  [[ "${!1}" =~ ^(tgz|7z|zip|rar)$ ]] || error "$1 is not a valid archive (${!1})"
+  [ "${!1}" = "rar" ] && is_alpine && error "$1 cannot be set to rar on alpine build"
+}
 
 verify_length() {
   local tmp

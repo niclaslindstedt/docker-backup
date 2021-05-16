@@ -10,11 +10,10 @@ services:
       - ENABLE_PRUNE=false
       - ASSUME_YES=true
       - VERBOSE=true
-      - DEBUG=true
+      - DEBUG=false
       - RUN_TEST=${RUN_TEST}
       - RUN_SPEC=${RUN_SPEC}
       - MINIMUM_FREE_SPACE=10
       - TZ=UTC
     volumes:
       - ./tests:/home/docker-backup/tests # mount the tests to be run
-      - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers

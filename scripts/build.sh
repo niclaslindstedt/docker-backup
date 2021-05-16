@@ -7,11 +7,14 @@ main() {
 
   registry="${1:-niclaslindstedt}"
 
+  echo "Building latest"
+  docker build --build-arg INSTALL_DOCKER=false -t "$registry/docker-backup:latest" . || exit 1
+
   echo "Building latest-docker"
   docker build --build-arg INSTALL_DOCKER=true -t "$registry/docker-backup:latest-docker" . || exit 1
 
-  echo "Building latest"
-  docker build --build-arg INSTALL_DOCKER=false -t "$registry/docker-backup:latest" . || exit 1
+  echo "Building latest-alpine"
+  docker build -f Dockerfile-alpine -t "$registry/docker-backup:latest-alpine" . || exit 1
 }
 
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
