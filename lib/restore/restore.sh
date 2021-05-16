@@ -35,18 +35,18 @@ restore_volume() {
 
   ! is_set "$1" && error "You have to provide a volume name or backup filename"
 
-  [ ! -d "$VOLUME_PATH/$1" ] && [ ! -f "$BACKUP_PATH/$1" ] && {
-    error "Volume or backup '$1' not found (is it mounted?)"
-  }
+  volume_name="$(get_volume_name "$1")"
 
-  # Parameter is a backup filename
-  if is_file "$BACKUP_PATH/$1"; then
-    backup_path="$BACKUP_PATH/$1"
-    volume_name="$(get_volume_name "$1")"
-  else
+  if [ -d "$VOLUME_PATH/$1" ]; then
     backup_path="$BACKUP_PATH/$(get_latest_backup "$1")"
     volume_name="$1"
     [ ! -f "$backup_path" ] && error "No backups for volume: $volume_name"
+  elif [ -f "$BACKUP_PATH/$1" ]; then
+    backup_path="$BACKUP_PATH/$1"
+  elif [ -f "$LTS_PATH/$volume_name/$1" ]; then
+    backup_path="$LTS_PATH/$volume_name/$1"
+  else
+    error "Volume or backup '$1' not found (is it mounted?)"
   fi
 
   logv "Found backup '$backup_path' which belongs to volume '$volume_name'"

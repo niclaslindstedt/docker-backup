@@ -31,9 +31,10 @@ pack() {
 unpack() {
   local filename fileext
 
-  target_path="${2:?}"
-  filename="$BACKUP_PATH/$(basename "$1")"
+  filename="$1"
   filename_clean="${filename%*.enc}"
+  target_path="${2:?}"
+
   decrypt "$filename" "$filename_clean"
   verify_checksum "$filename_clean"
 

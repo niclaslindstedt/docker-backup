@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2162
+
 # Encrypts a file
 # Params: <unencrypted file path>, <encrypted file target path>
 encrypt() {
@@ -18,12 +20,25 @@ encrypt() {
 # Decrypts a file
 # Params: <encrypted file>, <unencrypted file target path>
 decrypt() {
+  local passphrase
+
   is_encrypted "$1" || return 0
 
   verify_checksum "$1"
 
   log "Decrypting archive $1"
-  decrypt_file "$1" "$2" || error "Could not decrypt $1"
+  decrypt_file "$1" "$2" || {
+    if [ "$ASSUME_YES" != "$TRUE" ]; then
+      log "Could not decrypt $1 -- bad passphrase?"
+      logn "Enter passphrase to try again: "
+      read -s passphrase
+      logn
+      ENCRYPTION_PASSWORD="$passphrase" # for some reason, this does not seem to work
+      decrypt_file "$1" "$2" || error "Could not decrypt $1"
+    else
+      error "Could not decrypt $1"
+    fi
+  }
 }
 
 # Encrypts a file (adapter/implementation)
