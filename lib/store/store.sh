@@ -2,31 +2,40 @@
 
 # Entrypoint for store script
 run_store() {
-  local volume_name backup_name
-
-  for folder in "$VOLUME_PATH"/*; do
-    volume_name="$(basename "$folder")"
-
-    # Get the latest of each backup and store it.
-    backup_name="$(get_latest_backup "$volume_name")"
-    store "$backup_name"
-  done
+  if is_set "$1"; then
+    logv "Storing volume '$1'"
+    store_volume "$1"
+  else
+    logv "Storing all volumes"
+    store_all
+  fi
 }
 
 # Copy the latest backups of each volume to long-term storage
-# Params: <backup filename>
-store() {
-  local volume_name target_path target_filename
+store_all() {
+  for folder in "$VOLUME_PATH"/*; do
+    store_volume "$(basename "$folder")"
+  done
+}
 
-  go "$BACKUP_PATH"
-    volume_name=$(get_volume_name "$1")
-    target_path="$LTS_PATH/$volume_name"
-    target_filename="$target_path/$1"
-    ! is_file "$target_filename" && {
-      copy_backup "$1" "$target_path"
-      verify_checksum "$target_filename" || error "Checksum verification failed on $target_filename"
-    }
-  back
+# Copy the latest backups of a specific volume to long-term storage
+# Params: <backup filename>
+store_volume() {
+  local backup_name volume_name target_path target_filename
+
+  backup_name=$(get_latest_backup "$1")
+  volume_name=$(get_volume_name "$backup_name")
+
+  [ ! -d "$VOLUME_PATH/$1" ] || ! is_set "$volume_name" && error "Could not find volume '$1'"
+
+  target_path="$LTS_PATH/$volume_name"
+  target_filename="$target_path/$backup_name"
+  if ! is_file "$target_filename"; then
+    copy_backup "$BACKUP_PATH/$backup_name" "$target_path"
+    verify_checksum "$target_filename" || error "Checksum verification failed on $target_filename"
+  else
+    log "Backup '$backup_name' has already been copied to long-term storage"
+  fi
 }
 
 # Copy a specific backup to a target path. Take care not to violate free space requirements.
