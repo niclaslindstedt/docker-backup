@@ -31,6 +31,13 @@ error() {
   exit 1
 }
 
+# Create a file lock to prevent simultaneous operations
+lock() {
+  logv "Attempting to aquire lock (timeout: ${LOCK_TIMEOUT}s)"
+  flock -w "$LOCK_TIMEOUT" -e 200 || error "Could not aquire lock"
+  logd "Aquired lock"
+}
+
 # Checks if running image is alpine build
 is_alpine() { [ "$IS_ALPINE" = "true" ]; }
 

@@ -24,9 +24,11 @@ decrypt() {
 
   is_encrypted "$1" || return 0
 
+  [ ! -f "$1" ] && error "File does not exist: $1"
+
   verify_checksum "$1"
 
-  log "Decrypting archive $1"
+  log "Decrypting archive to $2"
   decrypt_file "$1" "$2" || {
     if [ "$ASSUME_YES" != "$TRUE" ]; then
       log "Could not decrypt $1 -- bad passphrase?"

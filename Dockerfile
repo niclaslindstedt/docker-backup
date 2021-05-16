@@ -7,6 +7,7 @@ ENV APP_PATH=/home/${RUN_AS_USER} \
   BACKUP_PATH=/backup \
   LTS_PATH=/lts \
   TMP_PATH=/tmp/backup \
+  FILELOCK_PATH=/var/lock/backup.lock \
   PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin
 RUN apt-get update \
   && apt-get install -y \

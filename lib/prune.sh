@@ -5,14 +5,12 @@
 COMPONENT="PRUNE"
 
 main() {
-  logv "Attempting to get a lock on backup.lock"
   (
-    flock -w "$LOCK_TIMEOUT" -e 200
-    logd "Aquired lock"
+    lock
     log "+++ Starting prune process"
     run_prune "$1"
     log "--- Finished prune process"
-  ) 200>/var/lock/backup.lock
+  ) 200>"$FILELOCK_PATH"
   logd "Lock released"
 }
 

@@ -5,14 +5,12 @@
 COMPONENT="BACKUP"
 
 main() {
-  logv "Attempting to get a lock on backup.lock"
   (
-    flock -w "$LOCK_TIMEOUT" -e 200
-    logd "Aquired lock"
+    lock
     log "+++ Starting backup process"
     run_backup "$1"
     log "--- Finished backup process"
-  ) 200>/var/lock/backup.lock
+  ) 200>"$FILELOCK_PATH"
   logd "Lock released"
 }
 

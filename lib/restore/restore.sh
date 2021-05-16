@@ -38,15 +38,23 @@ restore_volume() {
   volume_name="$(get_volume_name "$1")"
 
   if [ -d "$VOLUME_PATH/$1" ]; then
+
+    logd "Restoring latest backup of volume '$1'"
     backup_path="$BACKUP_PATH/$(get_latest_backup "$1")"
     volume_name="$1"
     [ ! -f "$backup_path" ] && error "No backups for volume: $volume_name"
+
   elif [ -f "$BACKUP_PATH/$1" ]; then
+
+    logd "Restoring specific backup '$1'"
     backup_path="$BACKUP_PATH/$1"
+
   elif [ -f "$LTS_PATH/$volume_name/$1" ]; then
+
+    logd "Restoring specific long-term backup '$1'"
     backup_path="$LTS_PATH/$volume_name/$1"
-  else
-    error "Volume or backup '$1' not found (is it mounted?)"
+
+  else error "Volume or backup '$1' not found (is it mounted?)"
   fi
 
   logv "Found backup '$backup_path' which belongs to volume '$volume_name'"

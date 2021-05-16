@@ -41,6 +41,7 @@ services:
       - ENCRYPTION_ALGORITHM=AES256
       - VERBOSE=true
       - DEBUG=false
+      - LOCK_TIMEOUT=600
       - TZ=Europe/Stockholm
     volumes:
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
