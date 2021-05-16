@@ -65,5 +65,7 @@ copy_soft() {
 # Copy a file with sudo if needed
 # Params: <source file path>, <target path>
 copy_file() {
-  $(sudo_if_unwritable "$2") cp -n "$1" "$2" || return 1
+  if ! is_file "$2"; then # Alpine doesn't support the -n flag
+    $(sudo_if_unwritable "$2") cp "$1" "$2" || return 1
+  fi
 }
