@@ -5,11 +5,13 @@
 COMPONENT="BACKUP"
 
 main() {
-  log "+++ Starting backup process"
-
-  run_backup "$1"
-
-  log "--- Finished backup process"
+  (
+    lock
+    log "+++ Starting backup process"
+    run_backup "$1"
+    log "--- Finished backup process"
+  ) 200>"$FILELOCK_PATH"
+  logd "Lock released"
 }
 
 . /.env

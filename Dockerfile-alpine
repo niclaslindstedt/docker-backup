@@ -7,6 +7,7 @@ ENV APP_PATH=/home/${RUN_AS_USER} \
   BACKUP_PATH=/backup \
   LTS_PATH=/lts \
   TMP_PATH=/tmp/backup \
+  FILELOCK_PATH=/var/lock/backup.lock \
   PATH=${PATH}:/home/${RUN_AS_USER}/.local/bin \
   IS_ALPINE=true
 RUN apk update \
@@ -58,6 +59,7 @@ ENV ENABLE_LTS=true \
   VERIFY_CHECKSUMS=true \
   PROJECT_NAME= \
   PAUSE_CONTAINERS= \
+  LOCK_TIMEOUT=600 \
   TZ=UTC
 
 CMD ["sh", "-c", "${APP_PATH}/entrypoint.sh"]

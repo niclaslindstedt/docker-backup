@@ -5,11 +5,13 @@
 COMPONENT="PRUNE"
 
 main() {
-  log "+++ Starting prune process"
-
-  run_prune "$1"
-
-  log "--- Finished prune process"
+  (
+    lock
+    log "+++ Starting prune process"
+    run_prune "$1"
+    log "--- Finished prune process"
+  ) 200>"$FILELOCK_PATH"
+  logd "Lock released"
 }
 
 . /.env

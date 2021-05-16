@@ -5,11 +5,13 @@
 COMPONENT="LTS"
 
 main() {
-  log "+++ Starting long-term storage process"
-
-  run_store "$1"
-
-  log "--- Finished long-term storage process"
+  (
+    lock
+    log "+++ Starting long-term storage process"
+    run_store "$1"
+    log "--- Finished long-term storage process"
+  ) 200>"$FILELOCK_PATH"
+  logd "Lock released"
 }
 
 . /.env

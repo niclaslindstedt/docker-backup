@@ -27,6 +27,7 @@ verify_settings() {
   verify_number MINIMUM_FREE_SPACE
   verify_boolean CREATE_CHECKSUMS
   verify_boolean VERIFY_CHECKSUMS
+  verify_number LOCK_TIMEOUT
 }
 
 # Print out the current settings
@@ -40,6 +41,7 @@ echo_settings() {
   [ "$DEBUG" = "$TRUE" ] && echo_setting VOLUME_PATH
   [ "$DEBUG" = "$TRUE" ] && echo_setting BACKUP_PATH
   [ "$DEBUG" = "$TRUE" ] && echo_setting LTS_PATH
+  [ "$DEBUG" = "$TRUE" ] && echo_setting FILELOCK_PATH
   echo_setting ENABLE_LTS
   echo_setting ENABLE_PRUNE
   echo_setting CRON_BACKUP
@@ -60,6 +62,7 @@ echo_settings() {
   echo_setting MINIMUM_FREE_SPACE
   echo_setting CREATE_CHECKSUMS
   [ "$CREATE_CHECKSUMS" = "$TRUE" ] && echo_setting VERIFY_CHECKSUMS
+  echo_setting LOCK_TIMEOUT
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PROJECT_NAME" && echo_setting PROJECT_NAME
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PAUSE_CONTAINERS" && echo_setting PAUSE_CONTAINERS
   echo_setting TZ

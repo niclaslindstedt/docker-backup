@@ -5,11 +5,13 @@
 COMPONENT="RESTORE"
 
 main() {
-  log "+++ Starting restore process"
-
-  run_restore "$1"
-
-  log "--- Finished restore process"
+  (
+    lock
+    log "+++ Starting restore process"
+    run_restore "$1"
+    log "--- Finished restore process"
+  ) 200>"$FILELOCK_PATH"
+  logd "Lock released"
 }
 
 . /.env
