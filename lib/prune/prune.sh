@@ -2,6 +2,12 @@
 
 # Entrypoint for prune script
 run_prune() {
-  purge_backups
-  prune_lts
+
+  is_set "$1" && {
+    ! is_volume "$1" && error "'$1' is not a valid volume"
+    log "Pruning backups for volume '$1'"
+  }
+
+  purge_backups "$*"
+  prune_lts "$*"
 }
