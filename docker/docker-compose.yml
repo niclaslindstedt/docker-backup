@@ -39,6 +39,7 @@ services:
       - ENCRYPT_ARCHIVES=true
       - ENCRYPTION_PASSWORD=passw0rdpassw0rdpassw0rdpassw0rd
       - ENCRYPTION_ALGORITHM=AES256
+      - VERIFY_ENCRYPTION=true
       - VERBOSE=true
       - DEBUG=false
       - LOCK_TIMEOUT=600

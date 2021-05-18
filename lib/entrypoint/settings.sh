@@ -19,6 +19,8 @@ verify_settings() {
   verify_boolean ENCRYPT_ARCHIVES
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && [ "$SKIP_PASSWORD_LENGTH_CHECK" != "$TRUE" ] && verify_length ENCRYPTION_PASSWORD 30
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_encryption_algo ENCRYPTION_ALGORITHM
+  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_boolean VERIFY_ENCRYPTION
+  [ "$VERIFY_ENCRYPTION" = "$TRUE" ] && verify_requirements_venc
   verify_number KEEP_BACKUPS_FOR_DAYS
   verify_number KEEP_LTS_FOR_MONTHS
   verify_number KEEP_DAILY_AFTER_HOURS
@@ -54,6 +56,7 @@ echo_settings() {
   echo_setting ENCRYPT_ARCHIVES
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting_masked ENCRYPTION_PASSWORD
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting ENCRYPTION_ALGORITHM
+  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting VERIFY_ENCRYPTION
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_BACKUPS_FOR_DAYS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_LTS_FOR_MONTHS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_DAILY_AFTER_HOURS
@@ -101,6 +104,12 @@ verify_encryption_algo() {
     error "$1 is not a valid gnupg encryption algorithm (${!1})";
 }
 
+verify_requirements_venc() {
+  require_setting VERIFY_ENCRYPTION CREATE_CHECKSUMS
+  require_setting VERIFY_ENCRYPTION VERIFY_CHECKSUMS
+  require_setting VERIFY_ENCRYPTION ENCRYPT_ARCHIVES
+}
+
 verify_cron() {
   local cron_unit regex
 
@@ -111,4 +120,8 @@ verify_cron() {
     error "$1 is not a valid crontab string (${!1})";
   fi
   return 0
+}
+
+require_setting() {
+  [ "${!2}" = "$TRUE" ] || error "$1 requires that $2 is turned on";
 }

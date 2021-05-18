@@ -48,6 +48,30 @@ test__backup_remove_restore_encrypted_backup() {
   assert_file_exists "$file_to_restore"
 }
 
+test__backup_remove_restore_verified_encrypted_backup() {
+  local file_to_restore latest_backup
+
+  test_begin "Create a verified encrypted backup of a volume, remove a file from the volume and then restore the encrypted backup"
+
+  # Arrange
+  ENCRYPT_ARCHIVES=true
+  ENCRYPTION_PASSWORD=abc123
+  VERIFY_ENCRYPTION=true
+  file_to_restore="$VOLUME_PATH/test/test_file_2"
+  assert_file_exists "$file_to_restore"
+  run_backup test
+  latest_backup="$(get_latest_backup test)"
+  /bin/rm -f "$file_to_restore"
+  assert_file_does_not_exist "$file_to_restore"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+
+  # Act
+  run_restore "$latest_backup"
+
+  # Assert
+  assert_file_exists "$file_to_restore"
+}
+
 test__restore_encrypted_with_bad_password() {
   local file_to_restore latest_backup
 

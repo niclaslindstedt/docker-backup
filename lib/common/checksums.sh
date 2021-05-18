@@ -17,7 +17,6 @@ create_checksum() {
 # Params: <filename>
 verify_checksum() {
   should_verify_checksum || return 0
-
   is_file "$1" && is_file "$1.sfv" && {
     logv "Verifying checksum for $1"
     verify_sfv "$1" || error "Could not verify checksum for $1"
