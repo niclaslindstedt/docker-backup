@@ -7,6 +7,25 @@ go() { pushd "$1" >/dev/null || error "Could not change directory to $1"; }
 # Go back to latest working directory and error out if it's not possible
 back() { popd >/dev/null || error "Could not go back to previous path"; }
 
+
+# Copy file if source file exists
+# Params: <source file path>, <target path>
+copy_soft() {
+  if is_file "$1"; then
+    copy_file "$1" "$2" || return 1
+  fi
+  return 0
+}
+
+# Copy a file with sudo if needed
+# Params: <source file path>, <target path>
+copy_file() {
+  if ! is_file "$2"; then # Alpine doesn't support the -n flag
+    logv "Copying $1 to $2"
+    $(sudo_if_unwritable "$2") cp "$1" "$2" || return 1
+  fi
+}
+
 # Remove files with sudo if needed
 # Params: ...<file paths>
 remove_file() {

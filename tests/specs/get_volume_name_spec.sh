@@ -29,3 +29,16 @@ test__get_volume_name__returns_volume_name_with_underscore() {
   # Assert
   assert_equals "sample_app_2" "$result"
 }
+
+test__get_volume_name__returns_volume_name_from_prerestore_backup() {
+  test_begin "get_volume_name returns volume name from pre-restore backup"
+
+  # Arrange
+  result="not_correct"
+
+  # Act
+  result="$(get_volume_name "prerestore+backup-sample_app_2-20210410174014.7z+20210410174015.7z")"
+
+  # Assert
+  assert_equals "sample_app_2" "$result"
+}

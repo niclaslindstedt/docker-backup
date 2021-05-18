@@ -25,7 +25,7 @@ test__backup_remove_restore() {
   assert_file_exists "$file_to_restore"
 }
 
-test__backup_remove_restore_encrypted() {
+test__backup_remove_restore_encrypted_backup() {
   local file_to_restore latest_backup
 
   test_begin "Create an encrypted backup of a volume, remove a file from the volume and then restore the encrypted backup"
@@ -91,6 +91,55 @@ test__backup_remove_restore_encrypted_twofish() {
 
   # Act
   run_restore "$latest_backup"
+
+  # Assert
+  assert_file_exists "$file_to_restore"
+}
+
+test__backup_remove_restore_prerestore_backup() {
+  local file_to_restore prerestore_backup
+
+  test_begin "Create a backup of a volume, remove a file from the volume and then restore the pre-restore backup"
+
+  # Arrange
+  file_to_restore="$VOLUME_PATH/test/test_file_2"
+  assert_file_exists "$file_to_restore"
+  run_backup
+  latest_backup="$(get_latest_backup test)"
+  run_restore "$latest_backup"
+  /bin/rm -f "$file_to_restore"
+  assert_file_does_not_exist "$file_to_restore"
+  prerestore_backup="$(get_latest_prerestore_backup)"
+  assert_string_starts_with "$prerestore_backup" "prerestore\+backup\-test\-"
+
+  # Act
+  run_restore "$prerestore_backup"
+
+  # Assert
+  assert_file_exists "$file_to_restore"
+}
+
+test__backup_remove_restore_prerestore_encrypted_backup() {
+  local file_to_restore latest_backup
+
+  test_begin "Create an encrypted backup of a volume, remove a file from the volume and then restore the encrypted pre-restore backup"
+
+  # Arrange
+  ENCRYPT_ARCHIVES=true
+  ENCRYPTION_PASSWORD=abc123
+  file_to_restore="$VOLUME_PATH/test/test_file_2"
+  assert_file_exists "$file_to_restore"
+  run_backup test
+  latest_backup="$(get_latest_backup test)"
+  run_restore "$latest_backup"
+  /bin/rm -f "$file_to_restore"
+  assert_file_does_not_exist "$file_to_restore"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+  prerestore_backup="$(get_latest_prerestore_backup "test")"
+  assert_string_starts_with "$prerestore_backup" "prerestore\+backup\-test\-"
+
+  # Act
+  run_restore "$prerestore_backup"
 
   # Assert
   assert_file_exists "$file_to_restore"
