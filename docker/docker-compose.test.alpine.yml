@@ -3,4 +3,4 @@ version: "3.7"
 services:
   sut:
     build:
-      dockerfile: Dockerfile-alpine
+      dockerfile: docker/Dockerfile-alpine

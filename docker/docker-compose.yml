@@ -21,8 +21,8 @@ services:
 
   backup:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
       args:
         - INSTALL_DOCKER=true
     restart: always
@@ -45,9 +45,9 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - sample-app-data:/volumes/sample-app-1 # will be backed up to /backup
-      - ./data:/volumes/sample-app-2 # will be backed up to /backup
-      - ./backups:/backup # backups will be stored here until pruned
-      - ./lts:/lts # backups will be stored here (and never pruned)
+      - ../data:/volumes/sample-app-2 # will be backed up to /backup
+      - ../backups:/backup # backups will be stored here until pruned
+      - ../lts:/lts # backups will be stored here (and never pruned)
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
     tmpfs:
       - /tmp/backup:mode=700,uid=1000,gid=1000

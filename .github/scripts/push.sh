@@ -16,6 +16,6 @@ main() {
 }
 
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
-cd "$SCRIPTDIR/.." || exit 1
+cd "$SCRIPTDIR/../.." || exit 1
 
 main $*

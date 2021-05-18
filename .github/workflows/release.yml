@@ -17,13 +17,13 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: run tests
-        run: docker-compose -f docker-compose.test.yml run --rm sut
+        run: ./.github/scripts/test.sh
 
       - name: docker build
-        run: ./scripts/build.sh ${{ env.DOCKER_REGISTRY }}
+        run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
       - name: docker tag
-        run: ./scripts/tag.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
+        run: ./.github/scripts/tag.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
 
       - name: docker push
-        run: ./scripts/push.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
+        run: ./.github/scripts/push.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
