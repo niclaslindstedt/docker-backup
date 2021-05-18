@@ -1,6 +1,7 @@
 # Docker Backup
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/niclaslindstedt/docker-backup)](https://hub.docker.com/r/niclaslindstedt/docker-backup)
+![GitHub issues](https://img.shields.io/github/issues/niclaslindstedt/docker-backup)
+[![Docker pulls](https://img.shields.io/docker/pulls/niclaslindstedt/docker-backup)](https://hub.docker.com/r/niclaslindstedt/docker-backup)
 [![Tests](https://github.com/niclaslindstedt/docker-backup/actions/workflows/test.yml/badge.svg)](https://github.com/niclaslindstedt/docker-backup/actions/workflows/test.yml)
 [![CD](https://github.com/niclaslindstedt/docker-backup/actions/workflows/cd.yml/badge.svg)](https://github.com/niclaslindstedt/docker-backup/actions/workflows/cd.yml)
 
