@@ -2,7 +2,9 @@ version: "3.7"
 
 services:
   sut:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     command: /home/docker-backup/tests/run-tests.sh
     environment:
       - CRON_BACKUP=0 0 0 0 0
@@ -16,4 +18,4 @@ services:
       - MINIMUM_FREE_SPACE=10
       - TZ=UTC
     volumes:
-      - ./tests:/home/docker-backup/tests # mount the tests to be run
+      - ../tests:/home/docker-backup/tests # mount the tests to be run
