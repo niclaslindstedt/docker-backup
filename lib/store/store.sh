@@ -31,7 +31,7 @@ store_volume() {
   target_path="$LTS_PATH/$volume_name"
   target_filename="$target_path/$backup_name"
   if ! is_file "$target_filename"; then
-    copy_backup "$BACKUP_PATH/$backup_name" "$target_path"
+    copy_backup_carefully "$BACKUP_PATH/$backup_name" "$target_path"
     verify_checksum "$target_filename" || error "Checksum verification failed on $target_filename"
   else
     log "Backup '$backup_name' has already been copied to long-term storage"
@@ -40,7 +40,7 @@ store_volume() {
 
 # Copy a specific backup to a target path. Take care not to violate free space requirements.
 # Params: <backup path>, <target path>
-copy_backup() {
+copy_backup_carefully() {
   local free_space file_size_str
 
   is_file "$1" && ! is_file "$2/$1" && {
@@ -51,21 +51,4 @@ copy_backup() {
     copy_file "$1" "$2" || error "Could not copy $1 to long-term storage location"
     copy_soft "$1.sfv" "$2"
   }
-}
-
-# Copy file if source file exists
-# Params: <source file path>, <target path>
-copy_soft() {
-  if is_file "$1"; then
-    copy_file "$1" "$2" || return 1
-  fi
-  return 0
-}
-
-# Copy a file with sudo if needed
-# Params: <source file path>, <target path>
-copy_file() {
-  if ! is_file "$2"; then # Alpine doesn't support the -n flag
-    $(sudo_if_unwritable "$2") cp "$1" "$2" || return 1
-  fi
 }

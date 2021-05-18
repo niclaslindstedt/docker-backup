@@ -7,6 +7,8 @@
 encrypt() {
   should_encrypt || return 0
 
+  logv "+ Encryption process started"
+
   log "Encrypting archive to $2"
   encrypt_file "$1" "$2" || error "Could not encrypt $1"
 
@@ -14,7 +16,9 @@ encrypt() {
   verify_checksum "$2"
 
   log "Removing unencrypted archive $1"
-  remove_file "$1" "$1.sfv"
+  remove_file "$1"
+
+  logv "- Encryption process finished"
 }
 
 # Decrypts a file
@@ -23,6 +27,8 @@ decrypt() {
   local passphrase
 
   is_encrypted "$1" || return 0
+
+  logv "+ Decryption process started"
 
   [ ! -f "$1" ] && error "File does not exist: $1"
 
@@ -41,6 +47,8 @@ decrypt() {
       error "Could not decrypt $1"
     fi
   }
+
+  logv "- Encryption process finished"
 }
 
 # Encrypts a file (adapter/implementation)

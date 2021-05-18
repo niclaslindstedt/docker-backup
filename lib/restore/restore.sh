@@ -70,16 +70,19 @@ restore_volume() {
       read -r backup_existing_volume
     }
     [ "$backup_existing_volume" != "n" ] && {
-      prerestore_backup_filename="$BACKUP_PATH/prerestore+$1+$(datetime).$ARCHIVE_TYPE"
-      log "Backing up volume '$volume_name' to $prerestore_backup_filename"
-      go "$target_volume"
-        pack "$prerestore_backup_filename" . || error "Could not backup existing volume contents"
-      back
+      folder_size_str="$(get_folder_size_str "$VOLUME_PATH/$volume_name")"
+      prerestore_backup_filename="prerestore+$1+$(datetime).$ARCHIVE_TYPE"
+      temp_path="$TMP_PATH/$prerestore_backup_filename"
+      log "Backing up $volume_name ($folder_size_str) to $prerestore_backup_filename"
+      pack "$temp_path" "$target_volume" || error "Could not backup existing volume contents"
+      move_backup "$temp_path" "$BACKUP_PATH"
     }
   }
 
   # Restore backup
   volume_name=$(get_volume_name "$backup_path")
+  tmp_backup_path="$TMP_PATH/$(basename "$backup_path")"
   log "Restoring backup of volume '$volume_name' to $target_volume"
-  unpack "$backup_path" "$target_volume" || error "Could not restore $backup_path"
+  copy_backup "$backup_path" "$TMP_PATH"
+  unpack "$tmp_backup_path" "$target_volume" || error "Could not restore $backup_path"
 }

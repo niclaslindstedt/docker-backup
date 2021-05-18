@@ -36,7 +36,7 @@ backup_volume() {
 
   ! is_directory "$VOLUME_PATH/$1"
 
-  backup_filename="backup-$1-$(datetime).$ARCHIVE_TYPE"
+  backup_filename="$(generate_backup_filename "$1")"
   backup_path="$BACKUP_PATH/$backup_filename"
   volume_name="$(get_volume_name "$backup_filename")"
 
@@ -76,13 +76,4 @@ backup_volume() {
 
   should_encrypt && backup_filename+=".enc"
   log "=> Backup finished: $backup_filename"
-}
-
-# Move a backup to a target path
-# Params: <backup path>, <target path>
-move_backup() {
-  move_file_noclutter "$1.sfv" "$2"
-  move_file_noclutter "$1" "$2" && verify_checksum "$2/$(basename "$1")"
-  move_file_noclutter "$1.enc.sfv" "$2"
-  move_file_noclutter "$1.enc" "$2" && verify_checksum "$2/$(basename "$1.enc")"
 }

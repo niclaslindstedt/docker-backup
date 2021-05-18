@@ -35,6 +35,12 @@ is_backup() {
   [[ "$(basename "$1")" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]];
 }
 
+# Checks if a file is a backup
+# Params: <filename|path>
+is_prerestore_backup() {
+  [[ "$(basename "$1")" =~ prerestore\+.+?\+[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]];
+}
+
 # Checks if a given value is a volume name
 # Params: <string>
 is_volume() { is_directory "$VOLUME_PATH/$1"; }

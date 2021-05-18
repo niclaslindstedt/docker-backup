@@ -3,6 +3,8 @@
 # Creates an archive from source folder contents
 # Params: <archive target path>, <source folder>
 pack() {
+  logv "+ Packaging process started"
+
   go "$2"
 
     log "Creating archive at $1"
@@ -24,12 +26,16 @@ pack() {
     encrypt "$1" "$1.enc"
 
   back
+
+  logv "- Packaging process finished"
 }
 
 # Extracts an archive to a target path
 # Params: <archive path>, <target path>
 unpack() {
   local filename fileext
+
+  logv "+ Unpackaging process started"
 
   filename="$1"
   filename_clean="${filename%*.enc}"
@@ -41,7 +47,7 @@ unpack() {
   log "Removing contents of $target_path"
   remove_file_recursive "${target_path%/}"/*
 
-  log "Unpacking archive at $target_path"
+  log "Unpacking $filename_clean at $target_path"
   fileext="${filename_clean##*.}"
   if [[ "$fileext" = "tgz" ]]; then
     unpack_tar "$filename_clean" "$target_path" || return 1
@@ -54,9 +60,12 @@ unpack() {
   else
     error "Unknown file extension '$fileext'"
   fi
+
+  logv "- Unpackaging process finished"
 }
 
 # Helper functions
+generate_backup_filename() { echo "backup-$1-$(datetime).$ARCHIVE_TYPE"; }
 pack_tar() { $(sudo_if_unwritable "$2") tar czfv "$1" "$2" 1>"$OUTPUT" || return 1; }
 pack_7zip() { $(sudo_if_unwritable "$2") 7zr a -r "$1" "$2" 1>"$OUTPUT" || return 1; }
 pack_zip() { $(sudo_if_unwritable "$2") zip -r "$1" "$2" 1>"$OUTPUT" || return 1; }
