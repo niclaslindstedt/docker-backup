@@ -13,6 +13,17 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
+      - name: check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            source:
+              - 'lib/**'
+              - '.dockerignore'
+              - 'docker-compose.test*.yml'
+              - 'Dockerfile*'
+
       - name: docker login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
@@ -23,4 +34,5 @@ jobs:
         run: ./scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
       - name: docker push
+        if: steps.changes.outputs.source == 'true'
         run: docker push --all-tags ${{ env.DOCKER_REGISTRY }}/docker-backup
