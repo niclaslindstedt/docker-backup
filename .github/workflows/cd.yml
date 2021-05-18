@@ -19,10 +19,9 @@ jobs:
         with:
           filters: |
             source:
+              - 'docker/**'
               - 'lib/**'
               - '.dockerignore'
-              - 'docker-compose.test*.yml'
-              - 'Dockerfile*'
 
       - name: docker login
         if: steps.changes.outputs.source == 'true'
