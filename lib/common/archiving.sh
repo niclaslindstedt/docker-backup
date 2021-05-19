@@ -23,7 +23,7 @@ pack() {
     create_checksum "$1"
     verify_checksum "$1"
 
-    encrypt "$1" "$1.enc"
+    encrypt "$1" "$1.gpg"
 
   back
 
@@ -38,7 +38,7 @@ unpack() {
   log2 "+ Unpackaging process started"
 
   filename="$1"
-  filename_clean="${filename%*.enc}"
+  filename_clean="${filename%*.gpg}"
   target_path="${2:?}"
 
   decrypt "$filename" "$filename_clean"

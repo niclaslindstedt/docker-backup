@@ -62,7 +62,7 @@ verify_encryption() {
 
   log3 "+ Encryption verification process started"
 
-  backup_name="${1%*.enc}"
+  backup_name="${1%*.gpg}"
   tmp_name="$backup_name.tmp"
   copy_file "$backup_name.sfv" "$tmp_name.sfv"
 
@@ -93,7 +93,7 @@ decrypt_file() {
 
 # Checks if an archive is encrypted
 # Params: <archive filename/path>
-is_encrypted() { [[ "$1" =~ \.enc$ ]]; }
+is_encrypted() { [[ "$1" =~ \.gpg$ ]]; }
 
 # Checks if archives should be encrypted
 should_encrypt() { [ "$ENCRYPT_ARCHIVES" = "$TRUE" ]; }

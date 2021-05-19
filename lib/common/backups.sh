@@ -44,9 +44,9 @@ move_backup() {
 
   log3 "+ Moving process started"
 
-  backup_name="${1%*.enc}"
+  backup_name="${1%*.gpg}"
   copy_backup_files "$backup_name" "$2"
-  remove_file "$backup_name" "$backup_name.sfv" "$backup_name.enc" "$backup_name.enc.sfv"
+  remove_file "$backup_name" "$backup_name.sfv" "$backup_name.gpg" "$backup_name.gpg.sfv"
 
   log3 "- Moving process finished"
 }
@@ -56,13 +56,13 @@ copy_backup_files() {
 
   ! is_directory "$2" && error "Target path should be a directory"
 
-  backup_name="${1%*.enc}"
+  backup_name="${1%*.gpg}"
   copy_soft "$backup_name.sfv" "$2"
   copy_soft "$backup_name" "$2"
   verify_checksum "$2/$(basename "$backup_name")"
-  copy_soft "$backup_name.enc.sfv" "$2"
-  copy_soft "$backup_name.enc" "$2"
-  verify_checksum "$2/$(basename "$backup_name").enc"
+  copy_soft "$backup_name.gpg.sfv" "$2"
+  copy_soft "$backup_name.gpg" "$2"
+  verify_checksum "$2/$(basename "$backup_name").gpg"
 }
 
 # Helper functions

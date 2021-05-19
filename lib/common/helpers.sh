@@ -32,13 +32,13 @@ sudo_if_unwritable() {
 # Checks if a file is a backup
 # Params: <filename|path>
 is_backup() {
-  [[ "$(basename "$1")" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]];
+  [[ "$(basename "$1")" =~ backup\-(.+?)\-[0-9]{14}\.(tgz|zip|rar|7z)(\.gpg)?$ ]];
 }
 
 # Checks if a file is a backup
 # Params: <filename|path>
 is_prerestore_backup() {
-  [[ "$(basename "$1")" =~ prerestore\+.+?\+[0-9]{14}\.(tgz|zip|rar|7z)(\.enc)?$ ]];
+  [[ "$(basename "$1")" =~ prerestore\+.+?\+[0-9]{14}\.(tgz|zip|rar|7z)(\.gpg)?$ ]];
 }
 
 # Checks if a given value is a volume name
