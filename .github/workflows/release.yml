@@ -23,12 +23,13 @@ jobs:
 
       - name: create release branch
         run: |
+          git fetch --all
           if $(git show-ref --verify --quiet refs/heads/release-notes); then
             git branch -D release-notes
             git push origin --delete release-notes
           fi
           git checkout -b release-notes
-          git push origin release-notes
+          git push origin release-notes -f
 
       - name: generate changelog
         id: changelog
