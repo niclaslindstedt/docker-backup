@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_REGISTRY: niclaslindstedt
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -18,21 +19,32 @@ jobs:
       - name: docker build
         run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
+      - name: create branch
+        uses: peterjgrainger/action-create-branch@v2.0.1
+        with:
+          branch: release-notes
+
       - name: generate changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-message: 'chore: Release {version}'
+          preset: conventionalchangelog
 
       - name: create release
         uses: softprops/action-gh-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: pull request
+        uses: peter-evans/create-pull-request@v3
+        branch: release/${{ steps.changelog.outputs.tag }}
+        title: 'chore: Release {version}'
+        body: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: docker tag
         run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
