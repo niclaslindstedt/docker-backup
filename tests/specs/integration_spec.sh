@@ -39,7 +39,7 @@ test__backup_remove_restore_encrypted_backup() {
   latest_backup="$(get_latest_backup test)"
   /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".gpg"
 
   # Act
   run_restore "$latest_backup"
@@ -63,7 +63,7 @@ test__backup_remove_restore_verified_encrypted_backup() {
   latest_backup="$(get_latest_backup test)"
   /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".gpg"
 
   # Act
   run_restore "$latest_backup"
@@ -86,7 +86,7 @@ test__restore_encrypted_with_bad_password() {
   latest_backup="$(get_latest_backup test)"
   /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".gpg"
 
   # Act
   ENCRYPTION_PASSWORD=badpassword
@@ -111,7 +111,7 @@ test__backup_remove_restore_encrypted_twofish() {
   latest_backup="$(get_latest_backup test)"
   /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".gpg"
 
   # Act
   run_restore "$latest_backup"
@@ -158,7 +158,7 @@ test__backup_remove_restore_prerestore_encrypted_backup() {
   run_restore "$latest_backup"
   /bin/rm -f "$file_to_restore"
   assert_file_does_not_exist "$file_to_restore"
-  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".enc"
+  assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".gpg"
   prerestore_backup="$(get_latest_prerestore_backup "test")"
   assert_string_starts_with "$prerestore_backup" "prerestore\+backup\-test\-"
 

@@ -76,6 +76,6 @@ backup_volume() {
 
   back
 
-  should_encrypt && backup_filename+=".enc"
+  should_encrypt && backup_filename+=".gpg"
   log "=> Backup finished: $backup_filename"
 }
