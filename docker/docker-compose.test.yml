@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   sut:
@@ -11,7 +11,7 @@ services:
       - ENABLE_LTS=false
       - ENABLE_PRUNE=false
       - ASSUME_YES=true
-      - VERBOSE=true
+      - LOG_LEVEL=2
       - DEBUG=false
       - RUN_TEST=${RUN_TEST}
       - RUN_SPEC=${RUN_SPEC}

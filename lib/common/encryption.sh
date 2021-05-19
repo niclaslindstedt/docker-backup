@@ -11,7 +11,7 @@ encrypt() {
 
   log1 "Encrypting archive to $2"
   encrypt_file "$1" "$2" || error "Could not encrypt $1"
-  verify_encryption "$2" || error "Could not verify $2"
+  verify_encryption "$2" || error "Could not verify encrypted archive $2"
 
   create_checksum "$2"
   verify_checksum "$2"
