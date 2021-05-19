@@ -33,7 +33,6 @@ jobs:
 
       - name: create release
         uses: softprops/action-gh-release@v1
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
           release_name: ${{ steps.changelog.outputs.tag }}
@@ -42,7 +41,7 @@ jobs:
       - name: pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: release/${{ steps.changelog.outputs.tag }}
+          branch: release-notes
           title: 'chore: Release {version}'
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
