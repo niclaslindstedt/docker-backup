@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+        with:
+          ref: master
 
       - name: docker login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -48,6 +50,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: release-notes
+          base: master
           title: 'chore: Release ${{ steps.changelog.outputs.version }}'
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
