@@ -30,7 +30,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'chore: Release {version}'
-          preset: conventionalchangelog
 
       - name: create release
         uses: softprops/action-gh-release@v1
