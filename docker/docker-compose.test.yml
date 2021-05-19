@@ -11,7 +11,7 @@ services:
       - ENABLE_LTS=false
       - ENABLE_PRUNE=false
       - ASSUME_YES=true
-      - LOG_LEVEL=2
+      - LOG_LEVEL=0
       - DEBUG=false
       - RUN_TEST=${RUN_TEST}
       - RUN_SPEC=${RUN_SPEC}

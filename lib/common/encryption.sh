@@ -20,6 +20,8 @@ encrypt() {
   remove_file "$1"
 
   log2 "- Encryption process finished"
+
+  return 0
 }
 
 # Decrypts a file
@@ -50,6 +52,8 @@ decrypt() {
   }
 
   log2 "- Decryption process finished"
+
+  return 0
 }
 
 # Verifies an encrypted file by decrypting it and verifying the
@@ -73,6 +77,8 @@ verify_encryption() {
   remove_file "$tmp_name.sfv"
 
   log3 "- Encryption verification process finished"
+
+  return 0
 }
 
 # Encrypts a file (adapter/implementation)
