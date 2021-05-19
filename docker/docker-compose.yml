@@ -40,8 +40,8 @@ services:
       - ENCRYPTION_PASSWORD=passw0rdpassw0rdpassw0rdpassw0rd
       - ENCRYPTION_ALGORITHM=AES256
       - VERIFY_ENCRYPTION=true
-      - VERBOSE=true
-      - DEBUG=false
+      - LOG_LEVEL=4
+      - DEBUG=true
       - LOCK_TIMEOUT=600
       - TZ=Europe/Stockholm
     volumes:

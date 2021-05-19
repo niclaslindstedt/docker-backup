@@ -51,7 +51,7 @@ prune_lts_volume() {
       # Purge old
       if [ "$file_unixtime" -le "$purge_age" ]; then
 
-        log "Removing old backup: $file_name ($file_age_months months old)"
+        log3 "Removing old backup: $file_name ($file_age_months months old)"
 
         # Remove all backups older than purge date
         prune_file "$file_path"
@@ -67,7 +67,7 @@ prune_lts_volume() {
           continue
         fi
 
-        log "Keeping monthly backup: $file_name ($file_age_months months old)"
+        log2 "Keeping monthly backup: $file_name ($file_age_months months old)"
         last_month="$(get_backup_month "$backup")"
         last_week="$(get_backup_week "$backup")"
 
@@ -81,7 +81,7 @@ prune_lts_volume() {
           continue
         fi
 
-        log "Keeping weekly backup: $file_name ($file_age_weeks weeks old)"
+        log2 "Keeping weekly backup: $file_name ($file_age_weeks weeks old)"
         last_week="$(get_backup_week "$backup")"
         last_day="$(get_backup_day "$backup")"
 
@@ -94,7 +94,7 @@ prune_lts_volume() {
           continue
         fi
 
-        log "Keeping daily backup: $file_name ($file_age_days days old)"
+        log2 "Keeping daily backup: $file_name ($file_age_days days old)"
         last_day="$(get_backup_day "$backup")"
 
       fi
@@ -108,6 +108,6 @@ prune_lts_volume() {
 # Prune a file (remove it)
 # Params: <path>
 prune_file() {
-  logv "Pruning $1"
+  log4 "Pruning $1"
   remove_file "$1" "$1.sfv"
 }

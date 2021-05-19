@@ -3,11 +3,11 @@
 # Creates an archive from source folder contents
 # Params: <archive target path>, <source folder>
 pack() {
-  logv "+ Packaging process started"
+  log2 "+ Packaging process started"
 
   go "$2"
 
-    log "Creating archive at $1"
+    log1 "Creating archive at $1"
     if [[ "$ARCHIVE_TYPE" = "tgz" ]]; then
       pack_tar "$1" . || return 1
     elif [[ "$ARCHIVE_TYPE" = "7z" ]]; then
@@ -27,7 +27,7 @@ pack() {
 
   back
 
-  logv "- Packaging process finished"
+  log2 "- Packaging process finished"
 }
 
 # Extracts an archive to a target path
@@ -35,7 +35,7 @@ pack() {
 unpack() {
   local filename fileext
 
-  logv "+ Unpackaging process started"
+  log2 "+ Unpackaging process started"
 
   filename="$1"
   filename_clean="${filename%*.enc}"
@@ -44,10 +44,10 @@ unpack() {
   decrypt "$filename" "$filename_clean"
   verify_checksum "$filename_clean"
 
-  log "Removing contents of $target_path"
+  log1 "Removing contents of $target_path"
   remove_file_recursive "${target_path%/}"/*
 
-  log "Unpacking $filename_clean at $target_path"
+  log1 "Unpacking $filename_clean at $target_path"
   fileext="${filename_clean##*.}"
   if [[ "$fileext" = "tgz" ]]; then
     unpack_tar "$filename_clean" "$target_path" || return 1
@@ -61,7 +61,7 @@ unpack() {
     error "Unknown file extension '$fileext'"
   fi
 
-  logv "- Unpackaging process finished"
+  log2 "- Unpackaging process finished"
 }
 
 # Helper functions

@@ -16,11 +16,18 @@ logn() {
 
 # Logs a message if verbose mode is enabled
 # Params: <string>
-logv() { is_verbose && log "$*"; }
+logv() { log1 "$*"; }
 
 # Logs a message if debug mode is enabled
 # Params: <string>
-logd() { is_debug && log "$*"; }
+logd() { log5 "$*"; }
+
+# Verbose logging (with log levels)
+log1() { [ "$LOG_LEVEL" -ge 1 ] && log "$*"; } # The least verbose
+log2() { [ "$LOG_LEVEL" -ge 2 ] && log "$*"; }
+log3() { [ "$LOG_LEVEL" -ge 3 ] && log "$*"; }
+log4() { [ "$LOG_LEVEL" -ge 4 ] && log "$*"; }
+logd() { [ "$LOG_LEVEL" -ge 5 ] && log "$*"; } # Most verbose
 
 # Throws an error (exits the current shell). Will also pause containers if that functionality is enabled.
 # Params: [error message]
@@ -33,7 +40,7 @@ error() {
 
 # Create a file lock to prevent simultaneous operations
 lock() {
-  logv "Attempting to aquire lock (timeout: ${LOCK_TIMEOUT}s)"
+  log4 "Attempting to aquire lock (timeout: ${LOCK_TIMEOUT}s)"
   flock -w "$LOCK_TIMEOUT" -e 200 || error "Could not aquire lock"
   logd "Aquired lock"
 }

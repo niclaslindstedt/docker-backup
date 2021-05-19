@@ -21,7 +21,7 @@ copy_soft() {
 # Params: <source file path>, <target path>
 copy_file() {
   if ! is_file "$2"; then # Alpine doesn't support the -n flag
-    logv "Copying $1 to $2"
+    log4 "Copying $1 to $2"
     $(sudo_if_unwritable "$2") cp "$1" "$2" || return 1
   fi
 }
@@ -53,7 +53,7 @@ move_file_noclutter() {
   fi
 
   if is_file "$1"; then
-    logv "Moving $1 to $2"
+    log4 "Moving $1 to $2"
     move_file "$1" "$2"
   else
     logd "No file to move at $1"

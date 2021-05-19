@@ -12,7 +12,7 @@ verify_settings() {
   verify_cron CRON_BACKUP
   verify_cron CRON_LTS
   verify_cron CRON_PRUNE
-  verify_boolean VERBOSE
+  verify_number LOG_LEVEL
   verify_boolean DEBUG
   verify_boolean ASSUME_YES
   verify_archive ARCHIVE_TYPE
@@ -49,7 +49,7 @@ echo_settings() {
   echo_setting CRON_BACKUP
   [ "$ENABLE_LTS" = "$TRUE" ] && echo_setting CRON_LTS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting CRON_PRUNE
-  echo_setting VERBOSE
+  echo_setting LOG_LEVEL
   echo_setting DEBUG
   echo_setting ASSUME_YES
   echo_setting ARCHIVE_TYPE

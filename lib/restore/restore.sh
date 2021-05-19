@@ -57,7 +57,7 @@ restore_volume() {
   else error "Volume or backup '$1' not found (is it mounted?)"
   fi
 
-  logv "Found backup '$backup_path' which belongs to volume '$volume_name'"
+  log1 "Found backup '$backup_path' which belongs to volume '$volume_name'"
 
   target_volume="$VOLUME_PATH/$volume_name"
   [ ! -d "$target_volume" ] && error "No such volume: $volume_name"
@@ -73,7 +73,7 @@ restore_volume() {
       folder_size_str="$(get_folder_size_str "$VOLUME_PATH/$volume_name")"
       prerestore_backup_filename="prerestore+$1+$(datetime).$ARCHIVE_TYPE"
       temp_path="$TMP_PATH/$prerestore_backup_filename"
-      log "Backing up $volume_name ($folder_size_str) to $prerestore_backup_filename"
+      log1 "Backing up $volume_name ($folder_size_str) to $prerestore_backup_filename"
       pack "$temp_path" "$target_volume" || error "Could not backup existing volume contents"
       move_backup "$temp_path" "$BACKUP_PATH"
     }

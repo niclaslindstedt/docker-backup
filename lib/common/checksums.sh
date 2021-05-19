@@ -8,7 +8,7 @@ create_checksum() {
   should_create_checksum || return 0
 
   is_file "$1" && {
-    logv "Creating checksum at $1.sfv"
+    log2 "Creating checksum at $1.sfv"
     create_sfv "$1" || error "Could not create checksum for $1"
   }
 }
@@ -18,7 +18,7 @@ create_checksum() {
 verify_checksum() {
   should_verify_checksum || return 0
   is_file "$1" && is_file "$1.sfv" && {
-    logv "Verifying checksum for $1"
+    log3 "Verifying checksum for $1"
     verify_sfv "$1" || error "Could not verify checksum for $1"
   }
 }

@@ -7,19 +7,19 @@
 encrypt() {
   should_encrypt || return 0
 
-  logv "+ Encryption process started"
+  log2 "+ Encryption process started"
 
-  log "Encrypting archive to $2"
+  log1 "Encrypting archive to $2"
   encrypt_file "$1" "$2" || error "Could not encrypt $1"
   verify_encryption "$2" || error "Could not verify $2"
 
   create_checksum "$2"
   verify_checksum "$2"
 
-  log "Removing unencrypted archive $1"
+  log2 "Removing unencrypted archive $1"
   remove_file "$1"
 
-  logv "- Encryption process finished"
+  log2 "- Encryption process finished"
 }
 
 # Decrypts a file
@@ -29,13 +29,13 @@ decrypt() {
 
   is_encrypted "$1" || return 0
 
-  logv "+ Decryption process started"
+  log2 "+ Decryption process started"
 
   [ ! -f "$1" ] && error "File does not exist: $1"
 
   verify_checksum "$1"
 
-  log "Decrypting archive to $2"
+  log1 "Decrypting archive to $2"
   decrypt_file "$1" "$2" || {
     if [ "$ASSUME_YES" != "$TRUE" ]; then
       log "Could not decrypt $1 -- bad passphrase?"
@@ -49,7 +49,7 @@ decrypt() {
     fi
   }
 
-  logv "- Decryption process finished"
+  log2 "- Decryption process finished"
 }
 
 # Verifies an encrypted file by decrypting it and verifying the
@@ -60,19 +60,19 @@ verify_encryption() {
 
   is_encrypted "$1" || return 0
 
-  logv "+ Encryption verification process started"
+  log3 "+ Encryption verification process started"
 
   backup_name="${1%*.enc}"
   tmp_name="$backup_name.tmp"
   copy_file "$backup_name.sfv" "$tmp_name.sfv"
 
-  logv "Decrypting archive to temporary file $tmp_name"
+  log3 "Decrypting archive to temporary file $tmp_name"
   decrypt_file "$1" "$tmp_name"
 
   verify_checksum "$tmp_name"
   remove_file "$tmp_name.sfv"
 
-  logv "- Encryption verification process finished"
+  log3 "- Encryption verification process finished"
 }
 
 # Encrypts a file (adapter/implementation)

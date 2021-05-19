@@ -5,7 +5,7 @@
 pause_containers() {
   should_pause_containers || return 0
 
-  log "Pausing containers: $1"
+  log1 "Pausing containers: $1"
   IFS=',' read -ra containers <<< "$1"
   for container_name in "${containers[@]}"; do
     read -ra container_ids <<< "$(get_container_ids "$container_name")"
@@ -21,7 +21,7 @@ pause_containers() {
 unpause_containers() {
   should_pause_containers || return 0
 
-  log "Unpausing containers: $1"
+  log1 "Unpausing containers: $1"
   IFS=',' read -ra containers <<< "$1"
   for container_name in "${containers[@]}"; do
     read -ra container_ids <<< "$(get_paused_container_ids "$container_name")"
