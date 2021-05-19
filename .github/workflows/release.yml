@@ -25,12 +25,12 @@ jobs:
       - name: create release branch
         run: |
           git fetch --all
-          if $(git show-ref --verify --quiet {{ env.GITHUB_REF }}); then
-            git branch -D {{ env.GITHUB_REF }}
-            git push origin --delete {{ env.GITHUB_REF }}
+          if $(git show-ref --verify --quiet ${{ env.GITHUB_REF }}); then
+            git branch -D ${{ env.GITHUB_REF }}
+            git push origin --delete ${{ env.GITHUB_REF }}
           fi
-          git checkout -b {{ env.GITHUB_REF }}
-          git push -u origin {{ env.GITHUB_REF }} -f
+          git checkout -b ${{ env.GITHUB_REF }}
+          git push -u origin ${{ env.GITHUB_REF }} -f
 
       - name: generate changelog
         id: changelog
