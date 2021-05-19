@@ -68,6 +68,16 @@ move_file() {
   $(sudo_if_unwritable "$2") mv -v "$1" "$2" 1>"$OUTPUT"
 }
 
+# Create and return a temporary folder
+get_tmp_folder() {
+  local tmp_folder
+
+  tmp_folder="$TMP_PATH/$(uuidgen)"
+  mkdir -p "$tmp_folder"
+
+  echo "$tmp_folder"
+}
+
 # Get free space (in bytes) in a folder (+ variants)
 # Params: <path>
 get_free_space() {

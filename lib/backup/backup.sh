@@ -32,7 +32,7 @@ backup_all() {
 # Backup a specific volume
 # Params: <volume name>
 backup_volume() {
-  local backup_filename backup_path volume_name free_space folder_size folder_size_str backup_count backup_to_remove free_space
+  local backup_filename backup_path volume_name free_space folder_size folder_size_str backup_count backup_to_remove free_space tmp_folder tmp_backup
 
   ! is_directory "$VOLUME_PATH/$1"
 
@@ -67,10 +67,12 @@ backup_volume() {
 
   go "$VOLUME_PATH"
 
-    temp_path="$TMP_PATH/$(basename "$backup_path")"
+    tmp_folder="$(get_tmp_folder)"
+    tmp_backup="$tmp_folder/$(basename "$backup_path")"
     log "Backing up $volume_name ($folder_size_str) to $BACKUP_PATH ($free_space GB left)"
-    pack "$temp_path" "$1" || error "Could not backup $backup_filename"
-    move_backup "$temp_path" "$BACKUP_PATH"
+    pack "$tmp_backup" "$1" || error "Could not backup $backup_filename"
+    move_backup "$tmp_backup" "$BACKUP_PATH"
+    rm -rfv "$tmp_folder" 1>"$OUTPUT"
 
   back
 
