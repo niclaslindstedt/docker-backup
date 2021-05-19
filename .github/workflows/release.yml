@@ -19,13 +19,13 @@ jobs:
       - name: docker build
         run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
-      - name: delete old release branch
+      - name: delete release-notes branch
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branches: release-notes
 
-      - name: create branch
+      - name: create release-notes branch
         uses: peterjgrainger/action-create-branch@v2.0.1
         with:
           branch: release-notes
@@ -36,6 +36,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'chore: Release {version}'
+
+      - name: changelog info
+        run: |
+          echo tag: ${{ steps.changelog.outputs.tag }}
+          echo version: ${{ steps.changelog.outputs.tag }}
+          echo changelog: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: create release
         uses: ncipollo/release-action@v1
@@ -48,7 +54,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: release-notes
-          title: 'chore: Release {version}'
+          title: 'chore: Release ${{ steps.changelog.outputs.version }}'
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: docker tag
