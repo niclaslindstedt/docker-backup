@@ -21,6 +21,7 @@ jobs:
             source:
               - 'docker/**'
               - 'lib/**'
+              - 'tests/**'
               - '.dockerignore'
 
       - name: docker login
