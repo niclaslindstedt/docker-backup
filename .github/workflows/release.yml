@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    tags: [v*.*.*]
+    branches: [release]
 
 jobs:
   push-tag:
@@ -27,3 +27,20 @@ jobs:
 
       - name: docker push
         run: ./.github/scripts/push.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
+
+      - name: generate changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          output-file: 'false'
+
+      - name: create release
+        uses: actions/create-release@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}

@@ -1,0 +1,23 @@
+{
+  "name": "docker-backup",
+  "version": "0.9.0",
+  "description": "Backup files in your Docker containers, Docker volumes or host system folders.",
+  "repository": "git@github.com:niclaslindstedt/docker-backup.git",
+  "author": "Niclas Lindstedt <nicl@slindstedt.se>",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "husky": "^6.0.0",
+    "standard-version": "^9.3.0"
+  },
+  "scripts": {
+    "release": "standard-version",
+    "postinstall": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}

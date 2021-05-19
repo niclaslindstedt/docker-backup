@@ -28,6 +28,8 @@ pack() {
   back
 
   log2 "- Packaging process finished"
+
+  return 0
 }
 
 # Extracts an archive to a target path
@@ -62,6 +64,8 @@ unpack() {
   fi
 
   log2 "- Unpackaging process finished"
+
+  return 0
 }
 
 # Helper functions
