@@ -2,5 +2,6 @@
 backups
 lib/tests/
 lts
+node_modules
 data
 .env
