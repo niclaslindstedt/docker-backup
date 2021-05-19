@@ -23,9 +23,10 @@ jobs:
 
       - name: create release branch
         run: |
-          git checkout master
-          (git branch -D release-notes)
-          (git push origin --delete release-notes)
+          if $(git show-ref --verify --quiet refs/heads/release-notes); then
+            git branch -D release-notes
+            git push origin --delete release-notes
+          fi
           git checkout -b release-notes
           git push origin release-notes
 
