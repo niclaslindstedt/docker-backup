@@ -29,7 +29,7 @@ jobs:
             git push origin --delete release-notes
           fi
           git checkout -b release-notes
-          git push origin release-notes -f
+          git push -u origin release-notes -f
 
       - name: generate changelog
         id: changelog
