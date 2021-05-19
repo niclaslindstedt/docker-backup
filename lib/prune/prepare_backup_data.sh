@@ -6,7 +6,7 @@ prepare_backup_data() {
 
   ! is_directory "$LTS_PATH/$1" && error "'$1' is not a valid volume"
 
-  log "Entering $1"
+  log2 "Entering $1"
   csv_filename="$(get_prune_csv_filename "$1")"
   echo -n > "$csv_filename"
 

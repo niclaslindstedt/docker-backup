@@ -30,11 +30,11 @@ get_prerestore_backups() {
 # Copies a backup to a target path
 # Params: <backup path>, <target path>
 copy_backup() {
-  logv "+ Copying process started"
+  log3 "+ Copying process started"
 
   copy_backup_files "$1" "$2"
 
-  logv "- Copying process finished"
+  log3 "- Copying process finished"
 }
 
 # Move a backup to a target path
@@ -42,13 +42,13 @@ copy_backup() {
 move_backup() {
   local backup_name
 
-  logv "+ Moving process started"
+  log3 "+ Moving process started"
 
   backup_name="${1%*.enc}"
   copy_backup_files "$backup_name" "$2"
   remove_file "$backup_name" "$backup_name.sfv" "$backup_name.enc" "$backup_name.enc.sfv"
 
-  logv "- Moving process finished"
+  log3 "- Moving process finished"
 }
 
 copy_backup_files() {

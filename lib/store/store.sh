@@ -3,10 +3,10 @@
 # Entrypoint for store script
 run_store() {
   if is_set "$1"; then
-    logv "Storing volume '$1'"
+    log1 "Storing volume '$1'"
     store_volume "$1"
   else
-    logv "Storing all volumes"
+    log1 "Storing all volumes"
     store_all
   fi
 }
@@ -34,7 +34,7 @@ store_volume() {
     copy_backup_carefully "$BACKUP_PATH/$backup_name" "$target_path"
     verify_checksum "$target_filename" || error "Checksum verification failed on $target_filename"
   else
-    log "Backup '$backup_name' has already been copied to long-term storage"
+    log2 "Backup '$backup_name' has already been copied to long-term storage"
   fi
 }
 
@@ -47,7 +47,7 @@ copy_backup_carefully() {
     mkdir -p "$2"
     free_space=$(get_free_space_gb "$2")
     file_size_str=$(get_file_size_str "$1")
-    log "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
+    log1 "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
     copy_file "$1" "$2" || error "Could not copy $1 to long-term storage location"
     copy_soft "$1.sfv" "$2"
   }
