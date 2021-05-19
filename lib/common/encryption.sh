@@ -11,6 +11,7 @@ encrypt() {
 
   log "Encrypting archive to $2"
   encrypt_file "$1" "$2" || error "Could not encrypt $1"
+  verify_encryption "$2" || error "Could not verify $2"
 
   create_checksum "$2"
   verify_checksum "$2"
@@ -48,7 +49,30 @@ decrypt() {
     fi
   }
 
-  logv "- Encryption process finished"
+  logv "- Decryption process finished"
+}
+
+# Verifies an encrypted file by decrypting it and verifying the
+# decrypted file's sfv checksum.
+# Params: <encrypted file path>
+verify_encryption() {
+  local backup_name tmp_name
+
+  is_encrypted "$1" || return 0
+
+  logv "+ Encryption verification process started"
+
+  backup_name="${1%*.enc}"
+  tmp_name="$backup_name.tmp"
+  copy_file "$backup_name.sfv" "$tmp_name.sfv"
+
+  logv "Decrypting archive to temporary file $tmp_name"
+  decrypt_file "$1" "$tmp_name"
+
+  verify_checksum "$tmp_name"
+  remove_file "$tmp_name.sfv"
+
+  logv "- Encryption verification process finished"
 }
 
 # Encrypts a file (adapter/implementation)
@@ -73,3 +97,6 @@ is_encrypted() { [[ "$1" =~ \.enc$ ]]; }
 
 # Checks if archives should be encrypted
 should_encrypt() { [ "$ENCRYPT_ARCHIVES" = "$TRUE" ]; }
+
+# Checks if archives should be verified after being encrypted
+should_verify_encryption() { [ "$VERIFY_ENCRYPTION" = "$TRUE" ]; }
