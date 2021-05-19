@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  push-tag:
+  release:
     runs-on: ubuntu-latest
     env:
       DOCKER_REGISTRY: niclaslindstedt
@@ -17,12 +17,6 @@ jobs:
 
       - name: docker build
         run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
-
-      - name: docker tag
-        run: ./.github/scripts/tag.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
-
-      - name: docker push
-        run: ./.github/scripts/push.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
 
       - name: generate changelog
         id: changelog
@@ -40,3 +34,9 @@ jobs:
           tag_name: ${{ steps.changelog.outputs.tag }}
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: docker tag
+        run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
+
+      - name: docker push
+        run: ./.github/scripts/push.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
