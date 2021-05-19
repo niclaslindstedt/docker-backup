@@ -21,16 +21,12 @@ jobs:
       - name: docker build
         run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
-      - name: delete release-notes branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: release-notes
-
-      - name: create release-notes branch
-        uses: peterjgrainger/action-create-branch@v2.0.1
-        with:
-          branch: release-notes
+      - name: create release branch
+        run: |
+          git checkout master
+          git branch -D release-notes
+          git push origin --delete release-notes
+          git checkout -b release-notes
 
       - name: generate changelog
         id: changelog
@@ -40,6 +36,7 @@ jobs:
           git-message: 'chore: Release {version}'
 
       - name: create release
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.changelog.outputs.tag }}
@@ -47,15 +44,19 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: pull request
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: release-notes
-          base: master
           title: 'chore: Release ${{ steps.changelog.outputs.version }}'
           body: ${{ steps.changelog.outputs.clean_changelog }}
+          branch: release-notes
+          base: master
+          delete-branch: true
 
       #- name: docker tag
+      #  if: ${{ steps.changelog.outputs.skipped == 'false' }}
       #  run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
 
       #- name: docker push
+      #  if: ${{ steps.changelog.outputs.skipped == 'false' }}
       #  run: ./.github/scripts/push.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
