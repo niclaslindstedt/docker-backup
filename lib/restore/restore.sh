@@ -31,7 +31,7 @@ restore_all() {
 # Restore a specific volume to its latest backup or to a specific backup
 # Params: [volume|backup filename]
 restore_volume() {
-  local backup_path volume_name target_volume backup_existing_volume
+  local backup_path volume_name target_volume backup_existing_volume tmp_folder tmp_backup
 
   ! is_set "$1" && error "You have to provide a volume name or backup filename"
 
@@ -72,17 +72,21 @@ restore_volume() {
     [ "$backup_existing_volume" != "n" ] && {
       folder_size_str="$(get_folder_size_str "$VOLUME_PATH/$volume_name")"
       prerestore_backup_filename="prerestore+$1+$(datetime).$ARCHIVE_TYPE"
-      temp_path="$TMP_PATH/$prerestore_backup_filename"
+      tmp_folder="$(get_tmp_folder)"
+      tmp_backup="$tmp_folder/$prerestore_backup_filename"
       log1 "Backing up $volume_name ($folder_size_str) to $prerestore_backup_filename"
-      pack "$temp_path" "$target_volume" || error "Could not backup existing volume contents"
-      move_backup "$temp_path" "$BACKUP_PATH"
+      pack "$tmp_backup" "$target_volume" || error "Could not backup existing volume contents"
+      move_backup "$tmp_backup" "$BACKUP_PATH"
+      rm -rfv "$tmp_folder" 1>"$OUTPUT"
     }
   }
 
   # Restore backup
-  volume_name=$(get_volume_name "$backup_path")
-  tmp_backup_path="$TMP_PATH/$(basename "$backup_path")"
+  volume_name="$(get_volume_name "$backup_path")"
+  tmp_folder="$(get_tmp_folder)"
+  tmp_backup="$tmp_folder/$(basename "$backup_path")"
   log "Restoring backup of volume '$volume_name' to $target_volume"
-  copy_backup "$backup_path" "$TMP_PATH"
-  unpack "$tmp_backup_path" "$target_volume" || error "Could not restore $backup_path"
+  copy_backup "$backup_path" "$tmp_folder"
+  unpack "$tmp_backup" "$target_volume" || error "Could not restore $backup_path"
+  rm -rfv "$tmp_folder" 1>"$OUTPUT"
 }
