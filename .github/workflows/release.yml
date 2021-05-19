@@ -42,9 +42,10 @@ jobs:
 
       - name: pull request
         uses: peter-evans/create-pull-request@v3
-        branch: release/${{ steps.changelog.outputs.tag }}
-        title: 'chore: Release {version}'
-        body: ${{ steps.changelog.outputs.clean_changelog }}
+        with:
+          branch: release/${{ steps.changelog.outputs.tag }}
+          title: 'chore: Release {version}'
+          body: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: docker tag
         run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
