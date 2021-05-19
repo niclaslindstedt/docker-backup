@@ -1,7 +1,8 @@
-name: Release
+name: CD
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [master]
 
 jobs:
   release:
@@ -9,30 +10,35 @@ jobs:
     env:
       DOCKER_REGISTRY: niclaslindstedt
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_REF: refs/heads/release-notes
     steps:
       - name: checkout
         uses: actions/checkout@v2
+
+      - name: check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
         with:
-          ref: master
+          filters: |
+            source:
+              - 'docker/**'
+              - 'lib/**'
+              - 'tests/**'
+              - '.dockerignore'
 
       - name: docker login
+        if: steps.changes.outputs.source == 'true'
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
+      - name: run tests
+        if: steps.changes.outputs.source == 'true'
+        run: ./.github/scripts/test.sh
+
       - name: docker build
+        if: steps.changes.outputs.source == 'true'
         run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
 
-      - name: create release branch
-        run: |
-          git fetch --all
-          if $(git show-ref --verify --quiet ${{ env.GITHUB_REF }}); then
-            git branch -D ${{ env.GITHUB_REF }}
-            git push origin --delete ${{ env.GITHUB_REF }}
-          fi
-          git checkout -b ${{ env.GITHUB_REF }}
-          git push -u origin ${{ env.GITHUB_REF }} -f
-
       - name: generate changelog
+        if: steps.changes.outputs.source == 'true'
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
@@ -40,27 +46,21 @@ jobs:
           git-message: 'chore: Release {version}'
 
       - name: create release
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: pull request
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: 'chore: Release ${{ steps.changelog.outputs.version }}'
-          body: ${{ steps.changelog.outputs.clean_changelog }}
-          branch: release-notes
-          base: master
-          delete-branch: true
+      - name: git tag
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        run: ./.github/scripts/git-tag.sh ${{ steps.changelog.outputs.tag }}
 
-      #- name: docker tag
-      #  if: ${{ steps.changelog.outputs.skipped == 'false' }}
-      #  run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
+      - name: docker tag
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
 
-      #- name: docker push
-      #  if: ${{ steps.changelog.outputs.skipped == 'false' }}
-      #  run: ./.github/scripts/push.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
+      - name: docker push
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        run: ./.github/scripts/push.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
