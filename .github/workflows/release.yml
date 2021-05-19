@@ -37,12 +37,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'chore: Release {version}'
 
-      - name: changelog info
-        run: |
-          echo tag: ${{ steps.changelog.outputs.tag }}
-          echo version: ${{ steps.changelog.outputs.tag }}
-          echo changelog: ${{ steps.changelog.outputs.clean_changelog }}
-
       - name: create release
         uses: ncipollo/release-action@v1
         with:
@@ -57,8 +51,8 @@ jobs:
           title: 'chore: Release ${{ steps.changelog.outputs.version }}'
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
-      - name: docker tag
-        run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
+      #- name: docker tag
+      #  run: ./.github/scripts/tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
 
-      - name: docker push
-        run: ./.github/scripts/push.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
+      #- name: docker push
+      #  run: ./.github/scripts/push.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
