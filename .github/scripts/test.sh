@@ -11,7 +11,7 @@ main() {
   docker-compose -f $docker_path/docker-compose.test.yml build --build-arg INSTALL_DOCKER=false
   docker-compose -f $docker_path/docker-compose.test.yml run --rm sut
 
-  if [ "$RUN_ALL" = "true" ]; then
+  if [ "$RUN_ALL" != "false" ]; then
     # Run tests with Docker installed
     docker-compose -f $docker_path/docker-compose.test.yml build --build-arg INSTALL_DOCKER=true
     docker-compose -f $docker_path/docker-compose.test.yml run -v /var/run/docker.sock:/var/run/docker.sock --rm sut
