@@ -32,11 +32,11 @@ jobs:
           git-message: 'chore: Release {version}'
 
       - name: create release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.tag }}
+          tag: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: pull request
         uses: peter-evans/create-pull-request@v3
