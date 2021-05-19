@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. "$(dirname "$0")/_/husky.sh"
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$branch" = "master" ]; then
+  echo "\e[31mThe master branch is a protected branch. Open a pull request instead.\e[0m"
+  exit 1
+fi

@@ -2,28 +2,65 @@ name: Release
 
 on:
   push:
-    tags: [v*.*.*]
+    branches: [master]
 
 jobs:
-  push-tag:
+  release:
     runs-on: ubuntu-latest
     env:
       DOCKER_REGISTRY: niclaslindstedt
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: checkout
         uses: actions/checkout@v2
 
+      - name: check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            source:
+              - 'docker/**'
+              - 'lib/**'
+              - 'tests/**'
+              - '.dockerignore'
+
       - name: docker login
+        if: steps.changes.outputs.source == 'true'
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: run tests
+        if: steps.changes.outputs.source == 'true'
         run: ./.github/scripts/test.sh
 
       - name: docker build
-        run: ./.github/scripts/build.sh ${{ env.DOCKER_REGISTRY }}
+        if: steps.changes.outputs.source == 'true'
+        run: ./.github/scripts/docker-build.sh ${{ env.DOCKER_REGISTRY }}
+
+      - name: generate changelog
+        if: steps.changes.outputs.source == 'true'
+        uses: TriPSs/conventional-changelog-action@v3
+        id: changelog
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-message: 'chore: Release {version}'
+
+      - name: create release
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: git tag
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        run: ./.github/scripts/git-tag.sh ${{ steps.changelog.outputs.tag }}
 
       - name: docker tag
-        run: ./.github/scripts/tag.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        run: ./.github/scripts/docker-tag.sh ${{ steps.changelog.outputs.tag }} ${{ env.DOCKER_REGISTRY }}
 
       - name: docker push
-        run: ./.github/scripts/push.sh ${GITHUB_REF##*/v} ${{ env.DOCKER_REGISTRY }}
+        if: steps.changes.outputs.source == 'true' && steps.changelog.outputs.skipped == 'false'
+        run: ./.github/scripts/docker-push.sh ${{ env.DOCKER_REGISTRY }}

@@ -5,9 +5,7 @@
 main() {
   local registry_uri image
 
-  [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Version should be X.Y.Z."; exit 1; }
-
-  registry_uri="${2:-niclaslindstedt}"
+  registry_uri="${1:-niclaslindstedt}"
   image="$registry_uri/docker-backup"
 
   echo "Pushing images"

@@ -35,13 +35,13 @@ services:
       - VERIFY_CHECKSUMS=true
       - PROJECT_NAME=docker-backup # should be set to the folder name (used for matching containers)
       - PAUSE_CONTAINERS=sample-app-1,sample-app-2
-      - ARCHIVE_TYPE=7z
+      - ARCHIVE_TYPE=tgz
       - ENCRYPT_ARCHIVES=true
       - ENCRYPTION_PASSWORD=passw0rdpassw0rdpassw0rdpassw0rd
       - ENCRYPTION_ALGORITHM=AES256
       - VERIFY_ENCRYPTION=true
       - LOG_LEVEL=4
-      - DEBUG=true
+      - DEBUG=false
       - LOCK_TIMEOUT=600
       - TZ=Europe/Stockholm
     volumes:

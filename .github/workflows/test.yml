@@ -5,11 +5,23 @@ on:
     branches: [master]
 
 jobs:
-  run-tests:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
 
+      - name: check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            source:
+              - 'docker/**'
+              - 'lib/**'
+              - 'tests/**'
+              - '.dockerignore'
+
       - name: run tests
+        if: steps.changes.outputs.source == 'true'
         run: ./.github/scripts/test.sh
