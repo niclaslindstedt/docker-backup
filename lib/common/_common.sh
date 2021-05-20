@@ -51,8 +51,8 @@ is_alpine() { [ "$IS_ALPINE" = "true" ]; }
 # Checks if debug mode is enabled
 is_debug() { [ "$DEBUG" = "$TRUE" ]; }
 
-# Checks if verbose mode is enabled
-is_verbose() { [ "$VERBOSE" = "$TRUE" ]; }
+# Checks if log level is higher than 1
+is_verbose() { [ "$LOG_LEVEL" -ge "2" ]; }
 
 # Returns output device depending on debug mode
 get_output() { is_debug && echo "/dev/stdout" || echo "/dev/null"; }

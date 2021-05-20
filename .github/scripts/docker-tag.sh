@@ -5,9 +5,9 @@
 main() {
   local version registry_uri major minor image
 
-  [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Version should be X.Y.Z."; exit 1; }
+  [[ "$1" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Version should be vX.Y.Z."; exit 1; }
 
-  version="$1"
+  version="${1##*v}" # removes the initial "v" from the version
   registry_uri="${2:-niclaslindstedt}"
   image="$registry_uri/docker-backup"
   major="${version%.*}"
