@@ -26,6 +26,8 @@ Backup your Docker volumes and/or data folders and store them both short-term an
 2. Mount the short-term backup location in `/backup`
 3. Mount the long-term storage location in `/lts`
 
+For a list of commands, see the [Commands wiki page](https://github.com/niclaslindstedt/docker-backup/wiki/Commands).
+
 See the [Use cases wiki page](https://github.com/niclaslindstedt/docker-backup/wiki/Use-cases) for more advanced use cases.
 
 ## Getting help
