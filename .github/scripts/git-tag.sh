@@ -10,9 +10,9 @@ main() {
   major="${1%.*}"
   minor="${1%.*.*}"
 
-  git tag latest
-  git tag "$major"
-  git tag "$minor"
+  git tag -f latest
+  git tag -f "$major"
+  git tag -f "$minor"
   git push origin latest
   git push origin "$major"
   git push origin "$minor"
