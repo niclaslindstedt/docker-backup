@@ -1,6 +1,6 @@
 {
   "name": "docker-backup",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Backup files in your Docker containers, Docker volumes or host system folders.",
   "repository": "git@github.com:niclaslindstedt/docker-backup.git",
   "author": "Niclas Lindstedt <nicl@slindstedt.se>",

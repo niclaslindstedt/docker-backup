@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/niclaslindstedt/docker-backup/compare/v1.1.0...v1.2.0) (2021-05-21)
+
+
+### Features
+
+* Add support for notifications on Slack and Discord ([#46](https://github.com/niclaslindstedt/docker-backup/issues/46)) ([f0440c3](https://github.com/niclaslindstedt/docker-backup/commit/f0440c3af3cddf9820e85f8fa2afe077bc56b086))
+
+
+
 # [1.1.0](https://github.com/niclaslindstedt/docker-backup/compare/v1.0.0...v1.1.0) (2021-05-21)
 
 
