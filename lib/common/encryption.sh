@@ -44,7 +44,7 @@ decrypt() {
       logn "Enter passphrase to try again: "
       read -s passphrase
       logn
-      ENCRYPTION_PASSWORD="$passphrase" # for some reason, this does not seem to work
+      ENCRYPTION_PASSPHRASE="$passphrase"
       decrypt_file "$1" "$2" || error "Could not decrypt $1"
     else
       error "Could not decrypt $1"
@@ -86,7 +86,7 @@ verify_encryption() {
 # Params: <unencrypted file path>, <encrypted file target path>
 encrypt_file() {
   $(sudo_if_unwritable "$2") \
-    gpg --verbose --batch --passphrase "$ENCRYPTION_PASSWORD" --output "$2" \
+    gpg --verbose --batch --passphrase "$ENCRYPTION_PASSPHRASE" --output "$2" \
       -z 0 --cipher-algo "$ENCRYPTION_ALGORITHM" --symmetric "$1" 2>"$OUTPUT" || return 1
 }
 
@@ -94,7 +94,7 @@ encrypt_file() {
 # Params: <encrypted file>, <unencrypted file target path>
 decrypt_file() {
   $(sudo_if_unwritable "$2") \
-    gpg --verbose --batch --passphrase "$ENCRYPTION_PASSWORD" --output "$2" \
+    gpg --verbose --batch --passphrase "$ENCRYPTION_PASSPHRASE" --output "$2" \
       --decrypt "$1" 2>"$OUTPUT" || return 1
 }
 

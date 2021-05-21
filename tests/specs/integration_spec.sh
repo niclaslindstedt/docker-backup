@@ -32,7 +32,7 @@ test__backup_remove_restore_encrypted_backup() {
 
   # Arrange
   ENCRYPT_ARCHIVES=true
-  ENCRYPTION_PASSWORD=abc123
+  ENCRYPTION_PASSPHRASE=abc123
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   run_backup test
@@ -55,7 +55,7 @@ test__backup_remove_restore_verified_encrypted_backup() {
 
   # Arrange
   ENCRYPT_ARCHIVES=true
-  ENCRYPTION_PASSWORD=abc123
+  ENCRYPTION_PASSPHRASE=abc123
   VERIFY_ENCRYPTION=true
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
@@ -79,7 +79,7 @@ test__restore_encrypted_with_bad_password() {
 
   # Arrange
   ENCRYPT_ARCHIVES=true
-  ENCRYPTION_PASSWORD=abc123
+  ENCRYPTION_PASSPHRASE=abc123
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   run_backup
@@ -89,7 +89,7 @@ test__restore_encrypted_with_bad_password() {
   assert_file_ends_with "$BACKUP_PATH/$latest_backup" ".gpg"
 
   # Act
-  ENCRYPTION_PASSWORD=badpassword
+  ENCRYPTION_PASSPHRASE=badpassword
   (run_restore "$latest_backup") # will throw
 
   # Assert
@@ -103,7 +103,7 @@ test__backup_remove_restore_encrypted_twofish() {
 
   # Arrange
   ENCRYPT_ARCHIVES=true
-  ENCRYPTION_PASSWORD=abc123
+  ENCRYPTION_PASSPHRASE=abc123
   ENCRYPTION_ALGORITHM=TWOFISH
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
@@ -150,7 +150,7 @@ test__backup_remove_restore_prerestore_encrypted_backup() {
 
   # Arrange
   ENCRYPT_ARCHIVES=true
-  ENCRYPTION_PASSWORD=abc123
+  ENCRYPTION_PASSPHRASE=abc123
   file_to_restore="$VOLUME_PATH/test/test_file_2"
   assert_file_exists "$file_to_restore"
   run_backup test

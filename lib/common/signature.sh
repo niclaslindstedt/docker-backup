@@ -32,7 +32,7 @@ verify_signature() {
 # Params: <file path>
 create_signature_file() {
   $(sudo_if_unwritable "$1.sig") \
-    gpg --yes --passphrase "$GPG_KEY_PASSPHRASE" --output "$1.sig" \
+    gpg --yes --passphrase "$SIGNING_PASSPHRASE" --output "$1.sig" \
       --detach-sig "$1" 2>"$OUTPUT" || return 1
 }
 

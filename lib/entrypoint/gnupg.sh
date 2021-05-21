@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC2174,2034,SC2086
+# shellcheck disable=SC2153,SC2174,2034,SC2086
 
 # Creates a .gnupg folder with an automatically generated
 # gpg key or with a provided one
@@ -16,20 +16,21 @@ prepare_gnupg() {
   } >> ~/.gnupg/gpg.conf
   echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf
 
-  signing_key="$GPG_PATH/signing_key.asc"
+  signing_key="$GPG_PATH/$SIGNING_KEY"
 
-  if is_file "$signing_key"; then
-    import_key "$signing_key"
-  else
+  if should_generate_key && ! is_file "$signing_key"; then
     generate_new_key
     export_key "$signing_key"
+  else
+    import_key "$signing_key"
   fi
 }
 
 import_key() {
+  is_file "$signing_key" || error "Signing key not found: $SIGNING_KEY"
+
   echo "Importing GPG signing key from $1"
-  gpg --batch --pinentry-mode=loopback --passphrase "$GPG_KEY_PASSPHRASE" \
-    --armor --import "$1" || error "Could not import signing key"
+  gpg --batch --import "$1" || error "Could not import signing key"
 }
 
 generate_new_key() {
@@ -43,17 +44,15 @@ Subkey-Type: 1
 Subkey-Length: $GPG_KEY_LENGTH
 Name-Real: $GPG_KEY_NAME
 Name-Email: $GPG_KEY_EMAIL
-Passphrase: $GPG_KEY_PASSPHRASE
+Passphrase: $SIGNING_PASSPHRASE
 Expire-Date: 0
 EOF
 }
 
 export_key() {
   echo "Exporting GPG signing key to $1"
-  gpg --batch --pinentry-mode=loopback --passphrase "$GPG_KEY_PASSPHRASE" --output "$1" \
+  gpg --batch --pinentry-mode=loopback --passphrase "$SIGNING_PASSPHRASE" --output "$1" \
     --armor --export-secret-key "$GPG_KEY_EMAIL" || error "Could not export signing key"
 }
 
-get_key_id() {
-  gpg --list-signatures --with-colons | grep "sig" | grep "$GPG_KEY_EMAIL" | head -n 1 | cut -d: -f5
-}
+should_generate_key() { [ "$GENERATE_GPG_KEY" = "$TRUE" ]; }
