@@ -10,12 +10,15 @@ main() {
   major="${1%.*}"
   minor="${1%.*.*}"
 
-  git tag -f latest
-  git tag -f "$major"
-  git tag -f "$minor"
-  git push origin latest
-  git push origin "$major"
-  git push origin "$minor"
+  force_create_tag latest
+  force_create_tag "$major"
+  force_create_tag "$minor"
+}
+
+force_create_tag() {
+  git push origin --delete "$1"
+  git tag -f "$1"
+  git push origin "$1"
 }
 
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")

@@ -109,5 +109,5 @@ prune_lts_volume() {
 # Params: <path>
 prune_file() {
   log4 "Pruning $1"
-  remove_file "$1" "$1.sfv"
+  remove_backup "$1"
 }

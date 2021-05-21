@@ -21,7 +21,7 @@ purge_backups() {
       file_unixtime="$(parse_time "$filename")"
       [ "$(($(unixtime) - file_unixtime))" -gt "$((KEEP_BACKUPS_FOR_DAYS * ONE_DAY))" ] && {
         log4 "Purging $filename"
-        remove_file "$filename" "$filename.sfv"
+        remove_backup "$filename"
       }
 
     done

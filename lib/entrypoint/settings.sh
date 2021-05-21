@@ -17,10 +17,18 @@ verify_settings() {
   verify_boolean ASSUME_YES
   verify_archive ARCHIVE_TYPE
   verify_boolean ENCRYPT_ARCHIVES
-  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && [ "$SKIP_PASSWORD_LENGTH_CHECK" != "$TRUE" ] && verify_length ENCRYPTION_PASSWORD 30
+  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && [ "$SKIP_PASSPHRASE_LENGTH_CHECK" != "$TRUE" ] && verify_length ENCRYPTION_PASSPHRASE 30
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_encryption_algo ENCRYPTION_ALGORITHM
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_boolean VERIFY_ENCRYPTION
   [ "$VERIFY_ENCRYPTION" = "$TRUE" ] && verify_requirements_venc
+  verify_boolean CREATE_SIGNATURES
+  [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_requirements_sign
+  [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_set SIGNING_PASSPHRASE
+  [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_set SIGNING_KEY
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && verify_boolean GENERATE_GPG_KEY
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_set GPG_KEY_NAME
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_set GPG_KEY_EMAIL
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_set GPG_KEY_LENGTH
   verify_number KEEP_BACKUPS_FOR_DAYS
   verify_number KEEP_LTS_FOR_MONTHS
   verify_number KEEP_DAILY_AFTER_HOURS
@@ -54,17 +62,25 @@ echo_settings() {
   echo_setting ASSUME_YES
   echo_setting ARCHIVE_TYPE
   echo_setting ENCRYPT_ARCHIVES
-  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting_masked ENCRYPTION_PASSWORD
+  [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting_masked ENCRYPTION_PASSPHRASE
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting ENCRYPTION_ALGORITHM
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && echo_setting VERIFY_ENCRYPTION
+  echo_setting CREATE_CHECKSUMS
+  [ "$CREATE_CHECKSUMS" = "$TRUE" ] && echo_setting VERIFY_CHECKSUMS
+  echo_setting CREATE_SIGNATURES
+  [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting VERIFY_SIGNATURES
+  [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting SIGNING_KEY
+  [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting_masked SIGNING_PASSPHRASE
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting GENERATE_GPG_KEY
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting GPG_KEY_NAME
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting GPG_KEY_EMAIL
+  ! is_file "$GPG_PATH/$SIGNING_KEY" && [ "$CREATE_SIGNATURES" = "$TRUE" ] && echo_setting GPG_KEY_LENGTH
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_BACKUPS_FOR_DAYS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_LTS_FOR_MONTHS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_DAILY_AFTER_HOURS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_WEEKLY_AFTER_DAYS
   [ "$ENABLE_PRUNE" = "$TRUE" ] && echo_setting KEEP_MONTHLY_AFTER_WEEKS
   echo_setting MINIMUM_FREE_SPACE
-  echo_setting CREATE_CHECKSUMS
-  [ "$CREATE_CHECKSUMS" = "$TRUE" ] && echo_setting VERIFY_CHECKSUMS
   echo_setting LOCK_TIMEOUT
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PROJECT_NAME" && echo_setting PROJECT_NAME
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PAUSE_CONTAINERS" && echo_setting PAUSE_CONTAINERS
@@ -93,6 +109,10 @@ verify_archive() {
   [ "${!1}" = "rar" ] && is_alpine && error "$1 cannot be set to rar on alpine build"
 }
 
+verify_set() {
+  [ -n "${!1}" ] || error "$1 needs to be given a value"
+}
+
 verify_length() {
   local tmp
   tmp="${!1}"
@@ -108,6 +128,16 @@ verify_requirements_venc() {
   require_setting VERIFY_ENCRYPTION CREATE_CHECKSUMS
   require_setting VERIFY_ENCRYPTION VERIFY_CHECKSUMS
   require_setting VERIFY_ENCRYPTION ENCRYPT_ARCHIVES
+}
+
+verify_requirements_sign() {
+  require_setting VERIFY_SIGNATURES CREATE_CHECKSUMS
+  require_setting VERIFY_SIGNATURES VERIFY_CHECKSUMS
+  require_setting VERIFY_SIGNATURES CREATE_SIGNATURES
+}
+
+verify_gpg_key_length() {
+  [[ "${!1}" =~ ^(2048|4096)$ ]] || error "$1 is not a valid gpg key length (${!1})"
 }
 
 verify_cron() {

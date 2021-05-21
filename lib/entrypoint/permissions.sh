@@ -6,6 +6,7 @@ check_permissions() {
   check_permission "$BACKUP_PATH"
   check_permission "$LTS_PATH"
   check_permission "$TMP_PATH"
+  check_permission "$GPG_PATH"
 }
 
 # Check if user has access to a path

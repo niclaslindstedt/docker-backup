@@ -11,6 +11,7 @@ main() {
   create_cronjobs
   set_timezone
   check_permissions
+  prepare_gnupg
   trail_log
 }
 

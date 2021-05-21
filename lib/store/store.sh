@@ -43,6 +43,8 @@ store_volume() {
 copy_backup_carefully() {
   local free_space file_size_str
 
+  clean_name="${1%*.gpg}"
+
   is_file "$1" && ! is_file "$2/$1" && {
     mkdir -p "$2"
     free_space=$(get_free_space_gb "$2")
@@ -50,5 +52,10 @@ copy_backup_carefully() {
     log1 "Copying $1 ($file_size_str) to $2 ($free_space GB left)"
     copy_file "$1" "$2" || error "Could not copy $1 to long-term storage location"
     copy_soft "$1.sfv" "$2"
+    copy_soft "$1.sfv.sig" "$2"
+    [ "$1" != "$clean_name" ] && {
+      copy_soft "$clean_name.sfv" "$2"
+      copy_soft "$clean_name.sfv.sig" "$2"
+    }
   }
 }

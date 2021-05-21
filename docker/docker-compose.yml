@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 # This compose file is mainly used to demonstrate functionality
 # without having to use the pre-built image. Here you can experiment
@@ -17,7 +17,7 @@ services:
     restart: always
     command: bash -c "while true; do echo \"$$(date)\" > /data/$$(date +\"%s\"); sleep 13; done"
     volumes:
-      - ./data:/data # this shows how you can use a local folder
+      - ../data:/data # this shows how you can use a local folder
 
   backup:
     build:
@@ -37,9 +37,17 @@ services:
       - PAUSE_CONTAINERS=sample-app-1,sample-app-2
       - ARCHIVE_TYPE=tgz
       - ENCRYPT_ARCHIVES=true
-      - ENCRYPTION_PASSWORD=passw0rdpassw0rdpassw0rdpassw0rd
+      - ENCRYPTION_PASSPHRASE=passw0rdpassw0rdpassw0rdpassw0rd
       - ENCRYPTION_ALGORITHM=AES256
       - VERIFY_ENCRYPTION=true
+      - CREATE_SIGNATURES=true
+      - VERIFY_SIGNATURES=true
+      - SIGNING_KEY=signing_key.asc
+      - SIGNING_PASSPHRASE=s1gnings1gnings1gnings1gnings1gning
+      - GENERATE_GPG_KEY=true
+      - GPG_KEY_LENGTH=2048
+      - GPG_KEY_NAME=docker-backup
+      - GPG_KEY_EMAIL=dockerbackup@example.com
       - LOG_LEVEL=4
       - DEBUG=false
       - LOCK_TIMEOUT=600
@@ -49,6 +57,7 @@ services:
       - ../data:/volumes/sample-app-2 # will be backed up to /backup
       - ../backups:/backup # backups will be stored here until pruned
       - ../lts:/lts # backups will be stored here (and never pruned)
+      - ../gpg:/gpg # gpg signing folder (generated key will be exported here)
       - /var/run/docker.sock:/var/run/docker.sock # to be able to shut down other containers
     tmpfs:
       - /tmp/backup:mode=700,uid=1000,gid=1000

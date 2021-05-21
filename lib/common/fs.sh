@@ -31,6 +31,7 @@ copy_file() {
 remove_file() {
   # shellcheck disable=SC2048
   for file in $*; do
+    log5 "Removing $file"
     $(sudo_if_unwritable "$file") rm -fv "$file" 1>"$OUTPUT"
   done
 }
@@ -40,6 +41,7 @@ remove_file() {
 remove_file_recursive() {
   # shellcheck disable=SC2048
   for file in $*; do
+    log5 "Removing $file (recursive)"
     $(sudo_if_unwritable "$file") rm -rfv "$file" 1>"$OUTPUT"
   done
 }

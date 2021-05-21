@@ -7,20 +7,31 @@
 create_checksum() {
   should_create_checksum || return 0
 
+  log3 "+ Checksum creation process started"
+
   is_file "$1" && {
     log2 "Creating checksum at $1.sfv"
     create_sfv "$1" || error "Could not create checksum for $1"
+    create_signature "$1.sfv"
   }
+
+  log3 "- Checksum creation process finished"
 }
 
 # Verifies a file's checksum if an sfv file exists
 # Params: <filename>
 verify_checksum() {
   should_verify_checksum || return 0
+
+  log3 "+ Checksum verification process started"
+
   is_file "$1" && is_file "$1.sfv" && {
+    verify_signature "$1.sfv"
     log3 "Verifying checksum for $1"
     verify_sfv "$1" || error "Could not verify checksum for $1"
   }
+
+  log3 "- Checksum verification process finished"
 }
 
 # Creates an sfv file (adapter/implementation)
