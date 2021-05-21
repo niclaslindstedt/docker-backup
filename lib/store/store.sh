@@ -36,6 +36,8 @@ store_volume() {
   else
     log2 "Backup '$backup_name' has already been copied to long-term storage"
   fi
+
+  send_notifications "Long-term storage successful: $volume_name" "$backup_name"
 }
 
 # Copy a specific backup to a target path. Take care not to violate free space requirements.

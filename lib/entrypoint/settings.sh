@@ -21,6 +21,8 @@ verify_settings() {
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_encryption_algo ENCRYPTION_ALGORITHM
   [ "$ENCRYPT_ARCHIVES" = "$TRUE" ] && verify_boolean VERIFY_ENCRYPTION
   [ "$VERIFY_ENCRYPTION" = "$TRUE" ] && verify_requirements_venc
+  verify_boolean CREATE_CHECKSUMS
+  verify_boolean VERIFY_CHECKSUMS
   verify_boolean CREATE_SIGNATURES
   [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_requirements_sign
   [ "$CREATE_SIGNATURES" = "$TRUE" ] && verify_set SIGNING_PASSPHRASE
@@ -35,8 +37,7 @@ verify_settings() {
   verify_number KEEP_WEEKLY_AFTER_DAYS
   verify_number KEEP_MONTHLY_AFTER_WEEKS
   verify_number MINIMUM_FREE_SPACE
-  verify_boolean CREATE_CHECKSUMS
-  verify_boolean VERIFY_CHECKSUMS
+  verify_boolean SEND_NOTIFICATIONS
   verify_number LOCK_TIMEOUT
 }
 
@@ -84,6 +85,9 @@ echo_settings() {
   echo_setting LOCK_TIMEOUT
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PROJECT_NAME" && echo_setting PROJECT_NAME
   [ "$DOCKER_INSTALLED" = "$TRUE" ] && is_set "$PAUSE_CONTAINERS" && echo_setting PAUSE_CONTAINERS
+  echo_setting SEND_NOTIFICATIONS
+  [ "$SEND_NOTIFICATIONS" = "$TRUE" ] && [ "$SLACK_WEBHOOK_URL" = "$TRUE" ] && echo_setting_masked SLACK_WEBHOOK_URL
+  [ "$SEND_NOTIFICATIONS" = "$TRUE" ] && [ "$DISCORD_WEBHOOK_URL" = "$TRUE" ] && echo_setting_masked DISCORD_WEBHOOK_URL
   echo_setting TZ
   echo "+---------------------------+----------------------------+"
   echo

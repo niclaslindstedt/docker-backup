@@ -32,7 +32,10 @@ log5() { [ "$LOG_LEVEL" -ge 5 ] && log "$*"; } # Most verbose
 # Throws an error (exits the current shell). Will also pause containers if that functionality is enabled.
 # Params: [error message]
 error() {
-  is_set "$1" && log "ERROR: $*"
+  is_set "$1" && {
+    log "ERROR: $*"
+    send_notifications "$*" "Error"
+  }
   unpause_containers "$PAUSE_CONTAINERS"
   log "Exiting script"
   exit 1
