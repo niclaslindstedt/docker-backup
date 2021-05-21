@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/niclaslindstedt/docker-backup/compare/v1.0.0...v1.1.0) (2021-05-21)
+
+
+### Features
+
+* Add options to create signatures of checksums ([#44](https://github.com/niclaslindstedt/docker-backup/issues/44)) ([2d87725](https://github.com/niclaslindstedt/docker-backup/commit/2d87725254e88fd571a63371c87f0535df57b31a))
+
+
+
 # [1.0.0](https://github.com/niclaslindstedt/docker-backup/compare/v0.9.0...v1.0.0) (2021-05-20)
 
 
