@@ -77,4 +77,6 @@ backup_volume() {
 
   should_encrypt && backup_filename+=".gpg"
   log "=> Backup finished: $backup_filename"
+
+  send_notifications "Backup successful: $volume_name" "$backup_filename"
 }
