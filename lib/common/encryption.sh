@@ -68,13 +68,14 @@ verify_encryption() {
 
   backup_name="${1%*.gpg}"
   tmp_name="$backup_name.tmp"
+  copy_file "$backup_name.sfv.sig" "$tmp_name.sfv.sig"
   copy_file "$backup_name.sfv" "$tmp_name.sfv"
 
   log3 "Decrypting archive to temporary file $tmp_name"
   decrypt_file "$1" "$tmp_name"
 
   verify_checksum "$tmp_name"
-  remove_file "$tmp_name.sfv"
+  remove_file "$tmp_name.sfv" "$tmp_name.sfv.sig"
 
   log3 "- Encryption verification process finished"
 

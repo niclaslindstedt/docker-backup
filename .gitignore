@@ -1,5 +1,6 @@
 !*.sh
 backups
+gpg
 lib/tests/
 lts
 node_modules

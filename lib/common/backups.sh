@@ -46,7 +46,7 @@ move_backup() {
 
   backup_name="${1%*.gpg}"
   copy_backup_files "$backup_name" "$2"
-  remove_file "$backup_name" "$backup_name.sfv" "$backup_name.gpg" "$backup_name.gpg.sfv"
+  remove_backup "$backup_name"
 
   log3 "- Moving process finished"
 }
@@ -57,12 +57,25 @@ copy_backup_files() {
   ! is_directory "$2" && error "Target path should be a directory"
 
   backup_name="${1%*.gpg}"
+  copy_soft "$backup_name.sfv.sig" "$2"
   copy_soft "$backup_name.sfv" "$2"
   copy_soft "$backup_name" "$2"
   verify_checksum "$2/$(basename "$backup_name")"
+  copy_soft "$backup_name.gpg.sfv.sig" "$2"
   copy_soft "$backup_name.gpg.sfv" "$2"
   copy_soft "$backup_name.gpg" "$2"
   verify_checksum "$2/$(basename "$backup_name").gpg"
+}
+
+# Removes a backup and its associated files
+# Params: <backup path>
+remove_backup() {
+  local backup_clean
+
+  is_file "$1" && {
+    backup_clean="${1%*.gpg}"
+    remove_file "$backup_clean.sfv" "$backup_clean.sfv.sig" "$backup_clean.gpg" "$backup_clean.gpg.sfv" "$backup_clean.gpg.sfv.sig"
+  }
 }
 
 # Helper functions

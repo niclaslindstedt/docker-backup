@@ -21,8 +21,8 @@ prepare_backup_data() {
       # Go to next file if this is not a file
       [ ! -f "$file_name" ] && continue
 
-      # Go to next file if this is a checksum file
-      [[ "$file_name" =~ \.sfv$ ]] && continue
+      # Go to next file if this is a checksum or signature file
+      [[ "$file_name" =~ \.(sfv|sfv\.sig)$ ]] && continue
 
       contains_numeric_date "$file_name" || error "Cannot parse date in filename: $file_name"
 

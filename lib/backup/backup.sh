@@ -32,7 +32,7 @@ backup_all() {
 # Backup a specific volume
 # Params: <volume name>
 backup_volume() {
-  local backup_filename backup_path volume_name free_space folder_size folder_size_str backup_count backup_to_remove free_space tmp_folder tmp_backup
+  local backup_filename backup_path volume_name free_space folder_size folder_size_str backup_count free_space tmp_folder tmp_backup
 
   ! is_directory "$VOLUME_PATH/$1"
 
@@ -52,9 +52,8 @@ backup_volume() {
     [ "$backup_count" -gt 1 ] && {
       # Remove oldest backup if we're running out of space
       go "$BACKUP_PATH"
-        backup_to_remove="$(get_oldest_backup "$volume_name")"
         log "Removing oldest $volume_name backup before continuing ($((backup_count - 1)) left)"
-        remove_file "${backup_to_remove:?}" "${backup_to_remove:?}.sfv"
+        remove_backup "$(get_oldest_backup "$volume_name")"
       back
     }
 
