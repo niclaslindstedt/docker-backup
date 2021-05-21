@@ -27,7 +27,7 @@ log1() { [ "$LOG_LEVEL" -ge 1 ] && log "$*"; } # The least verbose
 log2() { [ "$LOG_LEVEL" -ge 2 ] && log "$*"; }
 log3() { [ "$LOG_LEVEL" -ge 3 ] && log "$*"; }
 log4() { [ "$LOG_LEVEL" -ge 4 ] && log "$*"; }
-logd() { [ "$LOG_LEVEL" -ge 5 ] && log "$*"; } # Most verbose
+log5() { [ "$LOG_LEVEL" -ge 5 ] && log "$*"; } # Most verbose
 
 # Throws an error (exits the current shell). Will also pause containers if that functionality is enabled.
 # Params: [error message]

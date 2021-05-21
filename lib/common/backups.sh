@@ -74,7 +74,7 @@ remove_backup() {
 
   is_file "$1" && {
     backup_clean="${1%*.gpg}"
-    remove_file "$backup_clean.sfv" "$backup_clean.sfv.sig" "$backup_clean.gpg" "$backup_clean.gpg.sfv" "$backup_clean.gpg.sfv.sig"
+    remove_file "$backup_clean" "$backup_clean.sfv" "$backup_clean.sfv.sig" "$backup_clean.gpg" "$backup_clean.gpg.sfv" "$backup_clean.gpg.sfv.sig"
   }
 }
 
